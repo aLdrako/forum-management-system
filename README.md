@@ -1,92 +1,109 @@
-# Forum Management System
+<img src="https://webassets.telerikacademy.com/images/default-source/logos/telerik-academy.svg" alt="logo" width="300px" style="margin-top: 20px;"/>
+
+# Forum management System
+
+## Project Description
+Design and implement a **Forum System**, where the users can create posts, add comments, and upvote/downvote the things that they like or dislike the most. Choose what your forum will be about and stick with it. Examples: an automotive fanbase forum, java technical learning forum, crypto trading forum, fashion forum, etc. The forum should revolve around one or two general topics.
+
+## Functional Requirements
+### Entities
+- Each **user** ***must*** have a first and last name, email, username, and password.
+  - First name and last name ***must*** be between 4 and 32 symbols.
+  - Email ***must*** be a valid email and unique in the system.
+- Each **admin** ***must*** have a first and last name, email, and may have a phone number.
+  - First name and last name ***must*** be between 4 and 32 symbols.
+  - Email ***must*** be a valid email and unique in the system.
+- Each **post** ***must*** have a user who created it, a title, content, comments and how many likes it has received.
+  - The title ***must*** be between 16 and 64 symbols.
+  - The content ***must*** be between 32 symbols and 8192 symbols.
+  - The post ***must*** have a user who created it.
+  - Other users ***must*** be able to post replies (comments).
+#### Public Part
+The public part ***must*** be accessible without authentication.
+On the home page, anonymous users ***must*** be presented with the core features of the platform as well as how many people are using it and how many posts have been created so far.
+Anonymous users ***must*** be able to register and log in.
+Anonymous users ***should*** be able to see a list of the top 10 most commented posts and a list of the 10 most recently created posts.
+#### Private part
+Accessible only if the user is authenticated.
+The user ***must*** be able to log in and log out.
+Users ***must*** be able to browse posts created by the other users with an option to sort and filter them.
+Users ***must*** be able to view a single post including its title, content, comments, likes, etc. The details of the post and any available user actions (comment/like/edit) ***hould*** be presented on the same page.
+Users ***must*** be able to update their profile information. Users ***should not*** be able to change their username once registered. Users ***could*** upload a profile photo.
+Users ***must*** be able to create a new post with at least a title and content.
+Each user ***must*** be able to edit only personal posts or comments.
+Each user ***must*** be able to view all their or any other user’s posts and comments (with the option to filter and sort them).
+Each user ***must*** be able to remove one or more of their own posts. Deleting a post should be available while reading the details of an individual post or when browsing the list of all posts.
+Each user ***must*** be able to comment/reply to any other forum post.
+#### Administrative part
+Accessible to users with administrative privileges.
+Admin ***must*** be able to search for a user by their username, email, first name.
+Admin ***must*** be able to block or unblock individual users. A blocked user must not be able to create posts or comments.
+Admin ***must*** be able to delete any post.
+Admin ***must*** be able to view a list of all posts with an option to filter and sort them.
+#### Optional feature
+***Post Tags*** – In order for the users to navigate easier and find certain topics faster, you can implement tags. A tag is additional information that can be put under each post after creating the post. The process of adding a tag/s to a post is as follows: The user creates a post, then proceeds to edit the post, once on the edit post page, the user can add a tag/s under it. If the tag does not exist, a new one ***must*** be added to the database. If the tag exists, a new one ***must not*** be created, the one already in the database ***must*** be reused. All tags ***should*** be lowercase only.
+After the post is tagged, other users can find it by typing in the tag in the search bar. For example: your forum is about cars, a post is marked with the tags: “mercedes” and “tuning,” when “mercedes” is typed in the search bar, all posts that are tagged with “mercedes” should appear in the front-end.
+A User ***must*** be able to add/remove/edit tags only on its own posts. Admins ***must*** be able to add/remove/edit tags on all posts.
+### REST API
+To provide other developers with your service, you need to develop a REST API. It should leverage HTTP as a transport protocol and clear text JSON for the request and response payloads.
+A great API is nothing without great documentation. The documentation holds the information that is required to successfully consume and integrate with an API. You ***must*** use [Swagger](https://swagger.io/) to document yours.
+
+The REST API provides the following capabilities:
+
+1. Users
+   - CRUD operations (***must***)
+   - Search by username, email, or first name (***must***)
+   - Filter and sort certain users’ posts (***must***)
+   - Filter all posts by tag/s (*could*)
+2. Admin
+    - Make other users admin (***must***)
+    - Delete posts (***must***)
+    - Block/unblock user (***must***)
+3. Posts
+    - CRUD operations (***must***)
+    - Comment (***must***)
+    - List and edit user’s own posts (***must***)
+    - Comment on and like other users' posts. (***must***)
+4. Tags – *optional*
+    - CRUD operations (*could*)
 
 
+## Use cases
+#### Use case №1
+A friend of Pavel’s told him about this amazing forum, where lots of people share their ideas and perspectives on the crypto/stock market. Pavel enters the website and sees a feed of posts. He can sort them by most liked or newest. He can also filter them by a certain word/s. He is an anonymous user so he cannot create a post yet. He registers and then logs in to the forum. He can now start sharing his ideas with his buddy crypto “hodlers.”
+#### Use case №2
+Your forum has accumulated thousands of new users. Most of them are proactively helpful and positive, but some of them started posting spam or/and irrelevant information to the forum. You hire a moderator. You instruct the moderator to enter the forum and create a first-time registration. You as an admin give admin rights to your moderator through the forum. They can now start deleting posts and ban users that do not follow the forum rules!
 
-## Getting started
+## Technical Requirements
+#### General
+- Follow OOP principles when coding
+- Follow KISS, SOLID, DRY principles when coding
+- Follow REST API design [best practices](https://florimond.dev/en/posts/2018/08/restful-api-design-13-best-practices-to-make-your-users-happy/) when designing the REST API (*see Appendix*)
+- Use tiered project structure (separate the application in layers)
+- The service layer (i.e., "business" functionality) ***must*** have at least 80%-unit test code coverage
+- You should implement proper exception handling and propagation
+- Try to think ahead. When developing something, think – “How hard would it be to change/modify this later?”
+#### Database
+The data of the application ***must*** be stored in a relational database. You need to identify the core domain objects and model their relationships accordingly. Database structure should avoid data duplication and empty data (normalize your database).
+Your repository ***must*** include two scripts – one to create the database and one to fill it with data.
+#### Git
+Commits in the GitLab repository should give a good overview of how the project was developed, which features were created first and the people who contributed. Contributions from all team members ***must*** be evident through the git commit history! The repository ***must*** contain the complete application source code and any scripts (database scripts, for example).
+Provide a link to a GitLab repository with the following information in the README.md file:
+- Project description
+- Link to the Swagger documentation (***must***)
+- Link to the hosted project (if hosted online)
+- Instructions on how to setup and run the project locally
+- Images of the database relations (***must***)
+#### Git
+- Integrate your project with a Continuous Integration server (e.g., GitLab’s own) and configure your unit tests to run on each commit to your master branch
+- Host your application's backend in a public hosting provider of your choice (e.g., AWS, Azure, Heroku)
+- Use branches while working with Git
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.com/alpha-44-java-team-12/forum-management-system.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.com/alpha-44-java-team-12/forum-management-system/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+### Teamwork Guidelines
+Please see the Teamwork Guidelines [document](https://learn.telerikacademy.com/mod/page/view.php?id=39002 "document").
+### Appendix
+- [Guidelines for designing good REST API](https://florimond.dev/en/posts/2018/08/restful-api-design-13-best-practices-to-make-your-users-happy/)
+- [Guidelines for URL encoding](http://www.talisman.org/~erlkonig/misc/lunatech%5Ewhat-every-webdev-must-know-about-url-encoding/)
+- [Always prefer constructor injection](https://www.vojtechruzicka.com/field-dependency-injection-considered-harmful/)
+- [Git commits - an effective style guide](https://dev.to/pavlosisaris/git-commits-an-effective-style-guide-2kkn)
+- [Guidelines for designing good REST API](https://www.sitepoint.com/build-restful-apis-best-practices/)
