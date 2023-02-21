@@ -68,6 +68,11 @@ public class UserRepositorySql implements UserRepository {
             first_name = ?, last_name = ?, email = ?, username = ?, password = ?
             WHERE id = ?
             """;
+    private static final String UPDATE_PERMISSIONS = """
+            UPDATE permissions SET
+            is_blocked = ?, is_admin = ?
+            WHERE user_id = ?
+            """;
 
     private static final String DELETE = """
             DELETE FROM users
@@ -110,9 +115,7 @@ public class UserRepositorySql implements UserRepository {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 List<User> result = getUsers(resultSet);
-                if (result.size() == 0) {
-                    throw new EntityNotFoundException("User", id);
-                }
+                if (result.size() == 0) throw new EntityNotFoundException("User", id);
                 return result.get(0);
             }
         } catch (SQLException e) {
@@ -129,11 +132,10 @@ public class UserRepositorySql implements UserRepository {
             statement.setString(1, username);
             try (ResultSet resultSet = statement.executeQuery()) {
                 List<User> result = getUsers(resultSet);
-                if (result.size() == 0) {
-                    throw new EntityNotFoundException("User", "username", username);
-                }
+                if (result.size() == 0) throw new EntityNotFoundException("User", "username", username);
                 return result.get(0);
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -153,20 +155,16 @@ public class UserRepositorySql implements UserRepository {
         ) {
             statement.setString(1, email);
             try (ResultSet resultSet = statement.executeQuery()) {
-
                 User user = null;
                 if (resultSet.next()) {
                     user = new User();
                     user.setId(resultSet.getLong("id"));
                     user.setEmail(resultSet.getString("email"));
                 }
-
-                if (user == null) {
-                    throw new EntityNotFoundException("User", "email", email);
-                }
-
+                if (user == null) throw new EntityNotFoundException("User", "email", email);
                 return user;
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -194,6 +192,7 @@ public class UserRepositorySql implements UserRepository {
             statementPermissions.setBoolean(2, user.isBlocked());
             statementPermissions.setBoolean(3, user.isAdmin());
             statementPermissions.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -205,6 +204,7 @@ public class UserRepositorySql implements UserRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(UPDATE);
+                PreparedStatement statementPermissions = connection.prepareStatement(UPDATE_PERMISSIONS)
         ) {
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
@@ -213,6 +213,12 @@ public class UserRepositorySql implements UserRepository {
             statement.setString(5, user.getPassword());
             statement.setLong(6, user.getId());
             statement.executeUpdate();
+
+            statementPermissions.setBoolean(1, user.isBlocked());
+            statementPermissions.setBoolean(2, user.isAdmin());
+            statementPermissions.setLong(3, user.getId());
+            statementPermissions.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
