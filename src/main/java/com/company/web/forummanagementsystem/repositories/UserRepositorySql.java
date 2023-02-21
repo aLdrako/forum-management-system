@@ -58,7 +58,7 @@ public class UserRepositorySql implements UserRepository {
     private static final String CREATE_PERMISSIONS = """
             INSERT INTO
             permissions
-            (user_id, is_blocked, is_admin)
+            (is_blocked, is_admin, user_id)
             VALUES
             (?, ?, ?)
             """;
@@ -103,7 +103,6 @@ public class UserRepositorySql implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
-
     }
 
     @Override
@@ -177,20 +176,14 @@ public class UserRepositorySql implements UserRepository {
                 PreparedStatement statement = connection.prepareStatement(CREATE);
                 PreparedStatement statementPermissions = connection.prepareStatement(CREATE_PERMISSIONS)
         ) {
-            statement.setString(1, user.getFirstName());
-            statement.setString(2, user.getLastName());
-            statement.setString(3, user.getEmail());
-            statement.setString(4, user.getUsername());
-            statement.setString(5, user.getPassword());
+            prepareUserStatement(user, statement);
             statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
             statement.executeUpdate();
 
             User newUser = getByEmail(user.getEmail());
             user.setId(newUser.getId());
 
-            statementPermissions.setLong(1, newUser.getId());
-            statementPermissions.setBoolean(2, user.isBlocked());
-            statementPermissions.setBoolean(3, user.isAdmin());
+            preparePermissionStatement(user, statementPermissions, newUser);
             statementPermissions.executeUpdate();
 
         } catch (SQLException e) {
@@ -206,17 +199,11 @@ public class UserRepositorySql implements UserRepository {
                 PreparedStatement statement = connection.prepareStatement(UPDATE);
                 PreparedStatement statementPermissions = connection.prepareStatement(UPDATE_PERMISSIONS)
         ) {
-            statement.setString(1, user.getFirstName());
-            statement.setString(2, user.getLastName());
-            statement.setString(3, user.getEmail());
-            statement.setString(4, user.getUsername());
-            statement.setString(5, user.getPassword());
+            prepareUserStatement(user, statement);
             statement.setLong(6, user.getId());
             statement.executeUpdate();
 
-            statementPermissions.setBoolean(1, user.isBlocked());
-            statementPermissions.setBoolean(2, user.isAdmin());
-            statementPermissions.setLong(3, user.getId());
+            preparePermissionStatement(user, statementPermissions, user);
             statementPermissions.executeUpdate();
 
         } catch (SQLException e) {
@@ -246,6 +233,20 @@ public class UserRepositorySql implements UserRepository {
     @Override
     public List<User> getAllWithParams(Optional<Long> id, Optional<String> username) {
         return null;
+    }
+
+    private static void prepareUserStatement(User user, PreparedStatement statement) throws SQLException {
+        statement.setString(1, user.getFirstName());
+        statement.setString(2, user.getLastName());
+        statement.setString(3, user.getEmail());
+        statement.setString(4, user.getUsername());
+        statement.setString(5, user.getPassword());
+    }
+
+    private static void preparePermissionStatement(User user, PreparedStatement statementPermissions, User newUser) throws SQLException {
+        statementPermissions.setBoolean(1, user.isBlocked());
+        statementPermissions.setBoolean(2, user.isAdmin());
+        statementPermissions.setLong(3, newUser.getId());
     }
 
     private List<User> getUsers(ResultSet usersData) throws SQLException {
