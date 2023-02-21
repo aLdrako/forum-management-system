@@ -3,6 +3,7 @@ package com.company.web.forummanagementsystem.models;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Comment {
     private Long id;
@@ -61,5 +62,18 @@ public class Comment {
 
     public LocalDateTime getDateCreated() {
         return dateCreated;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
@@ -45,16 +46,64 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public void create(Comment comment) {
-
+        long currentId = !comments.isEmpty() ? comments.get(comments.size() - 1).getId() + 1 : 1L;
+        comment.setId(currentId);
+        userRepository.getById(comment.getUserId());
+        postRepository.getById(comment.getPostId());
+        comments.add(comment);
     }
 
     @Override
     public void update(Comment comment) {
-
+        Comment commentToUpdate = getById(comment.getId());
+        userRepository.getById(comment.getUserId());
+        postRepository.getById(comment.getPostId());
+        commentToUpdate.setContent(comment.getContent());
+        commentToUpdate.setPostId(comment.getPostId());
+        commentToUpdate.setUserId(comment.getUserId());
     }
 
     @Override
-    public void delete(Comment comment) {
+    public void delete(Long id) {
+        Comment commentToDelete = getById(id);
+        comments.remove(commentToDelete);
+    }
 
+    @Override
+    public List<Comment> getCommentsByUserId(Long userId) {
+        userRepository.getById(userId);
+        return comments.stream()
+                .filter(comment -> Objects.equals(comment.getUserId(), userId))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Comment getCommentByUserId(Long userId, Long commentId) {
+        userRepository.getById(userId);
+        getById(commentId);
+        return comments.stream()
+                .filter(comment -> Objects.equals(comment.getUserId(), userId))
+                .filter(comment -> Objects.equals(comment.getId(), commentId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have comment with id %d!", userId, commentId)));
+    }
+
+    @Override
+    public List<Comment> getCommentsByPostId(Long postId) {
+        postRepository.getById(postId);
+        return comments.stream()
+                .filter(comment -> Objects.equals(comment.getPostId(), postId))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Comment getCommentByPostId(Long postId, Long commentId) {
+        postRepository.getById(postId);
+        getById(commentId);
+        return comments.stream()
+                .filter(comment -> Objects.equals(comment.getPostId(), postId))
+                .filter(comment -> Objects.equals(comment.getId(), commentId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Post with id %d does not have comment with id %d!", postId, commentId)));
     }
 }

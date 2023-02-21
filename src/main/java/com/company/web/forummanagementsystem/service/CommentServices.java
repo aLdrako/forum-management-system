@@ -9,5 +9,9 @@ public interface CommentServices {
     Comment getById(Long id);
     void create(Comment comment);
     void update(Comment comment);
-    void delete(Comment comment);
+    void delete(Long id);
+    List<Comment> getCommentsByUserId(Long userId);
+    Comment getCommentByUserId(Long userId, Long commentId);
+    List<Comment> getCommentsByPostId(Long postId);
+    Comment getCommentByPostId(Long postId, Long commentId);
 }

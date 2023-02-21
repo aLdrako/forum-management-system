@@ -50,7 +50,7 @@ public class PostController {
     }
 
     @PutMapping("/posts/{id}")
-    public Post update(@PathVariable Long id, @RequestBody PostDTO postDTO) {
+    public Post update(@PathVariable Long id, @Valid @RequestBody PostDTO postDTO) {
         try {
             Post post = postMapper.dtoToObject(id, postDTO);
             postServices.update(post);

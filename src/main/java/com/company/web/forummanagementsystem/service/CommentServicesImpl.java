@@ -27,16 +27,36 @@ public class CommentServicesImpl implements CommentServices {
 
     @Override
     public void create(Comment comment) {
-
+        commentRepository.create(comment);
     }
 
     @Override
     public void update(Comment comment) {
-
+        commentRepository.update(comment);
     }
 
     @Override
-    public void delete(Comment comment) {
+    public void delete(Long id) {
+        commentRepository.delete(id);
+    }
 
+    @Override
+    public List<Comment> getCommentsByUserId(Long userId) {
+        return commentRepository.getCommentsByUserId(userId);
+    }
+
+    @Override
+    public Comment getCommentByUserId(Long userId, Long commentId) {
+        return commentRepository.getCommentByUserId(userId, commentId);
+    }
+
+    @Override
+    public List<Comment> getCommentsByPostId(Long postId) {
+        return commentRepository.getCommentsByPostId(postId);
+    }
+
+    @Override
+    public Comment getCommentByPostId(Long postId, Long commentId) {
+        return commentRepository.getCommentByPostId(postId, commentId);
     }
 }

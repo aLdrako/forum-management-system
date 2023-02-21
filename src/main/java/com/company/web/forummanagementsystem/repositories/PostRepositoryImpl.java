@@ -83,6 +83,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public Post getPostByUserId(Long userId, Long postId) {
         userRepository.getById(userId);
+        getById(postId);
         return posts.stream()
                 .filter(post -> Objects.equals(post.getUserId(), userId))
                 .filter(post -> Objects.equals(post.getId(), postId))
