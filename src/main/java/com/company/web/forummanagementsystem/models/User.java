@@ -1,13 +1,15 @@
 package com.company.web.forummanagementsystem.models;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+@JsonPropertyOrder({"id", "firstName", "lastName", "email", "username", "password", "joiningDate", "phoneNumber", "isAdmin", "isBlocked"})
 public class User {
 
     private Long id;
@@ -26,14 +28,19 @@ public class User {
     private Optional<String> phoneNumber = Optional.empty();
     private boolean isAdmin;
     private boolean isBlocked;
-    private final LocalDateTime joiningDate = LocalDateTime.now();
+    //    @JsonIgnore
+    private LocalDateTime joiningDate = LocalDateTime.now();
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss");
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String username, String password, boolean isAdmin) {
+    public User(Long id, String firstName, String lastName, String email, String username, String password, LocalDateTime joiningDate, Optional<String> phoneNumber, boolean isAdmin, boolean isBlocked) {
         this(id, firstName, lastName, email, username, password);
+        this.joiningDate = joiningDate;
+        this.phoneNumber = phoneNumber;
         this.isAdmin = isAdmin;
+        this.isBlocked = isBlocked;
     }
 
     public User(Long id, String firstName, String lastName, String email, String username, String password) {
@@ -101,6 +108,7 @@ public class User {
         this.phoneNumber = Optional.ofNullable(phoneNumber);
     }
 
+//    @JsonIgnore
     public boolean isAdmin() {
         return isAdmin;
     }
@@ -109,6 +117,7 @@ public class User {
         isAdmin = admin;
     }
 
+//    @JsonIgnore
     public boolean isBlocked() {
         return isBlocked;
     }
@@ -117,8 +126,12 @@ public class User {
         isBlocked = blocked;
     }
 
-    public LocalDateTime getJoiningDate() {
-        return joiningDate;
+    public void setJoiningDate(LocalDateTime joiningDate) {
+        this.joiningDate = joiningDate;
+    }
+
+    public String getJoiningDate() {
+        return joiningDate.format(dateTimeFormatter);
     }
 
 }

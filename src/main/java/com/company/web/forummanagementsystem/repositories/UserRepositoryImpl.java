@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-@Repository
+//@Repository
 public class UserRepositoryImpl implements UserRepository {
     private final List<User> users;
 
@@ -20,7 +20,9 @@ public class UserRepositoryImpl implements UserRepository {
         users = new ArrayList<>();
 
         AtomicLong counter = new AtomicLong();
-        users.add(new User(counter.incrementAndGet(), "Alex", "Dune", "alex@gmail.com", "alexgo", "qwerty123", true));
+        User admin = new User(counter.incrementAndGet(), "Alex", "Dune", "alex@gmail.com", "alexgo", "qwerty123");
+        admin.setAdmin(true);
+        users.add(admin);
         users.add(new User(counter.incrementAndGet(), "John", "Milk", "johnmild@mail.com", "johndo", "abcd111"));
         users.add(new User(counter.incrementAndGet(), "Adam", "Smith", "adamsmith@gmail.com", "adams", "pass1234"));
         users.add(new User(counter.incrementAndGet(), "Alan", "Rockstar", "alan@yahoo.com", "rockstar", "rockstar999"));

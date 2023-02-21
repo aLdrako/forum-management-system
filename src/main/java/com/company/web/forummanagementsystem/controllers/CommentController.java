@@ -3,7 +3,6 @@ package com.company.web.forummanagementsystem.controllers;
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Comment;
 import com.company.web.forummanagementsystem.service.CommentServices;
-import com.mysql.cj.log.Log;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
