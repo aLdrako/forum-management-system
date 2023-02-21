@@ -201,6 +201,7 @@ public class UserRepositorySql implements UserRepository {
 
     @Override
     public void update(User user) {
+        getById(user.getId());
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(UPDATE);
