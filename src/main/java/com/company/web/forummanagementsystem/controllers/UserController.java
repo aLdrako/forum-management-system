@@ -29,35 +29,42 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getById(@PathVariable Long id) {
-        return userServices.getById(id);
+        try {
+            return userServices.getById(id);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @GetMapping("/search")
     public User getByUsername(@RequestParam String username) {
-        return userServices.getByUsername(username);
+        try {
+            return userServices.getByUsername(username);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         try {
-            userServices.create(user);
+            return userServices.create(user);
         } catch (DuplicateEntityException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
-        return user;
     }
 
     @PutMapping("/{id}")
     public User update(@PathVariable Long id, @Valid @RequestBody User user) {
         try {
             user.setId(id);
-            userServices.update(user);
+            return userServices.update(user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (DuplicateEntityException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
-        return user;
+//        return user;
     }
 
     @DeleteMapping("/{id}")

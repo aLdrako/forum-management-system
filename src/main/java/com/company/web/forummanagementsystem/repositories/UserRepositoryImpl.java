@@ -65,16 +65,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void create(User user) {
+    public User create(User user) {
         long currentId = !users.isEmpty() ? users.get(users.size() - 1).getId() : 1L;
         user.setId(currentId + 1);
         users.add(user);
+        return user;
     }
 
     @Override
-    public void update(User user) {
+    public User update(User user) {
         User userToUpdate = getById(user.getId());
-
         userToUpdate.setFirstName(user.getFirstName());
         userToUpdate.setLastName(user.getLastName());
         userToUpdate.setEmail(user.getEmail());
@@ -82,6 +82,7 @@ public class UserRepositoryImpl implements UserRepository {
         userToUpdate.setPassword(user.getPassword());
         userToUpdate.setAdmin(user.isAdmin());
         userToUpdate.setBlocked(user.isBlocked());
+        return userToUpdate;
     }
 
     @Override

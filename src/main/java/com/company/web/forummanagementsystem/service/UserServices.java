@@ -9,8 +9,8 @@ public interface UserServices {
     List<User> getAll();
     User getById(Long id);
     User getByUsername(String username);
-    void create(User user);
-    void update(User user);
+    User create(User user);
+    User update(User user);
     void delete(Long user);
     public List<User> getAllWithParams(Optional<Long> id, Optional<String> username);
 }

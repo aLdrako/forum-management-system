@@ -1,88 +1,100 @@
-CREATE OR REPLACE TABLE tags
+create or replace table tags
 (
-    id   BIGINT AUTO_INCREMENT
-        PRIMARY KEY,
-    name VARCHAR(16) NOT NULL,
-    CONSTRAINT tags_pk
-        UNIQUE (name)
+    id   bigint auto_increment
+        primary key,
+    name varchar(16) not null,
+    constraint tags_pk
+        unique (name)
 );
 
-CREATE OR REPLACE TABLE users
+create or replace table users
 (
-    id         BIGINT AUTO_INCREMENT
-        PRIMARY KEY,
-    first_name VARCHAR(32) NOT NULL,
-    last_name  VARCHAR(32) NOT NULL,
-    email      VARCHAR(50) NOT NULL,
-    username   VARCHAR(50) NOT NULL,
-    password   VARCHAR(50) NOT NULL,
-    join_date  datetime    NOT NULL,
-    CONSTRAINT users_pk2
-        UNIQUE (email)
+    id         bigint auto_increment
+        primary key,
+    first_name varchar(32)                          not null,
+    last_name  varchar(32)                          not null,
+    email      varchar(50)                          not null,
+    username   varchar(50)                          not null,
+    password   varchar(50)                          not null,
+    join_date  datetime default current_timestamp() not null,
+    constraint users_pk2
+        unique (email)
 );
 
-CREATE OR REPLACE TABLE permissions
+create or replace table permissions
 (
-    user_id    BIGINT               NOT NULL
-        PRIMARY KEY,
-    is_blocked tinyint(1) DEFAULT 0 NOT NULL,
-    is_admin   tinyint(1) DEFAULT 0 NOT NULL,
-    CONSTRAINT features_users_fk
-        FOREIGN KEY (user_id) REFERENCES users (id)
+    user_id    bigint               not null
+        primary key,
+    is_blocked tinyint(1) default 0 not null,
+    is_admin   tinyint(1) default 0 not null,
+    constraint features_users_fk
+        foreign key (user_id) references users (id)
 );
 
-CREATE OR REPLACE TABLE phones
+create or replace table phones
 (
-    user_id      BIGINT      NOT NULL
-        PRIMARY KEY,
-    phone_number VARCHAR(16) NULL,
-    CONSTRAINT phones_users_fk
-        FOREIGN KEY (user_id) REFERENCES users (id)
+    user_id      bigint      not null
+        primary key,
+    phone_number varchar(16) null,
+    constraint phones_users_fk
+        foreign key (user_id) references users (id)
 );
 
-CREATE OR REPLACE TABLE photos
+create or replace table photos
 (
-    user_id BIGINT NOT NULL
-        PRIMARY KEY,
-    photo   BLOB   NULL,
-    CONSTRAINT photos_users_fk
-        FOREIGN KEY (user_id) REFERENCES users (id)
+    user_id bigint not null
+        primary key,
+    photo   blob   null,
+    constraint photos_users_fk
+        foreign key (user_id) references users (id)
 );
 
-CREATE OR REPLACE TABLE posts
+create or replace table posts
 (
-    id           BIGINT AUTO_INCREMENT
-        PRIMARY KEY,
-    title        VARCHAR(100) NOT NULL,
-    content      text         NULL,
-    likes        INT          NULL,
-    user_id      BIGINT       NOT NULL,
-    date_created datetime     NOT NULL,
-    CONSTRAINT posts_users_fk
-        FOREIGN KEY (user_id) REFERENCES users (id)
+    id           bigint auto_increment
+        primary key,
+    title        varchar(100)                         not null,
+    content      text                                 null,
+    likes        int                                  null,
+    user_id      bigint                               not null,
+    date_created datetime default current_timestamp() not null,
+    constraint posts_users_fk
+        foreign key (user_id) references users (id)
 );
 
-CREATE OR REPLACE TABLE comments
+create or replace table comments
 (
-    id           BIGINT AUTO_INCREMENT
-        PRIMARY KEY,
-    post_id      BIGINT   NOT NULL,
-    user_id      BIGINT   NOT NULL,
-    content      text     NULL,
-    date_created datetime NOT NULL,
-    CONSTRAINT comments_posts_fk
-        FOREIGN KEY (post_id) REFERENCES posts (id),
-    CONSTRAINT comments_users_fk
-        FOREIGN KEY (user_id) REFERENCES users (id)
+    id           bigint auto_increment
+        primary key,
+    post_id      bigint                               not null,
+    user_id      bigint                               not null,
+    content      text                                 null,
+    date_created datetime default current_timestamp() not null,
+    constraint comments_posts_fk
+        foreign key (post_id) references posts (id),
+    constraint comments_users_fk
+        foreign key (user_id) references users (id)
 );
 
-CREATE OR REPLACE TABLE posts_tags
+create or replace table likes
 (
-    post_id BIGINT NOT NULL,
-    tag_id  BIGINT NOT NULL,
-    PRIMARY KEY (post_id, tag_id),
-    CONSTRAINT posts_tags_posts_fk
-        FOREIGN KEY (post_id) REFERENCES posts (id),
-    CONSTRAINT posts_tags_tags_fk
-        FOREIGN KEY (tag_id) REFERENCES tags (id)
+    user_id bigint not null,
+    post_id bigint not null,
+    primary key (user_id, post_id),
+    constraint likes_posts_fk
+        foreign key (post_id) references posts (id),
+    constraint likes_users_fk
+        foreign key (user_id) references users (id)
 );
+
+create or replace table posts_tags
+(
+    post_id bigint not null,
+    tag_id  bigint not null,
+    primary key (post_id, tag_id),
+    constraint posts_tags_posts_fk
+        foreign key (post_id) references posts (id),
+    constraint posts_tags_tags_fk
+        foreign key (tag_id) references tags (id)
+);
+

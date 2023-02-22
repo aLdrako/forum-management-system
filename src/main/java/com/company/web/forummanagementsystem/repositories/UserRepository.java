@@ -10,8 +10,8 @@ public interface UserRepository {
     User getById(Long id);
     User getByUsername(String username);
     User getByEmail(String email);
-    void create(User user);
-    void update(User user);
+    User create(User user);
+    User update(User user);
     void delete(Long id);
     public List<User> getAllWithParams(Optional<Long> id, Optional<String> username);
 

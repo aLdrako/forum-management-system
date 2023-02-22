@@ -7,10 +7,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToLocalDateTime;
 
 @Repository
 @PropertySource("classpath:application.properties")
@@ -44,16 +45,16 @@ public class UserRepositorySql implements UserRepository {
 
     private static final String SQL_GET_BY_EMAIL = """
             SELECT
-            id, email
+            id, email, join_date
             FROM users
             WHERE email = ?;
             """;
 
     private static final String CREATE = """
             INSERT INTO
-            users (first_name, last_name, email, username, password, join_date)
+            users (first_name, last_name, email, username, password)
             VALUES
-            (?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?)
             """;
     private static final String CREATE_PERMISSIONS = """
             INSERT INTO
@@ -110,7 +111,7 @@ public class UserRepositorySql implements UserRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(SQL_GET_BY_ID)
-                ) {
+        ) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 List<User> result = getUsers(resultSet);
@@ -143,7 +144,7 @@ public class UserRepositorySql implements UserRepository {
     /**
      * Helper method to check users by email, maintain uniqueness
      * method is called when new user is created or updated
-     * @param email
+     * @param email String unique
      * @return User with limited fields
      */
     @Override
@@ -159,6 +160,7 @@ public class UserRepositorySql implements UserRepository {
                     user = new User();
                     user.setId(resultSet.getLong("id"));
                     user.setEmail(resultSet.getString("email"));
+                    user.setJoiningDate(resultSet.getTimestamp("join_date").toLocalDateTime());
                 }
                 if (user == null) throw new EntityNotFoundException("User", "email", email);
                 return user;
@@ -170,42 +172,45 @@ public class UserRepositorySql implements UserRepository {
     }
 
     @Override
-    public void create(User user) {
+    public User create(User user) {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(CREATE);
                 PreparedStatement statementPermissions = connection.prepareStatement(CREATE_PERMISSIONS)
         ) {
-            prepareUserStatement(user, statement);
-            statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            userStatement(user, statement);
             statement.executeUpdate();
 
             User newUser = getByEmail(user.getEmail());
             user.setId(newUser.getId());
+            user.setJoiningDate(formatToLocalDateTime(newUser.getJoiningDate()));
 
-            preparePermissionStatement(user, statementPermissions, newUser);
+            permissionStatement(user, statementPermissions);
             statementPermissions.executeUpdate();
-
+            return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void update(User user) {
+    public User update(User user) {
         getById(user.getId());
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(UPDATE);
                 PreparedStatement statementPermissions = connection.prepareStatement(UPDATE_PERMISSIONS)
         ) {
-            prepareUserStatement(user, statement);
+            userStatement(user, statement);
             statement.setLong(6, user.getId());
             statement.executeUpdate();
 
-            preparePermissionStatement(user, statementPermissions, user);
+            permissionStatement(user, statementPermissions);
             statementPermissions.executeUpdate();
 
+            User newUser = getByEmail(user.getEmail());
+            user.setJoiningDate(formatToLocalDateTime(newUser.getJoiningDate()));
+            return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -235,7 +240,7 @@ public class UserRepositorySql implements UserRepository {
         return null;
     }
 
-    private static void prepareUserStatement(User user, PreparedStatement statement) throws SQLException {
+    private static void userStatement(User user, PreparedStatement statement) throws SQLException {
         statement.setString(1, user.getFirstName());
         statement.setString(2, user.getLastName());
         statement.setString(3, user.getEmail());
@@ -243,10 +248,10 @@ public class UserRepositorySql implements UserRepository {
         statement.setString(5, user.getPassword());
     }
 
-    private static void preparePermissionStatement(User user, PreparedStatement statementPermissions, User newUser) throws SQLException {
-        statementPermissions.setBoolean(1, user.isBlocked());
-        statementPermissions.setBoolean(2, user.isAdmin());
-        statementPermissions.setLong(3, newUser.getId());
+    private static void permissionStatement(User user, PreparedStatement statement) throws SQLException {
+        statement.setBoolean(1, user.isBlocked());
+        statement.setBoolean(2, user.isAdmin());
+        statement.setLong(3, user.getId());
     }
 
     private List<User> getUsers(ResultSet usersData) throws SQLException {
