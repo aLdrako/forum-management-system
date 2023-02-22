@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-@Repository
+//@Repository
 public class PostRepositoryImpl implements PostRepository {
     private final List<Post> posts;
     private final UserRepository userRepository;
@@ -41,19 +41,19 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post searchByTitle(String title) {
+    public List<Post> searchByTitle(String title) {
         return posts.stream()
                 .filter(post -> post.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Post", "title", title));
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void create(Post post) {
+    public Post create(Post post) {
         long currentId = !posts.isEmpty() ? posts.get(posts.size() - 1).getId() : 1L;
         post.setId(currentId + 1);
         userRepository.getById(post.getUserId());
         posts.add(post);
+        return post;
     }
 
     @Override

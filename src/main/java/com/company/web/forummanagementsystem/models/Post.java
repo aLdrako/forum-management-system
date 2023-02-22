@@ -1,5 +1,6 @@
 package com.company.web.forummanagementsystem.models;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -15,8 +16,9 @@ public class Post {
     private int likes;
 
     private Long userId;
-    private final LocalDateTime dateCreated = LocalDateTime.now();
-//    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy MM dd - HH:mm:ss");
+    //private LocalDateTime dateCreated = LocalDateTime.now();
+    private LocalDateTime dateCreated;
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss");
 
 
     public Post() {
@@ -28,6 +30,14 @@ public class Post {
         this.content = content;
         this.likes = likes;
         this.userId = userId;
+    }
+    public Post(Long id, String title, String content, int likes, Long userId, LocalDateTime dateCreated) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.likes = likes;
+        this.userId = userId;
+        this.dateCreated = dateCreated;
     }
 
     @Override
@@ -83,8 +93,10 @@ public class Post {
         this.userId = userId;
     }
 
-    public LocalDateTime getDateCreated() {
-        return dateCreated;
-//        return dateCreated.format(dateTimeFormatter);
+    public String getDateCreated() {
+        return dateCreated.format(dateTimeFormatter);
+    }
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
     }
 }

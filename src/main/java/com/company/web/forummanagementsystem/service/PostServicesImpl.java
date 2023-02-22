@@ -25,13 +25,13 @@ public class PostServicesImpl implements PostServices {
     }
 
     @Override
-    public Post searchByTitle(String title) {
+    public List<Post> searchByTitle(String title) {
         return postRepository.searchByTitle(title);
     }
 
     @Override
-    public void create(Post post) {
-        postRepository.create(post);
+    public Post create(Post post) {
+        return postRepository.create(post);
     }
 
     @Override
