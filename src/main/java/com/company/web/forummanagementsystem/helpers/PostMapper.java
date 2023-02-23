@@ -22,7 +22,6 @@ public class PostMapper {
     public Post dtoToObject(Post post, PostDTO postDTO) {
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
-        post.setLikes(postDTO.getLikes());
         post.setUserId(postDTO.getUserId());
         return post;
     }

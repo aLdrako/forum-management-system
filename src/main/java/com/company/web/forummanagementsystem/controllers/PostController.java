@@ -53,8 +53,7 @@ public class PostController {
     public Post update(@PathVariable Long id, @Valid @RequestBody PostDTO postDTO) {
         try {
             Post post = postMapper.dtoToObject(id, postDTO);
-            postServices.update(post);
-            return post;
+            return postServices.update(post);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

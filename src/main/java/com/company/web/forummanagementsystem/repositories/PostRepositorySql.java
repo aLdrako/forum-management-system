@@ -27,10 +27,18 @@ public class PostRepositorySql implements PostRepository{
 
     @Override
     public List<Post> getAll() {
+        String query = """
+                select * 
+                from posts p
+                left join (select post_id, count(*) as count
+                            from likes
+                            group by post_id) l on p.id = l.post_id;
+                """;
+
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM POSTS")
+                ResultSet resultSet = statement.executeQuery(query)
                 ) {
             return getPosts(resultSet);
         } catch (SQLException e) {
@@ -40,7 +48,14 @@ public class PostRepositorySql implements PostRepository{
 
     @Override
     public Post getById(Long id) {
-        String query = "SELECT * FROM POSTS WHERE ID = ?";
+        String query = """
+                select *
+                from posts p 
+                left join (select post_id, count(*) as count
+                            from likes
+                            group by post_id) l on p.id = l.post_id
+                where p.id = ?;               
+                """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query);
@@ -62,8 +77,11 @@ public class PostRepositorySql implements PostRepository{
     public List<Post> searchByTitle(String title) {
         String query = """
                 select *
-                from posts
-                where title like ?;
+                from posts p
+                left join (select post_id, count(*) as count 
+                            from likes 
+                            group by post_id) l on p.id = l.post_id
+                where p.title like ?;
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -83,9 +101,9 @@ public class PostRepositorySql implements PostRepository{
     public Post create(Post post) {
         String query = """
                 insert into
-                posts (title, content, likes, user_id)
+                posts (title, content, user_id)
                 values 
-                (?, ?, ?, ?)
+                (?, ?, ?)
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -93,8 +111,7 @@ public class PostRepositorySql implements PostRepository{
                 ){
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getContent());
-            statement.setInt(3, post.getLikes());
-            statement.setLong(4, post.getUserId());
+            statement.setLong(3, post.getUserId());
             statement.executeUpdate();
 
             return getLastestPost();
@@ -107,7 +124,10 @@ public class PostRepositorySql implements PostRepository{
     private Post getLastestPost() {
         String query = """
                 select max(id) as max
-                from posts;
+                from posts p
+                left join (select post_id, count(*) as count 
+                            from likes 
+                            group by post_id) l on p.id = l.post_id;
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -139,10 +159,10 @@ public class PostRepositorySql implements PostRepository{
                 ){
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getContent());
-            statement.setLong(4, post.getId());
+            statement.setLong(3, post.getId());
 
             statement.executeUpdate();
-            return post;
+            return getById(post.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -171,6 +191,9 @@ public class PostRepositorySql implements PostRepository{
         String query = """
                 select *
                 from posts
+                left join (select post_id, count(*) as count 
+                            from likes 
+                            group by post_id) l on p.id = l.post_id
                 where user_id = ?;
                 """;
         try (
@@ -213,13 +236,16 @@ public class PostRepositorySql implements PostRepository{
     }
 
     private List<Post> getPosts(ResultSet postData) throws SQLException {
+        ResultSet likes = getLikesPostData();
+
+
         List<Post> posts = new ArrayList<>();
         while (postData.next()) {
             Post post = new Post(
                     postData.getLong("id"),
                     postData.getString("title"),
                     postData.getString("content"),
-                    postData.getInt("likes"),
+                    postData.getInt("count"),
                     postData.getLong("user_id"),
                     postData.getTimestamp("date_created").toLocalDateTime()
             );
@@ -227,4 +253,16 @@ public class PostRepositorySql implements PostRepository{
         }
         return posts;
     }
+
+    private ResultSet getLikesPostData() {
+        try (
+                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                Statement statement = connection.createStatement()
+        ){
+            return statement.executeQuery("select post_id, count(*) as count from likes group by post_id");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static final String likesQuery = "select post_id, count(*) as count from likes group by post_id";
 }

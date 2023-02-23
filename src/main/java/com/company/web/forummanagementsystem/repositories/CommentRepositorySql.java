@@ -116,7 +116,7 @@ public class CommentRepositorySql implements CommentRepository{
             statement.setString(1, comment.getContent());
             statement.setLong(2, comment.getId());
             statement.executeUpdate();
-            return comment;
+            return getById(comment.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
