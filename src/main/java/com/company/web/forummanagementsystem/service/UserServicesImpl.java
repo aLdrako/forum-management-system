@@ -7,7 +7,6 @@ import com.company.web.forummanagementsystem.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServicesImpl implements UserServices {
@@ -28,8 +27,8 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public User getByUsername(String username) {
-        return userRepository.getByUsername(username);
+    public User searchByUsername(String username) {
+        return userRepository.searchByUsername(username);
     }
 
     @Override
@@ -47,10 +46,6 @@ public class UserServicesImpl implements UserServices {
     @Override
     public void delete(Long id) {
         userRepository.delete(id);
-    }
-
-    public List<User> getAllWithParams(Optional<Long> id, Optional<String> username) {
-        return userRepository.getAllWithParams(id, username);
     }
 
     private void checkForDuplicate(User user) {

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
 
-@JsonPropertyOrder({"id", "firstName", "lastName", "email", "username", "password", "joiningDate", "phoneNumber", "isAdmin", "isBlocked"})
+@JsonPropertyOrder({"id", "firstName", "lastName", "email", "username", "password", "joiningDate", "phoneNumber", "admin", "blocked", "deleted"})
 public class User {
 
     private Long id;
@@ -30,18 +30,20 @@ public class User {
     private Optional<String> phoneNumber = Optional.empty();
     private boolean isAdmin;
     private boolean isBlocked;
+    private boolean isDeleted;
     //    @JsonIgnore
     private LocalDateTime joiningDate;
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String username, String password, LocalDateTime joiningDate, Optional<String> phoneNumber, boolean isAdmin, boolean isBlocked) {
+    public User(Long id, String firstName, String lastName, String email, String username, String password, LocalDateTime joiningDate, Optional<String> phoneNumber, boolean isAdmin, boolean isBlocked, boolean isDeleted) {
         this(id, firstName, lastName, email, username, password);
         this.joiningDate = joiningDate;
         this.phoneNumber = phoneNumber;
         this.isAdmin = isAdmin;
         this.isBlocked = isBlocked;
+        this.isDeleted = isDeleted;
     }
 
     public User(Long id, String firstName, String lastName, String email, String username, String password) {
@@ -125,6 +127,14 @@ public class User {
 
     public void setBlocked(boolean blocked) {
         isBlocked = blocked;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public String getJoiningDate() {

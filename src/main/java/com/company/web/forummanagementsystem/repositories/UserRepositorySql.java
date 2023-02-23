@@ -18,71 +18,54 @@ import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.forma
 public class UserRepositorySql implements UserRepository {
 
     private static final String SQL_GET_ALL = """
-            SELECT
-            id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, phone_number
+            SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number
             FROM users
             JOIN permissions p on users.id = p.user_id
-            lEFT JOIN phones p2 on users.id = p2.user_id;
+            lEFT JOIN phones p2 on users.id = p2.user_id
+            WHERE is_deleted IS NOT true;
             """;
 
     private static final String SQL_GET_BY_ID = """
-            SELECT
-            id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, phone_number
+            SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number
             FROM users
             JOIN permissions p on users.id = p.user_id
             lEFT JOIN phones p2 on users.id = p2.user_id
-            WHERE id = ?;
+            WHERE id = ? AND is_deleted IS NOT true;
             """;
 
     private static final String SQL_GET_BY_USERNAME = """
-            SELECT
-            id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, phone_number
+            SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number
             FROM users
             JOIN permissions p on users.id = p.user_id
             lEFT JOIN phones p2 on users.id = p2.user_id
-            WHERE username = ?;
+            WHERE username = ? AND is_deleted IS NOT true;
             """;
 
     private static final String SQL_GET_BY_EMAIL = """
-            SELECT
-            id, email, join_date
+            SELECT id, email, join_date
             FROM users
             WHERE email = ?;
             """;
 
     private static final String CREATE = """
-            INSERT INTO
-            users (first_name, last_name, email, username, password)
-            VALUES
-            (?, ?, ?, ?, ?)
+            INSERT INTO users (first_name, last_name, email, username, password)
+            VALUES (?, ?, ?, ?, ?)
             """;
     private static final String CREATE_PERMISSIONS = """
-            INSERT INTO
-            permissions
-            (is_blocked, is_admin, user_id)
-            VALUES
-            (?, ?, ?)
+            INSERT INTO permissions (is_deleted, is_blocked, is_admin, user_id)
+            VALUES (?, ?, ?, ?)
             """;
-
     private static final String UPDATE = """
-            UPDATE users SET
-            first_name = ?, last_name = ?, email = ?, username = ?, password = ?
+            UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ?, password = ?
             WHERE id = ?
             """;
     private static final String UPDATE_PERMISSIONS = """
-            UPDATE permissions SET
-            is_blocked = ?, is_admin = ?
+            UPDATE permissions SET is_deleted = ?, is_blocked = ?, is_admin = ?
             WHERE user_id = ?
             """;
 
     private static final String DELETE = """
-            DELETE FROM users
-            WHERE id = ?
-            """;
-
-    private static final String DELETE_PERMISSIONS = """
-            DELETE FROM permissions
-            WHERE user_id = ?
+            UPDATE permissions SET is_deleted = true WHERE user_id = ?
             """;
 
     private final String dbUrl, dbUsername, dbPassword;
@@ -124,7 +107,7 @@ public class UserRepositorySql implements UserRepository {
     }
 
     @Override
-    public User getByUsername(String username) {
+    public User searchByUsername(String username) {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(SQL_GET_BY_USERNAME)
@@ -222,10 +205,7 @@ public class UserRepositorySql implements UserRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(DELETE);
-                PreparedStatement statementPermissions = connection.prepareStatement(DELETE_PERMISSIONS)
         ) {
-            statementPermissions.setLong(1, id);
-            statementPermissions.executeUpdate();
 
             statement.setLong(1, id);
             statement.executeUpdate();
@@ -233,11 +213,6 @@ public class UserRepositorySql implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public List<User> getAllWithParams(Optional<Long> id, Optional<String> username) {
-        return null;
     }
 
     private static void userStatement(User user, PreparedStatement statement) throws SQLException {
@@ -249,9 +224,10 @@ public class UserRepositorySql implements UserRepository {
     }
 
     private static void permissionStatement(User user, PreparedStatement statement) throws SQLException {
-        statement.setBoolean(1, user.isBlocked());
-        statement.setBoolean(2, user.isAdmin());
-        statement.setLong(3, user.getId());
+        statement.setBoolean(1, user.isDeleted());
+        statement.setBoolean(2, user.isBlocked());
+        statement.setBoolean(3, user.isAdmin());
+        statement.setLong(4, user.getId());
     }
 
     private List<User> getUsers(ResultSet usersData) throws SQLException {
@@ -267,7 +243,8 @@ public class UserRepositorySql implements UserRepository {
                     usersData.getTimestamp("join_date").toLocalDateTime(),
                     Optional.ofNullable(usersData.getString("phone_number")),
                     usersData.getBoolean("is_admin"),
-                    usersData.getBoolean("is_blocked")
+                    usersData.getBoolean("is_blocked"),
+                    usersData.getBoolean("is_deleted")
             );
             users.add(user);
         }

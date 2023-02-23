@@ -43,7 +43,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getByUsername(String username) {
+    public User searchByUsername(String username) {
         return users.stream()
                 .filter(user -> user.getUsername().equals(username))
                 .findFirst()
@@ -90,12 +90,4 @@ public class UserRepositoryImpl implements UserRepository {
         User userToDelete = getById(id);
         users.remove(userToDelete);
     }
-
-    public List<User> getAllWithParams(@RequestParam Optional<Long> id, @RequestParam Optional<String> username) {
-        return users.stream()
-                .filter(user -> id.isEmpty() || Objects.equals(user.getId(), id.get()))
-                .filter(user -> username.isEmpty() || user.getUsername().equals(username.get()))
-                .collect(Collectors.toList());
-    }
-
 }

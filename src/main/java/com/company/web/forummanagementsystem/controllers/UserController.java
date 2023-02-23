@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -37,9 +36,9 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public User getByUsername(@RequestParam String username) {
+    public User searchByUsername(@RequestParam String username) {
         try {
-            return userServices.getByUsername(username);
+            return userServices.searchByUsername(username);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -74,16 +73,5 @@ public class UserController {
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
-    }
-
-    /**
-     * sample method, to test request with params - can be deleted later (with all it's dependencies)
-     * @param id
-     * @param username
-     * @return
-     */
-    @GetMapping("/params")
-    public List<User> getAllWithParams(@RequestParam(required = false) Optional<Long> id, @RequestParam(required = false) Optional<String> username) {
-        return userServices.getAllWithParams(id, username);
     }
 }

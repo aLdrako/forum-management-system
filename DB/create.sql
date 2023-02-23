@@ -25,6 +25,7 @@ create or replace table permissions
 (
     user_id    bigint               not null
         primary key,
+    is_deleted tinyint(1) default 0 not null,
     is_blocked tinyint(1) default 0 not null,
     is_admin   tinyint(1) default 0 not null,
     constraint features_users_fk
@@ -55,7 +56,6 @@ create or replace table posts
         primary key,
     title        varchar(100)                         not null,
     content      text                                 null,
-    likes        int                                  null,
     user_id      bigint                               not null,
     date_created datetime default current_timestamp() not null,
     constraint posts_users_fk
@@ -97,4 +97,3 @@ create or replace table posts_tags
     constraint posts_tags_tags_fk
         foreign key (tag_id) references tags (id)
 );
-

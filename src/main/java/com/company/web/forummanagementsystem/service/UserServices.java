@@ -8,9 +8,8 @@ import java.util.Optional;
 public interface UserServices {
     List<User> getAll();
     User getById(Long id);
-    User getByUsername(String username);
+    User searchByUsername(String username);
     User create(User user);
     User update(User user);
     void delete(Long user);
-    public List<User> getAllWithParams(Optional<Long> id, Optional<String> username);
 }

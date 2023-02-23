@@ -8,11 +8,9 @@ import java.util.Optional;
 public interface UserRepository {
     List<User> getAll();
     User getById(Long id);
-    User getByUsername(String username);
+    User searchByUsername(String username);
     User getByEmail(String email);
     User create(User user);
     User update(User user);
     void delete(Long id);
-    public List<User> getAllWithParams(Optional<Long> id, Optional<String> username);
-
 }
