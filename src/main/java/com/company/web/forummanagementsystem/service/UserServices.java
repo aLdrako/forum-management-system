@@ -10,6 +10,6 @@ public interface UserServices {
     User getById(Long id);
     List<User> search(String parameter);
     User create(User user);
-    User update(User user);
-    void delete(Long user);
+    User update(User... users);
+    void delete(Long id, User user);
 }

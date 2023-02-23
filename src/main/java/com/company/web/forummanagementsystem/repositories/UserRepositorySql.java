@@ -25,8 +25,7 @@ public class UserRepositorySql implements UserRepository {
             WHERE is_deleted IS NOT true
             """;
     private static final String SQL_GET_BY_EMAIL = """
-            SELECT id, email, join_date
-            FROM users
+            SELECT id, email, join_date FROM users
             WHERE email = ?;
             """;
     private static final String CREATE = """
@@ -46,7 +45,8 @@ public class UserRepositorySql implements UserRepository {
             WHERE user_id = ?
             """;
     private static final String DELETE = """
-            UPDATE permissions SET is_deleted = true WHERE user_id = ?
+            UPDATE permissions SET is_deleted = true
+            WHERE user_id = ?
             """;
 
     private final String dbUrl, dbUsername, dbPassword;
