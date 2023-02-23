@@ -6,8 +6,10 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Optional;
+
+import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
 
 @JsonPropertyOrder({"id", "firstName", "lastName", "email", "username", "password", "joiningDate", "phoneNumber", "isAdmin", "isBlocked"})
 public class User {
@@ -29,8 +31,7 @@ public class User {
     private boolean isAdmin;
     private boolean isBlocked;
     //    @JsonIgnore
-    private LocalDateTime joiningDate = LocalDateTime.now();
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss");
+    private LocalDateTime joiningDate;
 
     public User() {
     }
@@ -126,12 +127,24 @@ public class User {
         isBlocked = blocked;
     }
 
+    public String getJoiningDate() {
+        return formatToString(joiningDate);
+    }
+
     public void setJoiningDate(LocalDateTime joiningDate) {
         this.joiningDate = joiningDate;
     }
 
-    public String getJoiningDate() {
-        return joiningDate.format(dateTimeFormatter);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

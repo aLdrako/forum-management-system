@@ -33,15 +33,15 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public void create(User user) {
+    public User create(User user) {
         checkForDuplicate(user);
-        userRepository.create(user);
+        return userRepository.create(user);
     }
 
     @Override
-    public void update(User user) {
+    public User update(User user) {
         checkForDuplicate(user);
-        userRepository.update(user);
+        return userRepository.update(user);
     }
 
     @Override
