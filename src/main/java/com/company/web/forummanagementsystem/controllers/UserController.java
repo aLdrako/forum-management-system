@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -36,9 +38,10 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public User searchByUsername(@RequestParam String username) {
+    public List<User> search(@RequestParam Map<String, String> parameter) {
+        if (parameter.size() == 0) parameter = Collections.singletonMap(" ", " ");
         try {
-            return userServices.searchByUsername(username);
+            return userServices.search(String.valueOf(parameter.entrySet().iterator().next()));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

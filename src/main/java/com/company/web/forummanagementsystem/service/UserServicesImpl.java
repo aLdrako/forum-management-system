@@ -27,8 +27,8 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public User searchByUsername(String username) {
-        return userRepository.searchByUsername(username);
+    public List<User> search(String parameter) {
+        return userRepository.search(parameter);
     }
 
     @Override

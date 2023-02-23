@@ -17,36 +17,18 @@ import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.forma
 @PropertySource("classpath:application.properties")
 public class UserRepositorySql implements UserRepository {
 
-    private static final String SQL_GET_ALL = """
+    private static final String SQL_GET = """
             SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number
             FROM users
             JOIN permissions p on users.id = p.user_id
             lEFT JOIN phones p2 on users.id = p2.user_id
-            WHERE is_deleted IS NOT true;
+            WHERE is_deleted IS NOT true
             """;
-
-    private static final String SQL_GET_BY_ID = """
-            SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number
-            FROM users
-            JOIN permissions p on users.id = p.user_id
-            lEFT JOIN phones p2 on users.id = p2.user_id
-            WHERE id = ? AND is_deleted IS NOT true;
-            """;
-
-    private static final String SQL_GET_BY_USERNAME = """
-            SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number
-            FROM users
-            JOIN permissions p on users.id = p.user_id
-            lEFT JOIN phones p2 on users.id = p2.user_id
-            WHERE username = ? AND is_deleted IS NOT true;
-            """;
-
     private static final String SQL_GET_BY_EMAIL = """
             SELECT id, email, join_date
             FROM users
             WHERE email = ?;
             """;
-
     private static final String CREATE = """
             INSERT INTO users (first_name, last_name, email, username, password)
             VALUES (?, ?, ?, ?, ?)
@@ -63,7 +45,6 @@ public class UserRepositorySql implements UserRepository {
             UPDATE permissions SET is_deleted = ?, is_blocked = ?, is_admin = ?
             WHERE user_id = ?
             """;
-
     private static final String DELETE = """
             UPDATE permissions SET is_deleted = true WHERE user_id = ?
             """;
@@ -81,7 +62,7 @@ public class UserRepositorySql implements UserRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(SQL_GET_ALL)
+                ResultSet resultSet = statement.executeQuery(SQL_GET + ";")
         ) {
             return getUsers(resultSet);
         } catch (SQLException e) {
@@ -93,7 +74,7 @@ public class UserRepositorySql implements UserRepository {
     public User getById(Long id) {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(SQL_GET_BY_ID)
+                PreparedStatement statement = connection.prepareStatement(SQL_GET + " AND id = ?;")
         ) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -107,16 +88,28 @@ public class UserRepositorySql implements UserRepository {
     }
 
     @Override
-    public User searchByUsername(String username) {
+    public List<User> search(String parameter) {
+        String[] params = parameter.split("=");
+        boolean noParams = false;
+        String searchParam = switch (params[0]) {
+            case "username" -> " AND username = ?;";
+            case "email" -> " AND email = ?;";
+            case "firstName" -> " AND first_name = ?;";
+            default -> {
+                noParams = true;
+                yield ";";
+            }
+        };
+
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(SQL_GET_BY_USERNAME)
+                PreparedStatement statement = connection.prepareStatement(SQL_GET + searchParam)
         ) {
-            statement.setString(1, username);
+            if (!noParams) statement.setString(1, params[1]);
             try (ResultSet resultSet = statement.executeQuery()) {
                 List<User> result = getUsers(resultSet);
-                if (result.size() == 0) throw new EntityNotFoundException("User", "username", username);
-                return result.get(0);
+                if (result.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
+                return result;
             }
 
         } catch (SQLException e) {

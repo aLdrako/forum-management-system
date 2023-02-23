@@ -3,7 +3,6 @@ package com.company.web.forummanagementsystem.repositories;
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.User;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +42,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User searchByUsername(String username) {
-        return users.stream()
-                .filter(user -> user.getUsername().equals(username))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("User", "username", username));
+    public List<User> search(String parameter) {
+        List<User> result = users.stream()
+                .filter(user -> user.getUsername().equals(parameter))
+                .collect(Collectors.toList());
+        if (result.size() == 0) throw new EntityNotFoundException("User", String.valueOf(parameter), parameter);
+        return result;
     }
 
     /**
