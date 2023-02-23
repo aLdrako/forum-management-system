@@ -7,10 +7,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Repository
@@ -51,7 +49,7 @@ public class PostRepositorySql implements PostRepository{
             try (ResultSet resultSet = statement.executeQuery()){
                 List<Post> result = getPosts(resultSet);
                 if (result.size() == 0) {
-                    throw new EntityNotFoundException("Beer", id);
+                    throw new EntityNotFoundException("Post", id);
                 }
                 return result.get(0);
             }
@@ -62,20 +60,22 @@ public class PostRepositorySql implements PostRepository{
 
     @Override
     public List<Post> searchByTitle(String title) {
-        return getAll().stream()
-                .filter(post -> post.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .collect(Collectors.toList());
-        //String query = """
-        //        select *
-        //        from posts
-        //        where title like '%?%'
-        //        """;
-        //try (
-        //        Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-        //        PreparedStatement statement = connection.prepareStatement(query)
-        //        ){
-        //
-        //}
+        String query = """
+                select *
+                from posts
+                where title like ?;
+                """;
+        try (
+                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                PreparedStatement statement = connection.prepareStatement(query)
+                ){
+            statement.setString(1, '%' + title + '%');
+            try (ResultSet resultSet = statement.executeQuery()){
+                return getPosts(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -97,14 +97,14 @@ public class PostRepositorySql implements PostRepository{
             statement.setLong(4, post.getUserId());
             statement.executeUpdate();
 
-            return getPostWithBiggestId();
+            return getLastestPost();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private Post getPostWithBiggestId() {
+    private Post getLastestPost() {
         String query = """
                 select max(id) as max
                 from posts;
@@ -126,10 +126,11 @@ public class PostRepositorySql implements PostRepository{
 
 
     @Override
-    public void update(Post post) {
+    public Post update(Post post) {
+        getById(post.getId());
         String query = """
                 update posts set
-                title = ?, content = ?, likes = ?
+                title = ?, content = ?
                 where id = ?;
                 """;
         try (
@@ -138,10 +139,10 @@ public class PostRepositorySql implements PostRepository{
                 ){
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getContent());
-            statement.setInt(3, post.getLikes());
             statement.setLong(4, post.getId());
 
             statement.executeUpdate();
+            return post;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -149,6 +150,7 @@ public class PostRepositorySql implements PostRepository{
 
     @Override
     public void delete(Long id) {
+        getById(id);
         String query = """
                 delete from posts
                 where id = ?;
@@ -186,6 +188,7 @@ public class PostRepositorySql implements PostRepository{
 
     @Override
     public Post getPostByUserId(Long userId, Long postId) {
+        getById(postId);
         String query = """
                 select *
                 from posts
@@ -200,7 +203,7 @@ public class PostRepositorySql implements PostRepository{
             try (ResultSet resultSet = statement.executeQuery()){
                 List<Post> result = getPosts(resultSet);
                 if (result.size() == 0) {
-                    throw new EntityNotFoundException("Post");
+                    throw new EntityNotFoundException("Post", postId, "user id", userId);
                 }
                 return result.get(0);
             }

@@ -57,13 +57,14 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public void update(Post post) {
+    public Post update(Post post) {
         Post postToUpdate = getById(post.getId());
         userRepository.getById(post.getUserId());
         postToUpdate.setTitle(post.getTitle());
         postToUpdate.setContent(post.getContent());
         postToUpdate.setLikes(post.getLikes());
         postToUpdate.setUserId(post.getUserId());
+        return postToUpdate;
     }
 
     @Override

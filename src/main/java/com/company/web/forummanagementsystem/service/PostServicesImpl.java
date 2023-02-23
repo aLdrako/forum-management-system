@@ -2,6 +2,7 @@ package com.company.web.forummanagementsystem.service;
 
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.repositories.PostRepository;
+import com.company.web.forummanagementsystem.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,9 +10,11 @@ import java.util.List;
 @Service
 public class PostServicesImpl implements PostServices {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public PostServicesImpl(PostRepository postRepository) {
+    public PostServicesImpl(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -35,8 +38,8 @@ public class PostServicesImpl implements PostServices {
     }
 
     @Override
-    public void update(Post post) {
-        postRepository.update(post);
+    public Post update(Post post) {
+        return postRepository.update(post);
     }
 
     @Override
@@ -46,11 +49,13 @@ public class PostServicesImpl implements PostServices {
 
     @Override
     public List<Post> getPostsByUserId(Long userId) {
+        userRepository.getById(userId);
         return postRepository.getPostsByUserId(userId);
     }
 
     @Override
     public Post getPostByUserId(Long userId, Long postId) {
+        userRepository.getById(userId);
         return postRepository.getPostByUserId(userId, postId);
     }
 }

@@ -45,22 +45,24 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void create(Comment comment) {
+    public Comment create(Comment comment) {
         long currentId = !comments.isEmpty() ? comments.get(comments.size() - 1).getId() + 1 : 1L;
         comment.setId(currentId);
         userRepository.getById(comment.getUserId());
         postRepository.getById(comment.getPostId());
         comments.add(comment);
+        return comment;
     }
 
     @Override
-    public void update(Comment comment) {
+    public Comment update(Comment comment) {
         Comment commentToUpdate = getById(comment.getId());
         userRepository.getById(comment.getUserId());
         postRepository.getById(comment.getPostId());
         commentToUpdate.setContent(comment.getContent());
         commentToUpdate.setPostId(comment.getPostId());
         commentToUpdate.setUserId(comment.getUserId());
+        return commentToUpdate;
     }
 
     @Override

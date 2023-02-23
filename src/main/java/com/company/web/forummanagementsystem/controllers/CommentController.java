@@ -32,8 +32,7 @@ public class CommentController {
     @PostMapping("/comments")
     public Comment create(@Valid @RequestBody Comment comment) {
         try {
-            commentServices.create(comment);
-            return comment;
+            return commentServices.create(comment);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

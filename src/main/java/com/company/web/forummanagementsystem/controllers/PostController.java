@@ -43,6 +43,7 @@ public class PostController {
         }
     }
 
+
     @GetMapping("/posts/search")
     public List<Post> searchByTitle(@RequestParam String title) {
         return postServices.searchByTitle(title);
