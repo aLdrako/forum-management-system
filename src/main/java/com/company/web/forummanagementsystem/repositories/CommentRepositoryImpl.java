@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-@Repository
+//@Repository
 public class CommentRepositoryImpl implements CommentRepository {
     private final List<Comment> comments;
     private final UserRepository userRepository;

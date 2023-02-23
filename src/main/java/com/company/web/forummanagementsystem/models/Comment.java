@@ -16,7 +16,7 @@ public class Comment {
     @NotNull
     @Positive(message = "User Id should be positive")
     private Long userId;
-    private final LocalDateTime dateCreated = LocalDateTime.now();
+    private LocalDateTime dateCreated;
 
     public Comment() {
     }
@@ -26,6 +26,14 @@ public class Comment {
         this.content = content;
         this.postId = postId;
         this.userId = userId;
+    }
+
+    public Comment(Long id, String content, Long postId, Long userId, LocalDateTime dateCreated) {
+        this.id = id;
+        this.content = content;
+        this.postId = postId;
+        this.userId = userId;
+        this.dateCreated = dateCreated;
     }
 
     public Long getId() {

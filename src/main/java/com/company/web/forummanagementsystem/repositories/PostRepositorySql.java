@@ -65,6 +65,18 @@ public class PostRepositorySql implements PostRepository{
         return getAll().stream()
                 .filter(post -> post.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .collect(Collectors.toList());
+        //String query = """
+        //        select *
+        //        from posts
+        //        where title like '%?%'
+        //        """;
+        //try (
+        //        Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+        //        PreparedStatement statement = connection.prepareStatement(query)
+        //        ){
+        //
+        //}
+
     }
 
     @Override
@@ -93,8 +105,23 @@ public class PostRepositorySql implements PostRepository{
     }
 
     private Post getPostWithBiggestId() {
-        return getById(getAll().stream()
-                .mapToLong(Post::getId).max().getAsLong());
+        String query = """
+                select max(id) as max
+                from posts;
+                """;
+        try (
+                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(query)
+                ){
+            Long id = null;
+            while (resultSet.next()) {
+                id = resultSet.getLong("max");
+            }
+            return getById(id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -103,7 +130,7 @@ public class PostRepositorySql implements PostRepository{
         String query = """
                 update posts set
                 title = ?, content = ?, likes = ?
-                where id = ?
+                where id = ?;
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -124,7 +151,7 @@ public class PostRepositorySql implements PostRepository{
     public void delete(Long id) {
         String query = """
                 delete from posts
-                where id = ?
+                where id = ?;
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -139,17 +166,47 @@ public class PostRepositorySql implements PostRepository{
 
     @Override
     public List<Post> getPostsByUserId(Long userId) {
-        return getAll().stream()
-                .filter(post -> Objects.equals(post.getUserId(), userId))
-                .collect(Collectors.toList());
+        String query = """
+                select *
+                from posts
+                where user_id = ?;
+                """;
+        try (
+                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                PreparedStatement statement = connection.prepareStatement(query)
+                ){
+            statement.setLong(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()){
+                return getPosts(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Post getPostByUserId(Long userId, Long postId) {
-        return getAll().stream()
-                .filter(post -> Objects.equals(post.getId(), postId) && Objects.equals(post.getUserId(), userId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Post", "user id", String.valueOf(userId)));
+        String query = """
+                select *
+                from posts
+                where user_id = ? and id = ?;
+                """;
+        try (
+                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                PreparedStatement statement = connection.prepareStatement(query)
+                ){
+            statement.setLong(1, userId);
+            statement.setLong(2, postId);
+            try (ResultSet resultSet = statement.executeQuery()){
+                List<Post> result = getPosts(resultSet);
+                if (result.size() == 0) {
+                    throw new EntityNotFoundException("Post");
+                }
+                return result.get(0);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<Post> getPosts(ResultSet postData) throws SQLException {
