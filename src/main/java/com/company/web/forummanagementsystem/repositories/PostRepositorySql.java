@@ -23,7 +23,6 @@ public class PostRepositorySql implements PostRepository{
         dbPassword = environment.getProperty("database.password");
     }
 
-
     @Override
     public List<Post> getAll() {
         String query = """
@@ -33,7 +32,6 @@ public class PostRepositorySql implements PostRepository{
                             from likes
                             group by post_id) l on p.id = l.post_id;
                 """;
-
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();
@@ -142,7 +140,6 @@ public class PostRepositorySql implements PostRepository{
             throw new RuntimeException(e);
         }
     }
-
 
     @Override
     public Post update(Post post) {
@@ -271,9 +268,6 @@ public class PostRepositorySql implements PostRepository{
     }
 
     private List<Post> getPosts(ResultSet postData) throws SQLException {
-        ResultSet likes = getLikesPostData();
-
-
         List<Post> posts = new ArrayList<>();
         while (postData.next()) {
             Post post = new Post(
@@ -288,16 +282,4 @@ public class PostRepositorySql implements PostRepository{
         }
         return posts;
     }
-
-    private ResultSet getLikesPostData() {
-        try (
-                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                Statement statement = connection.createStatement()
-        ){
-            return statement.executeQuery("select post_id, count(*) as count from likes group by post_id");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    private static final String likesQuery = "select post_id, count(*) as count from likes group by post_id";
 }
