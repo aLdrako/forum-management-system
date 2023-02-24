@@ -30,7 +30,11 @@ public class PostController {
 
     @GetMapping("/posts/{id}")
     public Post getById(@PathVariable Long id) {
-        return postServices.getById(id);
+        try {
+            return postServices.getById(id);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @PostMapping("/posts")

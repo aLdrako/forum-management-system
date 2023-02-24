@@ -23,7 +23,6 @@ public class CommentRepositorySql implements CommentRepository{
 
     @Override
     public List<Comment> getAll() {
-
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();

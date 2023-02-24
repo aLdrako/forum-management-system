@@ -17,7 +17,6 @@ public class PostRepositorySql implements PostRepository{
 
     private final String dbUrl, dbUsername, dbPassword;
 
-
     public PostRepositorySql(Environment environment) {
         dbUrl = environment.getProperty("database.url");
         dbUsername = environment.getProperty("database.username");
@@ -171,6 +170,8 @@ public class PostRepositorySql implements PostRepository{
     @Override
     public void delete(Long id) {
         getById(id);
+        deleteCommentsOfPost(id);
+        deleteLikesOfPost(id);
         String query = """
                 delete from posts
                 where id = ?;
@@ -180,6 +181,40 @@ public class PostRepositorySql implements PostRepository{
                 PreparedStatement statement = connection.prepareStatement(query)
                 ){
             statement.setLong(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void deleteLikesOfPost(Long postId) {
+        String query = """
+                delete 
+                from likes
+                where post_id = ?;
+                """;
+        try (
+                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                PreparedStatement statement = connection.prepareStatement(query)
+                ){
+            statement.setLong(1, postId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void deleteCommentsOfPost(Long postId) {
+        String query = """
+                delete 
+                from comments
+                where post_id = ?;
+                """;
+        try (
+                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                PreparedStatement statement = connection.prepareStatement(query);
+                ){
+            statement.setLong(1, postId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
