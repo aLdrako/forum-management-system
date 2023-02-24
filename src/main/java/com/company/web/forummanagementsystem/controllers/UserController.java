@@ -46,7 +46,6 @@ public class UserController {
     @GetMapping("/search")
     public List<User> search(@RequestParam Map<String, String> parameter) {
         if (parameter.size() == 0) parameter = Collections.singletonMap(" ", " ");
-        System.out.println(parameter);
         try {
             return userServices.search(String.valueOf(parameter.entrySet().iterator().next()));
         } catch (EntityNotFoundException e) {

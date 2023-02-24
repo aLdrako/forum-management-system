@@ -50,19 +50,19 @@ public class UserRepositoryImpl implements UserRepository {
         return result;
     }
 
-    /**
-     * Helper method to check users by email, maintain uniqueness
-     * method is called when new user is created or updated
-     * @param email
-     * @return
-     */
-    @Override
-    public User getByEmail(String email) {
-        return users.stream()
-                .filter(user -> user.getEmail().equals(email))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("User", "email", email));
-    }
+//    /**
+//     * Helper method to check users by email, maintain uniqueness
+//     * method is called when new user is created or updated
+//     * @param email
+//     * @return
+//     */
+//    @Override
+//    public User getByEmail(String email) {
+//        return users.stream()
+//                .filter(user -> user.getEmail().equals(email))
+//                .findFirst()
+//                .orElseThrow(() -> new EntityNotFoundException("User", "email", email));
+//    }
 
     @Override
     public User create(User user) {

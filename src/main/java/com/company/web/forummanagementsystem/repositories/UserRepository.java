@@ -9,7 +9,6 @@ public interface UserRepository {
     List<User> getAll();
     User getById(Long id);
     List<User> search(String parameter);
-    User getByEmail(String email);
     User create(User user);
     User update(User user);
     void delete(Long id);

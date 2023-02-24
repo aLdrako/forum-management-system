@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToLocalDateTime;
-
 @Repository
 @PropertySource("classpath:application.properties")
 public class UserRepositorySql implements UserRepository {
@@ -20,13 +18,9 @@ public class UserRepositorySql implements UserRepository {
     private static final String SQL_GET = """
             SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number
             FROM users
-            JOIN permissions p on users.id = p.user_id
+            lEFT JOIN permissions p on users.id = p.user_id
             lEFT JOIN phones p2 on users.id = p2.user_id
             WHERE is_deleted IS NOT true
-            """;
-    private static final String SQL_GET_BY_EMAIL = """
-            SELECT id, email, join_date FROM users
-            WHERE email = ?;
             """;
     private static final String CREATE = """
             INSERT INTO users (first_name, last_name, email, username, password)
@@ -90,13 +84,13 @@ public class UserRepositorySql implements UserRepository {
     @Override
     public List<User> search(String parameter) {
         String[] params = parameter.split("=");
-        boolean noParams = false;
+        boolean hasParams = true;
         String searchParam = switch (params[0]) {
-            case "username" -> " AND username = ?;";
             case "email" -> " AND email = ?;";
+            case "username" -> " AND username = ?;";
             case "firstName" -> " AND first_name = ?;";
             default -> {
-                noParams = true;
+                hasParams = false;
                 yield ";";
             }
         };
@@ -105,41 +99,11 @@ public class UserRepositorySql implements UserRepository {
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(SQL_GET + searchParam)
         ) {
-            if (!noParams) statement.setString(1, params[1]);
+            if (hasParams) statement.setString(1, params[1]);
             try (ResultSet resultSet = statement.executeQuery()) {
                 List<User> result = getUsers(resultSet);
                 if (result.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
                 return result;
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    /**
-     * Helper method to check users by email, maintain uniqueness
-     * method is called when new user is created or updated
-     * @param email String unique
-     * @return User with limited fields
-     */
-    @Override
-    public User getByEmail(String email) {
-        try (
-                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(SQL_GET_BY_EMAIL)
-        ) {
-            statement.setString(1, email);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                User user = null;
-                if (resultSet.next()) {
-                    user = new User();
-                    user.setId(resultSet.getLong("id"));
-                    user.setEmail(resultSet.getString("email"));
-                    user.setJoiningDate(resultSet.getTimestamp("join_date").toLocalDateTime());
-                }
-                if (user == null) throw new EntityNotFoundException("User", "email", email);
-                return user;
             }
 
         } catch (SQLException e) {
@@ -157,13 +121,12 @@ public class UserRepositorySql implements UserRepository {
             userStatement(user, statement);
             statement.executeUpdate();
 
-            User newUser = getByEmail(user.getEmail());
+            User newUser = search("email=" + user.getEmail()).get(0);
             user.setId(newUser.getId());
-            user.setJoiningDate(formatToLocalDateTime(newUser.getJoiningDate()));
 
-            permissionStatement(user, statementPermissions);
+            permissionStatement(user, statementPermissions, "create");
             statementPermissions.executeUpdate();
-            return user;
+            return newUser;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -181,12 +144,10 @@ public class UserRepositorySql implements UserRepository {
             statement.setLong(6, user.getId());
             statement.executeUpdate();
 
-            permissionStatement(user, statementPermissions);
+            permissionStatement(user, statementPermissions, "update");
             statementPermissions.executeUpdate();
 
-            User newUser = getByEmail(user.getEmail());
-            user.setJoiningDate(formatToLocalDateTime(newUser.getJoiningDate()));
-            return user;
+            return search("email=" + user.getEmail()).get(0);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -216,10 +177,16 @@ public class UserRepositorySql implements UserRepository {
         statement.setString(5, user.getPassword());
     }
 
-    private static void permissionStatement(User user, PreparedStatement statement) throws SQLException {
-        statement.setBoolean(1, user.isDeleted());
-        statement.setBoolean(2, user.isBlocked());
-        statement.setBoolean(3, user.isAdmin());
+    private static void permissionStatement(User user, PreparedStatement statement, String operation) throws SQLException {
+        if (operation.equals("update")) {
+            statement.setBoolean(1, user.isDeleted());
+            statement.setBoolean(2, user.isBlocked());
+            statement.setBoolean(3, user.isAdmin());
+        } else if (operation.equals("create")) {
+            statement.setBoolean(1, false);
+            statement.setBoolean(2, false);
+            statement.setBoolean(3, false);
+        }
         statement.setLong(4, user.getId());
     }
 

@@ -43,8 +43,9 @@ public class AuthenticationHelper {
     }
 
     public String[] validateHeaderValues(String headerValue) {
-        String[] credentials = headerValue.split(",", -1);
-        if (!headerValue.contains(",") || credentials[0].strip().length() == 0 || credentials[1].strip().length() == 0) {
+        String[] credentials = headerValue.split("[, ]+", -1);
+        if (!headerValue.contains(",") && !headerValue.contains(" ")
+                || credentials[0].strip().length() == 0 || credentials[1].strip().length() == 0) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
         }
         credentials[0] = String.valueOf(Collections.singletonMap("username", credentials[0].strip())
