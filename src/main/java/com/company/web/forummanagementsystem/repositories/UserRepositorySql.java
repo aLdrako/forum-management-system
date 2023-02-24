@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,32 +54,12 @@ public class UserRepositorySql implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        try (
-                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(SQL_GET + ";")
-        ) {
-            return getUsers(resultSet);
-        } catch (SQLException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return search(String.valueOf(Collections.singletonMap(" ", " ").entrySet().iterator().next()));
     }
 
     @Override
     public User getById(Long id) {
-        try (
-                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(SQL_GET + " AND id = ?;")
-        ) {
-            statement.setLong(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                List<User> result = getUsers(resultSet);
-                if (result.size() == 0) throw new EntityNotFoundException("User", id);
-                return result.get(0);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return search("id=" + id).get(0);
     }
 
     @Override
@@ -86,6 +67,7 @@ public class UserRepositorySql implements UserRepository {
         String[] params = parameter.split("=");
         boolean hasParams = true;
         String searchParam = switch (params[0]) {
+            case "id" -> " AND id = ?;";
             case "email" -> " AND email = ?;";
             case "username" -> " AND username = ?;";
             case "firstName" -> " AND first_name = ?;";
