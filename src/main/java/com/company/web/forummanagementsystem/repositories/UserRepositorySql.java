@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ public class UserRepositorySql implements UserRepository {
             FROM users
             lEFT JOIN permissions p on users.id = p.user_id
             lEFT JOIN phones p2 on users.id = p2.user_id
-            WHERE is_deleted IS NOT true
+            WHERE is_deleted <> 1
             """;
     private static final String CREATE = """
             INSERT INTO users (first_name, last_name, email, username, password)
@@ -44,6 +43,10 @@ public class UserRepositorySql implements UserRepository {
             WHERE user_id = ?
             """;
 
+    private static final String GET_ID_BY_EMAIL_SQL = """
+            SELECT id FROM users WHERE email = ?;
+            """;
+
     private final String dbUrl, dbUsername, dbPassword;
 
     public UserRepositorySql(Environment environment) {
@@ -54,7 +57,7 @@ public class UserRepositorySql implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        return search(String.valueOf(Collections.singletonMap(" ", " ").entrySet().iterator().next()));
+        return search("*=*");
     }
 
     @Override
@@ -71,10 +74,7 @@ public class UserRepositorySql implements UserRepository {
             case "email" -> " AND email = ?;";
             case "username" -> " AND username = ?;";
             case "firstName" -> " AND first_name = ?;";
-            default -> {
-                hasParams = false;
-                yield ";";
-            }
+            default -> { hasParams = false; yield ";"; }
         };
 
         try (
@@ -87,7 +87,6 @@ public class UserRepositorySql implements UserRepository {
                 if (result.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
                 return result;
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -103,14 +102,33 @@ public class UserRepositorySql implements UserRepository {
             userStatement(user, statement);
             statement.executeUpdate();
 
-            User newUser = search("email=" + user.getEmail()).get(0);
+            User newUser = getIdByEmail(user.getEmail());
             user.setId(newUser.getId());
 
             permissionStatement(user, statementPermissions, "create");
             statementPermissions.executeUpdate();
-            return newUser;
+            return getById(newUser.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public User getIdByEmail(String email) {
+        try (
+                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+                PreparedStatement statement = connection.prepareStatement(GET_ID_BY_EMAIL_SQL)
+        ) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                User user = null;
+                if (resultSet.next()) {
+                    user = new User();
+                    user.setId(resultSet.getLong("id"));
+                }
+                return user;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -128,7 +146,6 @@ public class UserRepositorySql implements UserRepository {
 
             permissionStatement(user, statementPermissions, "update");
             statementPermissions.executeUpdate();
-
             return search("email=" + user.getEmail()).get(0);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -142,10 +159,8 @@ public class UserRepositorySql implements UserRepository {
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(DELETE);
         ) {
-
             statement.setLong(1, id);
             statement.executeUpdate();
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -164,11 +179,7 @@ public class UserRepositorySql implements UserRepository {
             statement.setBoolean(1, user.isDeleted());
             statement.setBoolean(2, user.isBlocked());
             statement.setBoolean(3, user.isAdmin());
-        } else if (operation.equals("create")) {
-            statement.setBoolean(1, false);
-            statement.setBoolean(2, false);
-            statement.setBoolean(3, false);
-        }
+        } else for (int i = 1; i <= 3; i++) statement.setBoolean(i, false);
         statement.setLong(4, user.getId());
     }
 
@@ -192,5 +203,4 @@ public class UserRepositorySql implements UserRepository {
         }
         return users;
     }
-
 }

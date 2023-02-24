@@ -51,7 +51,7 @@ public class UserServicesImpl implements UserServices {
     @Override
     public User update(User... users) {
         User userToUpdate = userRepository.getById(users[0].getId());
-        checkAuthorizedPermissions(USER_CHANGE_OR_DELETE_ERROR_MESSAGE, userToUpdate, users[1]);
+        checkAuthorizedPermissions(userToUpdate, users[1]);
         checkAdminPermissions(users[0], users[1], userToUpdate);
         if (!userToUpdate.getEmail().equals(users[0].getEmail())) {
             checkForDuplicate(users[0]);
@@ -62,7 +62,7 @@ public class UserServicesImpl implements UserServices {
     @Override
     public void delete(Long id, User user) {
         User userToDelete = userRepository.getById(id);
-        checkAuthorizedPermissions(USER_CHANGE_OR_DELETE_ERROR_MESSAGE, userToDelete, user);
+        checkAuthorizedPermissions(userToDelete, user);
         userRepository.delete(id);
     }
 
@@ -80,10 +80,10 @@ public class UserServicesImpl implements UserServices {
         }
     }
 
-    private static void checkAuthorizedPermissions(String message, User... users) {
+    private static void checkAuthorizedPermissions(User... users) {
         if (users[1].isAdmin()) return;
         if (!users[0].getUsername().equals(users[1].getUsername())) {
-            throw new UnauthorizedOperationException(message);
+            throw new UnauthorizedOperationException(USER_CHANGE_OR_DELETE_ERROR_MESSAGE);
         }
     }
 
