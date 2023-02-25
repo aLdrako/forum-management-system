@@ -31,10 +31,12 @@ public class User {
     private boolean isAdmin;
     private boolean isBlocked;
     private boolean isDeleted;
-    //    @JsonIgnore
     private LocalDateTime joiningDate;
 
-    public User() {
+    public User() {}
+
+    public User(Long id) {
+        this.id = id;
     }
 
     public User(Long id, String firstName, String lastName, String email, String username, String password, LocalDateTime joiningDate, Optional<String> phoneNumber, boolean isAdmin, boolean isBlocked, boolean isDeleted) {
@@ -111,7 +113,6 @@ public class User {
         this.phoneNumber = Optional.ofNullable(phoneNumber);
     }
 
-//    @JsonIgnore
     public boolean isAdmin() {
         return isAdmin;
     }
@@ -120,7 +121,6 @@ public class User {
         isAdmin = admin;
     }
 
-//    @JsonIgnore
     public boolean isBlocked() {
         return isBlocked;
     }

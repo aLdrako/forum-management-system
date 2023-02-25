@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -49,20 +48,6 @@ public class UserRepositoryImpl implements UserRepository {
         if (result.size() == 0) throw new EntityNotFoundException("User", String.valueOf(parameter), parameter);
         return result;
     }
-
-//    /**
-//     * Helper method to check users by email, maintain uniqueness
-//     * method is called when new user is created or updated
-//     * @param email
-//     * @return
-//     */
-//    @Override
-//    public User getByEmail(String email) {
-//        return users.stream()
-//                .filter(user -> user.getEmail().equals(email))
-//                .findFirst()
-//                .orElseThrow(() -> new EntityNotFoundException("User", "email", email));
-//    }
 
     @Override
     public User create(User user) {

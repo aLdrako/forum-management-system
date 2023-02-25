@@ -22,29 +22,29 @@ public class UserRepositorySql implements UserRepository {
             lEFT JOIN phones p2 on users.id = p2.user_id
             WHERE is_deleted <> 1
             """;
-    private static final String CREATE = """
+    private static final String SQL_CREATE = """
             INSERT INTO users (first_name, last_name, email, username, password)
             VALUES (?, ?, ?, ?, ?)
             """;
-    private static final String CREATE_PERMISSIONS = """
+    private static final String SQL_CREATE_PERMISSIONS = """
             INSERT INTO permissions (is_deleted, is_blocked, is_admin, user_id)
             VALUES (?, ?, ?, ?)
             """;
-    private static final String UPDATE = """
+    private static final String SQL_UPDATE = """
             UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ?, password = ?
             WHERE id = ?
             """;
-    private static final String UPDATE_PERMISSIONS = """
+    private static final String SQL_UPDATE_PERMISSIONS = """
             UPDATE permissions SET is_deleted = ?, is_blocked = ?, is_admin = ?
             WHERE user_id = ?
             """;
-    private static final String DELETE = """
+    private static final String SQL_DELETE = """
             UPDATE permissions SET is_deleted = true
             WHERE user_id = ?
             """;
-
-    private static final String GET_ID_BY_EMAIL_SQL = """
-            SELECT id FROM users WHERE email = ?;
+    private static final String SQL_GET_ID = """
+            SELECT id FROM users
+            WHERE email = ?;
             """;
 
     private final String dbUrl, dbUsername, dbPassword;
@@ -76,11 +76,7 @@ public class UserRepositorySql implements UserRepository {
             case "firstName" -> " AND first_name = ?;";
             default -> { hasParams = false; yield ";"; }
         };
-
-        try (
-                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(SQL_GET + searchParam)
-        ) {
+        try (PreparedStatement statement = DriverManager.getConnection(dbUrl, dbUsername, dbPassword).prepareStatement(SQL_GET + searchParam)) {
             if (hasParams) statement.setString(1, params[1]);
             try (ResultSet resultSet = statement.executeQuery()) {
                 List<User> result = getUsers(resultSet);
@@ -96,37 +92,16 @@ public class UserRepositorySql implements UserRepository {
     public User create(User user) {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(CREATE);
-                PreparedStatement statementPermissions = connection.prepareStatement(CREATE_PERMISSIONS)
+                PreparedStatement statement = connection.prepareStatement(SQL_CREATE);
+                PreparedStatement statementPermissions = connection.prepareStatement(SQL_CREATE_PERMISSIONS)
         ) {
             userStatement(user, statement);
             statement.executeUpdate();
 
             User newUser = getIdByEmail(user.getEmail());
-            user.setId(newUser.getId());
-
-            permissionStatement(user, statementPermissions, "create");
+            permissionStatement(newUser, statementPermissions, "create");
             statementPermissions.executeUpdate();
             return getById(newUser.getId());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public User getIdByEmail(String email) {
-        try (
-                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(GET_ID_BY_EMAIL_SQL)
-        ) {
-            statement.setString(1, email);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                User user = null;
-                if (resultSet.next()) {
-                    user = new User();
-                    user.setId(resultSet.getLong("id"));
-                }
-                return user;
-            }
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -137,8 +112,8 @@ public class UserRepositorySql implements UserRepository {
         getById(user.getId());
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(UPDATE);
-                PreparedStatement statementPermissions = connection.prepareStatement(UPDATE_PERMISSIONS)
+                PreparedStatement statement = connection.prepareStatement(SQL_UPDATE);
+                PreparedStatement statementPermissions = connection.prepareStatement(SQL_UPDATE_PERMISSIONS)
         ) {
             userStatement(user, statement);
             statement.setLong(6, user.getId());
@@ -148,21 +123,29 @@ public class UserRepositorySql implements UserRepository {
             statementPermissions.executeUpdate();
             return search("email=" + user.getEmail()).get(0);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
     public void delete(Long id) {
         getById(id);
-        try (
-                Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(DELETE);
-        ) {
+        try (PreparedStatement statement = DriverManager.getConnection(dbUrl, dbUsername, dbPassword).prepareStatement(SQL_DELETE)) {
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public User getIdByEmail(String email) {
+        try (PreparedStatement statement = DriverManager.getConnection(dbUrl, dbUsername, dbPassword).prepareStatement(SQL_GET_ID)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() ? new User(resultSet.getLong("id")) : null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 
