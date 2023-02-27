@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 @PropertySource("classpath:application.properties")
-public class UserRepositorySql implements UserRepository {
+public class UserRepositorySqlImpl implements UserRepository {
 
     private static final String SQL_GET = """
             SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number
@@ -49,7 +49,7 @@ public class UserRepositorySql implements UserRepository {
 
     private final String dbUrl, dbUsername, dbPassword;
 
-    public UserRepositorySql(Environment environment) {
+    public UserRepositorySqlImpl(Environment environment) {
         dbUrl = environment.getProperty("database.url");
         dbUsername = environment.getProperty("database.username");
         dbPassword = environment.getProperty("database.password");

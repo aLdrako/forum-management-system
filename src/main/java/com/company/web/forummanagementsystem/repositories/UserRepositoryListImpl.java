@@ -2,7 +2,6 @@ package com.company.web.forummanagementsystem.repositories;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.User;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +10,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 //@Repository
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryListImpl implements UserRepository {
     private final List<User> users;
 
-    public UserRepositoryImpl() {
+    public UserRepositoryListImpl() {
         users = new ArrayList<>();
 
         AtomicLong counter = new AtomicLong();
@@ -42,10 +41,20 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> search(String parameter) {
-        List<User> result = users.stream()
-                .filter(user -> user.getUsername().equals(parameter))
-                .collect(Collectors.toList());
-        if (result.size() == 0) throw new EntityNotFoundException("User", String.valueOf(parameter), parameter);
+        String[] params = parameter.split("=");
+        List<User> result = switch (params[0]) {
+            case "email" -> users.stream()
+                    .filter(user -> user.getEmail().equals(parameter))
+                    .collect(Collectors.toList());
+            case "username" -> users.stream()
+                    .filter(user -> user.getUsername().equals(parameter))
+                    .collect(Collectors.toList());
+            case "firstName" -> users.stream()
+                    .filter(user -> user.getFirstName().equals(parameter))
+                    .collect(Collectors.toList());
+            default -> users;
+        };
+        if (result.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
         return result;
     }
 
