@@ -1,16 +1,22 @@
 package com.company.web.forummanagementsystem.controllers;
 
+import com.company.web.forummanagementsystem.exceptions.AuthorizationException;
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
+import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
+import com.company.web.forummanagementsystem.helpers.AuthenticationHelper;
 import com.company.web.forummanagementsystem.helpers.PostMapper;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.PostDTO;
+import com.company.web.forummanagementsystem.models.User;
 import com.company.web.forummanagementsystem.service.PostServices;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -18,14 +24,20 @@ public class PostController {
     private final PostServices postServices;
     private final PostMapper postMapper;
 
-    public PostController(PostServices postServices, PostMapper postMapper) {
+    private final AuthenticationHelper authenticationHelper;
+
+    public PostController(PostServices postServices, PostMapper postMapper,
+                          AuthenticationHelper authenticationHelper) {
         this.postServices = postServices;
         this.postMapper = postMapper;
+        this.authenticationHelper = authenticationHelper;
     }
 
     @GetMapping("/posts")
-    public List<Post> getAll() {
-        return postServices.getAll();
+    public List<Post> getAll(@RequestParam(required = false) Optional<String> title,
+                             @RequestParam(required = false) Optional<String> sortBy,
+                             @RequestParam(required = false) Optional<String> orderBy) {
+        return postServices.search(Optional.empty(), title, sortBy, orderBy);
     }
 
     @GetMapping("/posts/{id}")
@@ -38,44 +50,52 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public Post create(@Valid @RequestBody PostDTO postDTO) {
+    public Post create(@Valid @RequestBody PostDTO postDTO, @RequestHeader HttpHeaders headers) {
         try {
+            User user = authenticationHelper.tryGetUser(headers);
+            postDTO.setUserId(user.getId());
             Post post = postMapper.dtoToObject(new Post(), postDTO);
-            return postServices.create(post);
+            return postServices.create(post, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
-
-    @GetMapping("/posts/search")
-    public List<Post> searchByTitle(@RequestParam String title) {
-        return postServices.searchByTitle(title);
-    }
-
     @PutMapping("/posts/{id}")
-    public Post update(@PathVariable Long id, @Valid @RequestBody PostDTO postDTO) {
+    public Post update(@PathVariable Long id, @Valid @RequestBody PostDTO postDTO,
+                       @RequestHeader HttpHeaders headers) {
         try {
+            User user = authenticationHelper.tryGetUser(headers);
             Post post = postMapper.dtoToObject(id, postDTO);
-            return postServices.update(post);
+            return postServices.update(post, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException |  AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
     @DeleteMapping("/posts/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id, @RequestHeader HttpHeaders headers) {
         try {
-            postServices.delete(id);
+            User user = authenticationHelper.tryGetUser(headers);
+            postServices.delete(id, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException | AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
     @GetMapping("/users/{userId}/posts")
-    public List<Post> getPostsByUserId(@PathVariable Long userId) {
+    public List<Post> getPostsByUserId(@PathVariable Long userId,
+                                    @RequestParam(required = false) Optional<String> title,
+                                    @RequestParam(required = false) Optional<String> sortBy,
+                                    @RequestParam(required = false) Optional<String> orderBy) {
         try {
-            return postServices.getPostsByUserId(userId);
+            return postServices.search(userId.describeConstable(), title, sortBy, orderBy);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

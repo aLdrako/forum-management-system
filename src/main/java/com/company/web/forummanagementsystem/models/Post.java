@@ -1,9 +1,8 @@
 package com.company.web.forummanagementsystem.models;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.*;
 
 public class Post {
 
@@ -18,7 +17,6 @@ public class Post {
     private Long userId;
 
     private LocalDateTime dateCreated;
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss");
 
     public Post() {
     }
@@ -83,14 +81,14 @@ public class Post {
     public Long getUserId() {
         return userId;
     }
+    public String getDateCreated() {
+        return formatToString(dateCreated);
+    }
 
     public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public String getDateCreated() {
-        return dateCreated.format(dateTimeFormatter);
-    }
     public void setDateCreated(LocalDateTime dateCreated) {
         this.dateCreated = dateCreated;
     }

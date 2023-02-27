@@ -3,11 +3,8 @@ package com.company.web.forummanagementsystem.repositories;
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.User;
-import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -28,11 +25,6 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getAll() {
-        return new ArrayList<>(posts);
-    }
-
-    @Override
     public Post getById(Long id) {
         return posts.stream()
                 .filter(post -> Objects.equals(post.getId(), id))
@@ -41,9 +33,10 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> searchByTitle(String title) {
+    public List<Post> search(Optional<Long> userId, Optional<String> title, Optional<String> sortBy,
+                             Optional<String> orderBy) {
         return posts.stream()
-                .filter(post -> post.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .filter(post -> post.getTitle().toLowerCase().contains(title.get().toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -74,11 +67,13 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getPostsByUserId(Long userId) {
-        userRepository.getById(userId);
-        return posts.stream()
-                .filter(post -> Objects.equals(post.getUserId(), userId))
-                .collect(Collectors.toList());
+    public List<Post> getTopTenMostCommented() {
+        return null;
+    }
+
+    @Override
+    public List<Post> getTopTenMostRecent() {
+        return null;
     }
 
     @Override

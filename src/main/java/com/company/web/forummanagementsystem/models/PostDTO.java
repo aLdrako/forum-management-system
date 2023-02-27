@@ -9,8 +9,7 @@ public class PostDTO {
     @NotEmpty
     @Size(min = 32, max = 8192, message = "Content should be between 32 and 8192 symbols")
     private String content;
-    @NotNull
-    @Positive(message = "User Id should be positive")
+
     private Long userId;
 
     public String getTitle() {

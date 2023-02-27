@@ -1,17 +1,21 @@
 package com.company.web.forummanagementsystem.service;
 
+import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
 import com.company.web.forummanagementsystem.models.Comment;
+import com.company.web.forummanagementsystem.models.User;
 import com.company.web.forummanagementsystem.repositories.CommentRepository;
 import com.company.web.forummanagementsystem.repositories.PostRepository;
-import com.company.web.forummanagementsystem.repositories.PostRepositoryImpl;
 import com.company.web.forummanagementsystem.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CommentServicesImpl implements CommentServices {
 
+    private static final String UNAUTHORIZED_MESSAGE = "Only the user that created the post or an admin can update/delete a post.";
+    private static final String UNAUTHORIZED_MESSAGE_BLOCKED = "User is blocked";
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
@@ -34,17 +38,33 @@ public class CommentServicesImpl implements CommentServices {
     }
 
     @Override
-    public Comment create(Comment comment) {
+    public Comment create(Comment comment, User user) {
+        checkAuthorizedPermissions(comment, user);
         return commentRepository.create(comment);
     }
 
+    private void checkAuthorizedPermissions(Comment comment, User user) {
+        if (user.isBlocked()) {
+            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE_BLOCKED);
+        }
+
+        if (!Objects.equals(comment.getUserId(), user.getId()) && !user.isAdmin()) {
+            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);
+        }
+    }
+
     @Override
-    public Comment update(Comment comment) {
+    public Comment update(Comment comment, User user) {
+        Comment newComment = commentRepository.getById(comment.getId());
+        comment.setUserId(newComment.getUserId());
+        checkAuthorizedPermissions(comment, user);
         return commentRepository.update(comment);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id, User user) {
+        Comment comment = commentRepository.getById(id);
+        checkAuthorizedPermissions(comment, user);
         commentRepository.delete(id);
     }
 

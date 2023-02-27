@@ -12,7 +12,10 @@ import java.util.List;
 @Repository
 @PropertySource("classpath:application.properties")
 public class CommentRepositorySql implements CommentRepository{
-
+    private static final String SQL_COMMENTS_TABLE = """
+            select * 
+            from comments
+            """;
     private final String dbUrl, dbUsername, dbPassword;
 
     public CommentRepositorySql(Environment environment) {
@@ -26,21 +29,19 @@ public class CommentRepositorySql implements CommentRepository{
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("select * from comments");
+                ResultSet resultSet = statement.executeQuery(SQL_COMMENTS_TABLE);
                 ){
             return getComments(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
     public Comment getById(Long id) {
-        String query = """
-                select *
-                from comments 
-                where id = ?
+        String query = SQL_COMMENTS_TABLE;
+        query += """
+                where id = ? 
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -142,10 +143,9 @@ public class CommentRepositorySql implements CommentRepository{
 
     @Override
     public List<Comment> getCommentsByUserId(Long userId) {
-        String query = """
-                select *
-                from comments
-                where user_id = ?;
+        String query = SQL_COMMENTS_TABLE;
+        query += """
+                where user_id = ? 
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -162,10 +162,9 @@ public class CommentRepositorySql implements CommentRepository{
 
     @Override
     public Comment getCommentByUserId(Long userId, Long commentId) {
-        String query = """
-                select *
-                from comments
-                where user_id = ? and id = ?;
+        String query = SQL_COMMENTS_TABLE;
+        query += """
+                where user_id = ? and id = ? 
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -188,10 +187,9 @@ public class CommentRepositorySql implements CommentRepository{
     @Override
     public List<Comment> getCommentsByPostId(Long postId) {
         getById(postId);
-        String query = """
-                select *
-                from comments
-                where post_id = ?;
+        String query = SQL_COMMENTS_TABLE;
+        query += """
+                where post_id = ?
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -210,10 +208,9 @@ public class CommentRepositorySql implements CommentRepository{
     @Override
     public Comment getCommentByPostId(Long postId, Long commentId) {
         getById(commentId);
-        String query = """
-                select *
-                from comments
-                where id = ? and post_id = ?;
+        String query = SQL_COMMENTS_TABLE;
+        query += """
+                where id = ? and post_id = ?
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);

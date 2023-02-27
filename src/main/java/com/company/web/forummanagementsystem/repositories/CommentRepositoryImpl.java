@@ -4,7 +4,6 @@ import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Comment;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.User;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +21,13 @@ public class CommentRepositoryImpl implements CommentRepository {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         List<User> users = this.userRepository.getAll();
-        List<Post> posts = this.postRepository.getAll();
+       // List<Post> posts = this.postRepository.getAll("parameter", "sortBy", "orderBy");
         comments = new ArrayList<>();
 
         AtomicLong counter = new AtomicLong();
-        comments.add(new Comment(counter.incrementAndGet(), "This is my first comment", posts.get(0).getId(), users.get(1).getId()));
-        comments.add(new Comment(counter.incrementAndGet(), "Great idea, thanks", posts.get(1).getId(), users.get(1).getId()));
-        comments.add(new Comment(counter.incrementAndGet(), "Some random comment here", posts.get(1).getId(), users.get(2).getId()));
+        //comments.add(new Comment(counter.incrementAndGet(), "This is my first comment", posts.get(0).getId(), users.get(1).getId()));
+        //comments.add(new Comment(counter.incrementAndGet(), "Great idea, thanks", posts.get(1).getId(), users.get(1).getId()));
+        //comments.add(new Comment(counter.incrementAndGet(), "Some random comment here", posts.get(1).getId(), users.get(2).getId()));
     }
 
     @Override

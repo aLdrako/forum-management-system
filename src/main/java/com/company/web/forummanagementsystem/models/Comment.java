@@ -3,7 +3,9 @@ package com.company.web.forummanagementsystem.models;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.*;
 
 public class Comment {
     private Long id;
@@ -13,8 +15,7 @@ public class Comment {
     @NotNull
     @Positive(message = "Post Id should be positive")
     private Long postId;
-    @NotNull
-    @Positive(message = "User Id should be positive")
+
     private Long userId;
     private LocalDateTime dateCreated;
 
@@ -55,21 +56,22 @@ public class Comment {
     public Long getPostId() {
         return postId;
     }
-
-    public void setPostId(Long postId) {
-        this.postId = postId;
-    }
-
     public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public String getDateCreated() {
+        return formatToString(dateCreated);
+    }
+    public void setPostId(Long postId) {
+        this.postId = postId;
+    }
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
-    public LocalDateTime getDateCreated() {
-        return dateCreated;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     @Override

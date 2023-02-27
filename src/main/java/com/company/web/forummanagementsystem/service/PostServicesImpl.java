@@ -1,14 +1,20 @@
 package com.company.web.forummanagementsystem.service;
 
+import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
 import com.company.web.forummanagementsystem.models.Post;
+import com.company.web.forummanagementsystem.models.User;
 import com.company.web.forummanagementsystem.repositories.PostRepository;
 import com.company.web.forummanagementsystem.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class PostServicesImpl implements PostServices {
+    private static final String UNAUTHORIZED_MESSAGE = "Only the user that created the post or an admin can update/delete a post.";
+    private static final String UNAUTHORIZED_MESSAGE_BLOCKED = "User is blocked";
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
@@ -18,44 +24,53 @@ public class PostServicesImpl implements PostServices {
     }
 
     @Override
-    public List<Post> getAll() {
-        return postRepository.getAll();
-    }
-
-    @Override
     public Post getById(Long id) {
         return postRepository.getById(id);
     }
 
     @Override
-    public List<Post> searchByTitle(String title) {
-        return postRepository.searchByTitle(title);
+    public List<Post> search(Optional<Long> userId, Optional<String> title,
+                             Optional<String> sortBy, Optional<String> orderBy) {
+        userId.ifPresent(postRepository::getById);
+        return postRepository.search(userId, title, sortBy, orderBy);
     }
 
     @Override
-    public Post create(Post post) {
+    public Post create(Post post, User user) {
+        checkAuthorizedPermissions(post, user);
         return postRepository.create(post);
     }
 
     @Override
-    public Post update(Post post) {
+    public Post update(Post post, User user) {
+        Post newPost = postRepository.getById(post.getId());
+        post.setUserId(newPost.getUserId());
+        checkAuthorizedPermissions(post, user);
         return postRepository.update(post);
     }
 
-    @Override
-    public void delete(Long id) {
-        postRepository.delete(id);
+    private void checkAuthorizedPermissions(Post post, User user) {
+        if (user.isBlocked()) {
+            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE_BLOCKED);
+        }
+
+        if (!Objects.equals(post.getUserId(), user.getId()) && !user.isAdmin()) {
+            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);
+        }
     }
 
     @Override
-    public List<Post> getPostsByUserId(Long userId) {
-        userRepository.getById(userId);
-        return postRepository.getPostsByUserId(userId);
+    public void delete(Long id, User user) {
+        Post post = postRepository.getById(id);
+        checkAuthorizedPermissions(post, user);
+        postRepository.delete(id);
     }
+
 
     @Override
     public Post getPostByUserId(Long userId, Long postId) {
         userRepository.getById(userId);
         return postRepository.getPostByUserId(userId, postId);
     }
+
 }
