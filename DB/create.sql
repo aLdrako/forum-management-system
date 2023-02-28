@@ -28,7 +28,7 @@ create or replace table permissions
     is_deleted tinyint(1) default 0 not null,
     is_blocked tinyint(1) default 0 not null,
     is_admin   tinyint(1) default 0 not null,
-    constraint features_users_fk
+    constraint permissions_users_fk
         foreign key (user_id) references users (id)
 );
 

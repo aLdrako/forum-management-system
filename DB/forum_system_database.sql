@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
                                              `is_blocked` tinyint(1) NOT NULL DEFAULT 0,
                                              `is_admin` tinyint(1) NOT NULL DEFAULT 0,
                                              PRIMARY KEY (`user_id`),
-                                             CONSTRAINT `features_users_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+                                             CONSTRAINT `permissions_users_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dumping data for table forum_system.permissions: ~13 rows (approximately)

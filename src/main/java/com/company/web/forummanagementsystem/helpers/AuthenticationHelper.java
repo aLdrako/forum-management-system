@@ -54,5 +54,4 @@ public class AuthenticationHelper {
         return credentials;
     }
 
-
 }

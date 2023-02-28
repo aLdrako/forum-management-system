@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class UserServicesImpl implements UserServices {
     private final static String USER_CHANGE_OR_DELETE_ERROR_MESSAGE = "Only admins and owners of the account can delete or change their account!";
-    private final static String UPDATE_ADMIN_PERMISSION_ERROR_MESSAGE = "Only admin can modify these settings privileges: <<Delete>>, <<Block>>, <<Set Admin>>!";
+    private final static String UPDATE_ADMIN_PERMISSION_ERROR_MESSAGE = "Only admin can modify these settings privileges: <<Block>>, <<Set Admin>>!";
     private static final String UPDATE_DELETE_FLAG_ERROR_MESSAGE = "Deletion is restricted operation!";
     private final UserRepository userRepository;
 
