@@ -33,7 +33,7 @@ public class PostRepositorySql implements PostRepository{
     }
 
     @Override
-    public List<Post> search(Optional<Long> userId, Optional<String> title,
+    public List<Post> getAll(Optional<Long> userId, Optional<String> title,
                              Optional<String> sortBy, Optional<String> orderBy) {
         String query = SQL_POSTS_LIKES_JOINED;
         query += addToQuery(userId, title, sortBy, orderBy);
@@ -179,7 +179,7 @@ public class PostRepositorySql implements PostRepository{
         deleteLikesOfPost(id);
         String query = """
                 delete from posts
-                where id = ?;
+                where id = ?
                 """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);

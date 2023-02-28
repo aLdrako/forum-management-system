@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PostRepository {
     Post getById(Long id);
-    List<Post> search(Optional<Long> userId, Optional<String> title,
+    List<Post> getAll(Optional<Long> userId, Optional<String> title,
                       Optional<String> sortBy, Optional<String> orderBy);
     Post create(Post post);
     Post update(Post post);

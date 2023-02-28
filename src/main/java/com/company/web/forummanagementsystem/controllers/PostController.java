@@ -37,7 +37,7 @@ public class PostController {
     public List<Post> getAll(@RequestParam(required = false) Optional<String> title,
                              @RequestParam(required = false) Optional<String> sortBy,
                              @RequestParam(required = false) Optional<String> orderBy) {
-        return postServices.search(Optional.empty(), title, sortBy, orderBy);
+        return postServices.getAll(Optional.empty(), title, sortBy, orderBy);
     }
 
     @GetMapping("/posts/{id}")
@@ -95,7 +95,7 @@ public class PostController {
                                     @RequestParam(required = false) Optional<String> sortBy,
                                     @RequestParam(required = false) Optional<String> orderBy) {
         try {
-            return postServices.search(userId.describeConstable(), title, sortBy, orderBy);
+            return postServices.getAll(userId.describeConstable(), title, sortBy, orderBy);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

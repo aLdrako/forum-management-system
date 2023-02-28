@@ -29,10 +29,10 @@ public class PostServicesImpl implements PostServices {
     }
 
     @Override
-    public List<Post> search(Optional<Long> userId, Optional<String> title,
+    public List<Post> getAll(Optional<Long> userId, Optional<String> title,
                              Optional<String> sortBy, Optional<String> orderBy) {
         userId.ifPresent(postRepository::getById);
-        return postRepository.search(userId, title, sortBy, orderBy);
+        return postRepository.getAll(userId, title, sortBy, orderBy);
     }
 
     @Override

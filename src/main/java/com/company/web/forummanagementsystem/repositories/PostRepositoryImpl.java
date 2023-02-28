@@ -33,7 +33,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> search(Optional<Long> userId, Optional<String> title, Optional<String> sortBy,
+    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> sortBy,
                              Optional<String> orderBy) {
         return posts.stream()
                 .filter(post -> post.getTitle().toLowerCase().contains(title.get().toLowerCase()))
