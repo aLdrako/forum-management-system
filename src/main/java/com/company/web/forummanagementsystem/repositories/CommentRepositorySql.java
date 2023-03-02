@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-@Repository
+//@Repository
 @PropertySource("classpath:application.properties")
 public class CommentRepositorySql implements CommentRepository{
     private static final String SQL_COMMENTS_TABLE = """

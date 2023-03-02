@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.*;
 
-@Repository
+//@Repository
 @PropertySource("classpath:application.properties")
 public class PostRepositorySql implements PostRepository{
     private static final String SQL_JOIN_LIKES_TABLE = """

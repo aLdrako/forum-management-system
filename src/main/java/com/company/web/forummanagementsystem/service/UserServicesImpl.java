@@ -37,7 +37,7 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public User create(User user) {
-        checkForDuplicate(user);
+//        checkForDuplicate(user);
         return userRepository.create(user);
     }
 
@@ -81,7 +81,7 @@ public class UserServicesImpl implements UserServices {
     }
 
     private static void checkAuthorizedPermissions(User... users) {
-        if (users[1].isAdmin()) return;
+        if (users[1].getPermission().isAdmin()) return;
         if (!users[0].getUsername().equals(users[1].getUsername())) {
             throw new UnauthorizedOperationException(USER_CHANGE_OR_DELETE_ERROR_MESSAGE);
         }
@@ -95,12 +95,12 @@ public class UserServicesImpl implements UserServices {
      * users[2] is needed to prevent him from removing (set to false) admin restrictions
      */
     private static void checkAdminPermissions(User... users) {
-        if (users[0].isDeleted()) throw new UnauthorizedOperationException(UPDATE_DELETE_FLAG_ERROR_MESSAGE);
-        if (users[1].isAdmin()) return;
+        if (users[0].getPermission().isDeleted()) throw new UnauthorizedOperationException(UPDATE_DELETE_FLAG_ERROR_MESSAGE);
+        if (users[1].getPermission().isAdmin()) return;
 
-        if ((users[0].isAdmin() || users[0].isBlocked()) && !users[1].isAdmin()) {
+        if ((users[0].getPermission().isAdmin() || users[0].getPermission().isBlocked()) && !users[1].getPermission().isAdmin()) {
             throw new UnauthorizedOperationException(UPDATE_ADMIN_PERMISSION_ERROR_MESSAGE);
         }
-        if (users[2].isBlocked() && !users[0].isBlocked()) users[0].setBlocked(true);
+        if (users[2].getPermission().isBlocked() && !users[0].getPermission().isBlocked()) users[0].getPermission().setBlocked(true);
     }
 }

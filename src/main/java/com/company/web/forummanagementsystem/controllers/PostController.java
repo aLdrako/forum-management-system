@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+//@RestController
 @RequestMapping("/api")
 public class PostController {
     private final PostServices postServices;

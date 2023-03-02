@@ -1,9 +1,7 @@
 package com.company.web.forummanagementsystem.models;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
+import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -11,26 +9,39 @@ import java.util.Optional;
 
 import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
 
-@JsonPropertyOrder({"id", "firstName", "lastName", "email", "username", "password", "joiningDate", "phoneNumber", "admin", "blocked", "deleted"})
+//@JsonPropertyOrder({"id", "firstName", "lastName", "email", "username", "password", "joiningDate", "phoneNumber", "admin", "blocked", "deleted"})
+@Entity
+@Table(name = "users")
+@SecondaryTables({
+        @SecondaryTable(name = "photos", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id")),
+        @SecondaryTable(name = "phones", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id"))
+})
 public class User {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    @NotEmpty(message = "First name can't be empty")
-    @Size(min = 4, max = 32, message = "First name should be between 4 and 32 symbols")
+    @Column(name = "first_name")
     private String firstName;
-    @NotEmpty (message = "Last name can't be empty")
-    @Size(min = 4, max = 32, message = "Last name should be between 4 and 32 symbols")
+    @Column(name = "last_name")
     private String lastName;
-    @Email (message = "Email has invalid format")
+    @Column(name = "email")
     private String email;
-    @NotEmpty (message = "Username can't be empty")
+    @Column(name = "username")
     private String username;
-    @NotEmpty (message = "Password can't be empty")
+    @Column(name = "password")
     private String password;
-    private Optional<String> phoneNumber = Optional.empty();
-    private boolean isAdmin;
-    private boolean isBlocked;
-    private boolean isDeleted;
+    @Lob
+    @Column(name = "photo", table = "photos")
+    private byte[] photo;
+    @Column(name = "phone_number", table = "phones")
+    private String phoneNumber;
+    @OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "user_id")
+    private Permission permission;
+    @Temporal(TemporalType.TIMESTAMP)
+    @org.hibernate.annotations.Generated(GenerationTime.ALWAYS)
+    @Column(name = "join_date")
     private LocalDateTime joiningDate;
 
     public User() {}
@@ -39,22 +50,25 @@ public class User {
         this.id = id;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String username, String password, LocalDateTime joiningDate, Optional<String> phoneNumber, boolean isAdmin, boolean isBlocked, boolean isDeleted) {
-        this(id, firstName, lastName, email, username, password);
+    public User(Long id, String firstName, String lastName, String email, String username, String password, String phoneNumber, Permission permission, LocalDateTime joiningDate) {
+        this(id, firstName, lastName, email, username, password, phoneNumber);
+        this.permission = permission;
         this.joiningDate = joiningDate;
-        this.phoneNumber = phoneNumber;
-        this.isAdmin = isAdmin;
-        this.isBlocked = isBlocked;
-        this.isDeleted = isDeleted;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String username, String password) {
+    public User(Long id, String firstName, String lastName, String email, String username, String password, LocalDateTime joiningDate, String phoneNumber) {
+        this(id, firstName, lastName, email, username, password, phoneNumber);
+        this.joiningDate = joiningDate;
+    }
+
+    public User(Long id, String firstName, String lastName, String email, String username, String password, String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.phoneNumber = phoneNumber;
     }
 
     public Long getId() {
@@ -105,36 +119,20 @@ public class User {
         this.password = password;
     }
 
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
     public Optional<String> getPhoneNumber() {
-        return phoneNumber;
+        return Optional.ofNullable(phoneNumber);
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = Optional.ofNullable(phoneNumber);
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
-    public boolean isBlocked() {
-        return isBlocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getJoiningDate() {
@@ -143,6 +141,14 @@ public class User {
 
     public void setJoiningDate(LocalDateTime joiningDate) {
         this.joiningDate = joiningDate;
+    }
+
+    public Permission getPermission() {
+        return permission;
+    }
+
+    public void setPermission(Permission permission) {
+        this.permission = permission;
     }
 
     @Override

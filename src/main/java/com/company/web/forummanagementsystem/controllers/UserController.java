@@ -5,7 +5,9 @@ import com.company.web.forummanagementsystem.exceptions.DuplicateEntityException
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
 import com.company.web.forummanagementsystem.helpers.AuthenticationHelper;
+import com.company.web.forummanagementsystem.helpers.UserMapper;
 import com.company.web.forummanagementsystem.models.User;
+import com.company.web.forummanagementsystem.models.UserDTO;
 import com.company.web.forummanagementsystem.service.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -22,10 +24,13 @@ import java.util.Map;
 public class UserController {
 
     private final UserServices userServices;
+
+    private final UserMapper userMapper;
     private final AuthenticationHelper authentication;
 
-    public UserController(UserServices userServices, AuthenticationHelper authentication) {
+    public UserController(UserServices userServices, UserMapper userMapper, AuthenticationHelper authentication) {
         this.userServices = userServices;
+        this.userMapper = userMapper;
         this.authentication = authentication;
     }
 
@@ -54,8 +59,9 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) {
+    public User create(@Valid @RequestBody UserDTO userDTO) {
         try {
+            User user = userMapper.dtoToObject(new User(), userDTO);
             return userServices.create(user);
         } catch (DuplicateEntityException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
@@ -63,9 +69,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @Valid @RequestBody User user, @RequestHeader HttpHeaders headers) {
+    public User update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader HttpHeaders headers) {
         try {
-            user.setId(id);
+            User user = userMapper.dtoToObject(id, userDTO);
             User authenticatedUser = authentication.tryGetUser(headers);
             return userServices.update(user, authenticatedUser);
         } catch (EntityNotFoundException e) {

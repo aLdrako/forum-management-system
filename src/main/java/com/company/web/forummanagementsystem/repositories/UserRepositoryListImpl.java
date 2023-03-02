@@ -17,13 +17,13 @@ public class UserRepositoryListImpl implements UserRepository {
         users = new ArrayList<>();
 
         AtomicLong counter = new AtomicLong();
-        User admin = new User(counter.incrementAndGet(), "Alex", "Dune", "alex@gmail.com", "alexgo", "qwerty123");
-        admin.setAdmin(true);
-        users.add(admin);
-        users.add(new User(counter.incrementAndGet(), "John", "Milk", "johnmild@mail.com", "johndo", "abcd111"));
-        users.add(new User(counter.incrementAndGet(), "Adam", "Smith", "adamsmith@gmail.com", "adams", "pass1234"));
-        users.add(new User(counter.incrementAndGet(), "Alan", "Rockstar", "alan@yahoo.com", "rockstar", "rockstar999"));
-        users.add(new User(counter.incrementAndGet(), "Kate", "Alabama", "katyb@yahoo.com", "katy", "secret13"));
+//        User admin = new User(counter.incrementAndGet(), "Alex", "Dune", "alex@gmail.com", "alexgo", "qwerty123");
+//        admin.getPermissions().setAdmin(true);
+//        users.add(admin);
+//        users.add(new User(counter.incrementAndGet(), "John", "Milk", "johnmild@mail.com", "johndo", "abcd111"));
+//        users.add(new User(counter.incrementAndGet(), "Adam", "Smith", "adamsmith@gmail.com", "adams", "pass1234"));
+//        users.add(new User(counter.incrementAndGet(), "Alan", "Rockstar", "alan@yahoo.com", "rockstar", "rockstar999"));
+//        users.add(new User(counter.incrementAndGet(), "Kate", "Alabama", "katyb@yahoo.com", "katy", "secret13"));
     }
 
     @Override
@@ -74,8 +74,8 @@ public class UserRepositoryListImpl implements UserRepository {
         userToUpdate.setEmail(user.getEmail());
         userToUpdate.setUsername(user.getUsername());
         userToUpdate.setPassword(user.getPassword());
-        userToUpdate.setAdmin(user.isAdmin());
-        userToUpdate.setBlocked(user.isBlocked());
+//        userToUpdate.setAdmin(user.isAdmin());
+//        userToUpdate.setBlocked(user.isBlocked());
         return userToUpdate;
     }
 

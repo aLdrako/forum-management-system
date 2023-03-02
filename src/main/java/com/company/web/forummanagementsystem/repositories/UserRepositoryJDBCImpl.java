@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 @PropertySource("classpath:application.properties")
-public class UserRepositorySqlImpl implements UserRepository {
+public class UserRepositoryJDBCImpl implements UserRepository {
 
     private static final String SQL_GET = """
             SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number
             FROM users
-            lEFT JOIN permissions p on users.id = p.user_id
+            lEFT JOIN permission p on users.id = p.user_id
             lEFT JOIN phones p2 on users.id = p2.user_id
             WHERE is_deleted <> 1
             """;
@@ -27,7 +27,7 @@ public class UserRepositorySqlImpl implements UserRepository {
             VALUES (?, ?, ?, ?, ?)
             """;
     private static final String SQL_CREATE_PERMISSIONS = """
-            INSERT INTO permissions (is_deleted, is_blocked, is_admin, user_id)
+            INSERT INTO permission (is_deleted, is_blocked, is_admin, user_id)
             VALUES (?, ?, ?, ?)
             """;
     private static final String SQL_UPDATE = """
@@ -35,11 +35,11 @@ public class UserRepositorySqlImpl implements UserRepository {
             WHERE id = ?
             """;
     private static final String SQL_UPDATE_PERMISSIONS = """
-            UPDATE permissions SET is_deleted = ?, is_blocked = ?, is_admin = ?
+            UPDATE permission SET is_deleted = ?, is_blocked = ?, is_admin = ?
             WHERE user_id = ?
             """;
     private static final String SQL_DELETE = """
-            UPDATE permissions SET is_deleted = true
+            UPDATE permission SET is_deleted = true
             WHERE user_id = ?
             """;
     private static final String SQL_GET_ID = """
@@ -49,7 +49,7 @@ public class UserRepositorySqlImpl implements UserRepository {
 
     private final String dbUrl, dbUsername, dbPassword;
 
-    public UserRepositorySqlImpl(Environment environment) {
+    public UserRepositoryJDBCImpl(Environment environment) {
         dbUrl = environment.getProperty("database.url");
         dbUsername = environment.getProperty("database.username");
         dbPassword = environment.getProperty("database.password");
@@ -159,9 +159,9 @@ public class UserRepositorySqlImpl implements UserRepository {
 
     private static void permissionStatement(User user, PreparedStatement statement, String operation) throws SQLException {
         if (operation.equals("update")) {
-            statement.setBoolean(1, user.isDeleted());
-            statement.setBoolean(2, user.isBlocked());
-            statement.setBoolean(3, user.isAdmin());
+            statement.setBoolean(1, user.getPermission().isDeleted());
+            statement.setBoolean(2, user.getPermission().isBlocked());
+            statement.setBoolean(3, user.getPermission().isAdmin());
         } else for (int i = 1; i <= 3; i++) statement.setBoolean(i, false);
         statement.setLong(4, user.getId());
     }
@@ -170,17 +170,17 @@ public class UserRepositorySqlImpl implements UserRepository {
         List<User> users = new ArrayList<>();
         while (usersData.next()) {
             User user = new User(
-                    usersData.getLong("id"),
-                    usersData.getString("first_name"),
-                    usersData.getString("last_name"),
-                    usersData.getString("email"),
-                    usersData.getString("username"),
-                    usersData.getString("password"),
-                    usersData.getTimestamp("join_date").toLocalDateTime(),
-                    Optional.ofNullable(usersData.getString("phone_number")),
-                    usersData.getBoolean("is_admin"),
-                    usersData.getBoolean("is_blocked"),
-                    usersData.getBoolean("is_deleted")
+//                    usersData.getLong("id"),
+//                    usersData.getString("first_name"),
+//                    usersData.getString("last_name"),
+//                    usersData.getString("email"),
+//                    usersData.getString("username"),
+//                    usersData.getString("password"),
+//                    usersData.getTimestamp("join_date").toLocalDateTime(),
+//                    Optional.ofNullable(usersData.getString("phone_number")),
+//                    usersData.getBoolean("is_admin"),
+//                    usersData.getBoolean("is_blocked"),
+//                    usersData.getBoolean("is_deleted")
             );
             users.add(user);
         }

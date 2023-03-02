@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-@RestController
+//@RestController
 @RequestMapping("/api")
 public class CommentController {
     private final CommentServices commentServices;
