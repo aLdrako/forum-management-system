@@ -21,7 +21,7 @@ create or replace table users
         unique (email)
 );
 
-create or replace table permission
+create or replace table permissions
 (
     user_id    bigint               not null
         primary key,
