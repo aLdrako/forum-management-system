@@ -119,8 +119,8 @@ public class User {
         this.password = password;
     }
 
-    public byte[] getPhoto() {
-        return photo;
+    public Optional<byte[]> getPhoto() {
+        return Optional.ofNullable(photo);
     }
 
     public void setPhoto(byte[] photo) {
