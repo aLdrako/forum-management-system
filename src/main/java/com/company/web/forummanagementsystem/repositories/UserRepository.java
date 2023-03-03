@@ -12,4 +12,5 @@ public interface UserRepository {
     User create(User user);
     User update(User user);
     void delete(Long id);
+    User unique(String parameter);
 }

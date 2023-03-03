@@ -96,7 +96,7 @@ INSERT INTO `permissions` (`user_id`, `is_deleted`, `is_blocked`, `is_admin`) VA
                                                                                   (12, 0, 1, 1),
                                                                                   (13, 1, 0, 0),
                                                                                   (14, 1, 0, 1),
-                                                                                  (15, 1, 1, 0);
+                                                                                  (15, 1, 1, 1);
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 
 -- Dumping structure for table forum_system.phones

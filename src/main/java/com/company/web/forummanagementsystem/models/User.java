@@ -1,5 +1,6 @@
 package com.company.web.forummanagementsystem.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenerationTime;
 
@@ -9,7 +10,6 @@ import java.util.Optional;
 
 import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
 
-//@JsonPropertyOrder({"id", "firstName", "lastName", "email", "username", "password", "joiningDate", "phoneNumber", "admin", "blocked", "deleted"})
 @Entity
 @Table(name = "users")
 @SecondaryTables({

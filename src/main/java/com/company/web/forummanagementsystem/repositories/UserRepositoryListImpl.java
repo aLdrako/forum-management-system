@@ -84,4 +84,9 @@ public class UserRepositoryListImpl implements UserRepository {
         User userToDelete = getById(id);
         users.remove(userToDelete);
     }
+
+    @Override
+    public User unique(String s) {
+        return null;
+    }
 }

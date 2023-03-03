@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToLocalDateTime;
+
 @Service
 public class UserServicesImpl implements UserServices {
     private final static String USER_CHANGE_OR_DELETE_ERROR_MESSAGE = "Only admins and owners of the account can delete or change their account!";
-    private final static String UPDATE_ADMIN_PERMISSION_ERROR_MESSAGE = "Only admin can modify these settings privileges: <<Block>>, <<Set Admin>>!";
-    private static final String UPDATE_DELETE_FLAG_ERROR_MESSAGE = "Deletion is restricted operation!";
     private final UserRepository userRepository;
 
     public UserServicesImpl(UserRepository userRepository) {
@@ -42,20 +42,20 @@ public class UserServicesImpl implements UserServices {
     }
 
     /**
-     *
      * @param users users[0] - user from Requested Body (JSON)
      *              users[1] - authenticated user from Header (Http Header)
      * @return updated user from DB
-     *
      */
     @Override
     public User update(User... users) {
         User userToUpdate = userRepository.getById(users[0].getId());
         checkAuthorizedPermissions(userToUpdate, users[1]);
-        checkAdminPermissions(users[0], users[1], userToUpdate);
         if (!userToUpdate.getEmail().equals(users[0].getEmail())) {
             checkForDuplicate(users[0]);
         }
+        users[0].setUsername(userToUpdate.getUsername());
+        users[0].setJoiningDate(formatToLocalDateTime(userToUpdate.getJoiningDate()));
+        users[0].setPermission(userToUpdate.getPermission());
         return userRepository.update(users[0]);
     }
 
@@ -70,7 +70,7 @@ public class UserServicesImpl implements UserServices {
         boolean duplicateExists = true;
 
         try {
-            userRepository.search("email=" + user.getEmail());
+            userRepository.unique(user.getEmail());
         } catch (EntityNotFoundException e) {
             duplicateExists = false;
         }
@@ -85,22 +85,5 @@ public class UserServicesImpl implements UserServices {
         if (!users[0].getUsername().equals(users[1].getUsername())) {
             throw new UnauthorizedOperationException(USER_CHANGE_OR_DELETE_ERROR_MESSAGE);
         }
-    }
-
-    /**
-     *
-     * @param users users[0] - user from Requested Body (JSON)
-     *              users[1] - authenticated user from Header (Http Header)
-     *              users[2] - user to update retrieved from DB by ID
-     * users[2] is needed to prevent him from removing (set to false) admin restrictions
-     */
-    private static void checkAdminPermissions(User... users) {
-        if (users[0].getPermission().isDeleted()) throw new UnauthorizedOperationException(UPDATE_DELETE_FLAG_ERROR_MESSAGE);
-        if (users[1].getPermission().isAdmin()) return;
-
-        if ((users[0].getPermission().isAdmin() || users[0].getPermission().isBlocked()) && !users[1].getPermission().isAdmin()) {
-            throw new UnauthorizedOperationException(UPDATE_ADMIN_PERMISSION_ERROR_MESSAGE);
-        }
-        if (users[2].getPermission().isBlocked() && !users[0].getPermission().isBlocked()) users[0].getPermission().setBlocked(true);
     }
 }

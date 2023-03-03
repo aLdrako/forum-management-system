@@ -3,6 +3,10 @@ package com.company.web.forummanagementsystem.repositories;
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Permission;
 import com.company.web.forummanagementsystem.models.User;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -22,8 +26,13 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         try (Session session = sessionFactory.openSession()) {
-            Query<User> query = session.createQuery("from User", User.class);
-            return query.list();
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<User> query = builder.createQuery(User.class);
+            Root<User> root = query.from(User.class);
+            Join<User, Permission> permissionJoin = root.join("permission");
+            query.select(root);
+            query.where(builder.equal(permissionJoin.get("isDeleted"), false));
+            return session.createQuery(query).getResultList();
         }
     }
 
@@ -31,7 +40,8 @@ public class UserRepositoryImpl implements UserRepository {
     public User getById(Long id) {
         try (Session session = sessionFactory.openSession()) {
             User user = session.get(User.class, id);
-            if (user == null) throw new EntityNotFoundException("User", id);
+            Permission permission = session.get(Permission.class, id);
+            if (user == null || permission.isDeleted()) throw new EntityNotFoundException("User", id);
             return user;
         }
     }
@@ -64,7 +74,6 @@ public class UserRepositoryImpl implements UserRepository {
             permission.setUser_id(user.getId());
             session.persist(permission);
             session.getTransaction().commit();
-
             user.setPermission(permission);
             return user;
         }
@@ -72,10 +81,32 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User update(User user) {
-        return null;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.merge(user);
+            session.getTransaction().commit();
+            return user;
+        }
     }
 
     @Override
     public void delete(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            Permission permission = session.get(Permission.class, id);
+            permission.setDeleted(true);
+            session.merge(permission);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public User unique(String parameter) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("from User where email = ?1", User.class);
+            List<User> list = query.setParameter(1, parameter).getResultList();
+            if (list.size() == 0) throw new EntityNotFoundException("User", "email", parameter);
+            return list.get(0);
+        }
     }
 }

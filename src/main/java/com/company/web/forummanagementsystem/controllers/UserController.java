@@ -5,9 +5,13 @@ import com.company.web.forummanagementsystem.exceptions.DuplicateEntityException
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
 import com.company.web.forummanagementsystem.helpers.AuthenticationHelper;
+import com.company.web.forummanagementsystem.helpers.PermissionMapper;
 import com.company.web.forummanagementsystem.helpers.UserMapper;
+import com.company.web.forummanagementsystem.models.Permission;
+import com.company.web.forummanagementsystem.models.PermissionDTO;
 import com.company.web.forummanagementsystem.models.User;
 import com.company.web.forummanagementsystem.models.UserDTO;
+import com.company.web.forummanagementsystem.service.PermissionServices;
 import com.company.web.forummanagementsystem.service.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -24,13 +28,16 @@ import java.util.Map;
 public class UserController {
 
     private final UserServices userServices;
-
     private final UserMapper userMapper;
+    private final PermissionServices permissionServices;
+    private final PermissionMapper permissionMapper;
     private final AuthenticationHelper authentication;
 
-    public UserController(UserServices userServices, UserMapper userMapper, AuthenticationHelper authentication) {
+    public UserController(UserServices userServices, UserMapper userMapper, AuthenticationHelper authentication, PermissionServices permissionServices, PermissionMapper permissionMapper) {
         this.userServices = userServices;
         this.userMapper = userMapper;
+        this.permissionServices = permissionServices;
+        this.permissionMapper = permissionMapper;
         this.authentication = authentication;
     }
 
@@ -61,7 +68,7 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody UserDTO userDTO) {
         try {
-            User user = userMapper.dtoToObject(new User(), userDTO);
+            User user = userMapper.dtoToObject(userDTO);
             return userServices.create(user);
         } catch (DuplicateEntityException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
@@ -78,6 +85,20 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (DuplicateEntityException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/permissions")
+    public User updatePermissions(@PathVariable Long id, @RequestBody PermissionDTO permissionDTO, @RequestHeader HttpHeaders headers) {
+        try {
+            User authenticatedUser = authentication.tryGetUser(headers);
+            Permission permission = permissionMapper.dtoToObject(id, permissionDTO);
+            permissionServices.update(permission, authenticatedUser);
+            return userServices.getById(id);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
