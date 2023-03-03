@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-//@Service
+@Service
 public class PostServicesImpl implements PostServices {
     private static final String UNAUTHORIZED_MESSAGE = "Only the user that created the post or an admin can update/delete a post.";
     private static final String UNAUTHORIZED_MESSAGE_BLOCKED = "User is blocked";
@@ -43,8 +43,6 @@ public class PostServicesImpl implements PostServices {
 
     @Override
     public Post update(Post post, User user) {
-        Post newPost = postRepository.getById(post.getId());
-        post.setUserId(newPost.getUserId());
         checkAuthorizedPermissions(post, user);
         return postRepository.update(post);
     }
@@ -54,7 +52,7 @@ public class PostServicesImpl implements PostServices {
             throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE_BLOCKED);
         }
 
-        if (!Objects.equals(post.getUserId(), user.getId()) && !user.getPermission().isAdmin()) {
+        if (!Objects.equals(post.getUserCreated(), user) && !user.getPermission().isAdmin()) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);
         }
     }

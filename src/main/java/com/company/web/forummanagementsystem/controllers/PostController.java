@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
-//@RestController
+@RestController
 @RequestMapping("/api")
 public class PostController {
     private final PostServices postServices;
@@ -53,8 +53,8 @@ public class PostController {
     public Post create(@Valid @RequestBody PostDTO postDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            postDTO.setUserId(user.getId());
-            Post post = postMapper.dtoToObject(new Post(), postDTO);
+            Post post = postMapper.dtoToObject(postDTO);
+            post.setUserCreated(user);
             return postServices.create(post, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

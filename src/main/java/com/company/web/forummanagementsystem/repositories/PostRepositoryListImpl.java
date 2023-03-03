@@ -9,19 +9,19 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 //@Repository
-public class PostRepositoryImpl implements PostRepository {
+public class PostRepositoryListImpl implements PostRepository {
     private final List<Post> posts;
     private final UserRepository userRepository;
 
-    public PostRepositoryImpl(UserRepository userRepository) {
+    public PostRepositoryListImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
         List<User> users = this.userRepository.getAll();
         posts = new ArrayList<>();
 
         AtomicLong counter = new AtomicLong();
-        posts.add(new Post(counter.incrementAndGet(), "Old times", "Once upon a time there was a...", 13, users.get(0).getId()));
-        posts.add(new Post(counter.incrementAndGet(), "Ice and Fire", "They were destroying everything on their path...", 3, users.get(2).getId()));
-        posts.add(new Post(counter.incrementAndGet(), "Self observation", "This practice requires your full attention to details", 20, users.get(2).getId()));
+        posts.add(new Post(counter.incrementAndGet(), "Old times", "Once upon a time there was a...", users.get(0)));
+        posts.add(new Post(counter.incrementAndGet(), "Ice and Fire", "They were destroying everything on their path...", users.get(2)));
+        posts.add(new Post(counter.incrementAndGet(), "Self observation", "This practice requires your full attention to details", users.get(2)));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class PostRepositoryImpl implements PostRepository {
     public Post create(Post post) {
         long currentId = !posts.isEmpty() ? posts.get(posts.size() - 1).getId() : 1L;
         post.setId(currentId + 1);
-        userRepository.getById(post.getUserId());
+        userRepository.getById(post.getUserCreated().getId());
         posts.add(post);
         return post;
     }
@@ -52,11 +52,11 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public Post update(Post post) {
         Post postToUpdate = getById(post.getId());
-        userRepository.getById(post.getUserId());
+        userRepository.getById(post.getUserCreated().getId());
         postToUpdate.setTitle(post.getTitle());
         postToUpdate.setContent(post.getContent());
         postToUpdate.setLikes(post.getLikes());
-        postToUpdate.setUserId(post.getUserId());
+        postToUpdate.setUserCreated(post.getUserCreated());
         return postToUpdate;
     }
 
@@ -81,7 +81,7 @@ public class PostRepositoryImpl implements PostRepository {
         userRepository.getById(userId);
         getById(postId);
         return posts.stream()
-                .filter(post -> Objects.equals(post.getUserId(), userId))
+                .filter(post -> Objects.equals(post.getUserCreated().getId(), userId))
                 .filter(post -> Objects.equals(post.getId(), postId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have post with id %d!", userId, postId)));

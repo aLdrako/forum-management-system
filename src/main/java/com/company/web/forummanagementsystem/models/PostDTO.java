@@ -10,8 +10,6 @@ public class PostDTO {
     @Size(min = 32, max = 8192, message = "Content should be between 32 and 8192 symbols")
     private String content;
 
-    private Long userId;
-
     public String getTitle() {
         return title;
     }
@@ -26,13 +24,5 @@ public class PostDTO {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

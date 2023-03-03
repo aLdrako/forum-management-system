@@ -1,35 +1,52 @@
 package com.company.web.forummanagementsystem.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.GenerationTime;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.*;
-
+@Entity
+@Table(name = "posts")
 public class Post {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-
+    @Column(name = "title")
     private String title;
-
+    @Column(name = "content")
     private String content;
 
-    private int likes;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "post_id")
+    private List<Like> likes;
+    //@JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User userCreated;
 
-    private Long userId;
-
+    @Column(name = "date_created")
     private LocalDateTime dateCreated;
 
     public Post() {
     }
 
-    public Post(Long id, String title, String content, int likes, Long userId) {
+    public Post(Long id, String title, String content, User userCreated) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.likes = likes;
-        this.userId = userId;
+        this.userCreated = userCreated;
     }
-    public Post(Long id, String title, String content, int likes, Long userId, LocalDateTime dateCreated) {
-        this(id, title, content, likes, userId);
+    public Post(Long id, String title, String content, User userCreated, LocalDateTime dateCreated) {
+        this(id, title, content, userCreated);
         this.dateCreated = dateCreated;
     }
 
@@ -71,22 +88,23 @@ public class Post {
     }
 
     public int getLikes() {
-        return likes;
+        return likes.size();
+    }
+
+    public User getUserCreated() {
+        return userCreated;
+    }
+
+    public void setUserCreated(User userCreated) {
+        this.userCreated = userCreated;
     }
 
     public void setLikes(int likes) {
-        this.likes = likes;
+        this.likes = Arrays.asList(new Like[likes]);
     }
 
-    public Long getUserId() {
-        return userId;
-    }
     public String getDateCreated() {
         return formatToString(dateCreated);
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public void setDateCreated(LocalDateTime dateCreated) {

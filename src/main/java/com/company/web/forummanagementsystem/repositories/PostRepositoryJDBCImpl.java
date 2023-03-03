@@ -4,14 +4,13 @@ import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Post;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.*;
 
 //@Repository
 @PropertySource("classpath:application.properties")
-public class PostRepositorySql implements PostRepository{
+public class PostRepositoryJDBCImpl implements PostRepository{
     private static final String SQL_JOIN_LIKES_TABLE = """
             left join (select post_id, count(*) as likes 
                             from likes 
@@ -25,11 +24,13 @@ public class PostRepositorySql implements PostRepository{
                          group by post_id) l on p.id = l.post_id 
             """;
     private final String dbUrl, dbUsername, dbPassword;
+    private final UserRepository userRepository;
 
-    public PostRepositorySql(Environment environment) {
+    public PostRepositoryJDBCImpl(Environment environment, UserRepository userRepository) {
         dbUrl = environment.getProperty("database.url");
         dbUsername = environment.getProperty("database.username");
         dbPassword = environment.getProperty("database.password");
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -120,7 +121,7 @@ public class PostRepositorySql implements PostRepository{
                 ){
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getContent());
-            statement.setLong(3, post.getUserId());
+            statement.setLong(3, post.getUserCreated().getId());
             statement.executeUpdate();
 
             return getLastestPost();
@@ -315,10 +316,10 @@ public class PostRepositorySql implements PostRepository{
                     postData.getLong("id"),
                     postData.getString("title"),
                     postData.getString("content"),
-                    postData.getInt("likes"),
-                    postData.getLong("user_id"),
+                    userRepository.getById(postData.getLong("user_id")),
                     postData.getTimestamp("date_created").toLocalDateTime()
             );
+            post.setLikes(postData.getInt("likes"));
             posts.add(post);
         }
         return posts;
