@@ -1,6 +1,5 @@
 package com.company.web.forummanagementsystem.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenerationTime;
 
@@ -48,27 +47,6 @@ public class User {
 
     public User(Long id) {
         this.id = id;
-    }
-
-    public User(Long id, String firstName, String lastName, String email, String username, String password, String phoneNumber, Permission permission, LocalDateTime joiningDate) {
-        this(id, firstName, lastName, email, username, password, phoneNumber);
-        this.permission = permission;
-        this.joiningDate = joiningDate;
-    }
-
-    public User(Long id, String firstName, String lastName, String email, String username, String password, LocalDateTime joiningDate, String phoneNumber) {
-        this(id, firstName, lastName, email, username, password, phoneNumber);
-        this.joiningDate = joiningDate;
-    }
-
-    public User(Long id, String firstName, String lastName, String email, String username, String password, String phoneNumber) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
     }
 
     public Long getId() {

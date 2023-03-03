@@ -6,5 +6,4 @@ import com.company.web.forummanagementsystem.models.User;
 public interface PermissionServices {
     Permission getById(Long id);
     Permission update(Permission permission, User user);
-
 }

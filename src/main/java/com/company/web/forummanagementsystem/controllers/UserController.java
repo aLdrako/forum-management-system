@@ -31,14 +31,14 @@ public class UserController {
     private final UserMapper userMapper;
     private final PermissionServices permissionServices;
     private final PermissionMapper permissionMapper;
-    private final AuthenticationHelper authentication;
+    private final AuthenticationHelper authenticationHelper;
 
-    public UserController(UserServices userServices, UserMapper userMapper, AuthenticationHelper authentication, PermissionServices permissionServices, PermissionMapper permissionMapper) {
+    public UserController(UserServices userServices, UserMapper userMapper, AuthenticationHelper authenticationHelper, PermissionServices permissionServices, PermissionMapper permissionMapper) {
         this.userServices = userServices;
         this.userMapper = userMapper;
         this.permissionServices = permissionServices;
         this.permissionMapper = permissionMapper;
-        this.authentication = authentication;
+        this.authenticationHelper = authenticationHelper;
     }
 
     @GetMapping
@@ -79,7 +79,7 @@ public class UserController {
     public User update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = userMapper.dtoToObject(id, userDTO);
-            User authenticatedUser = authentication.tryGetUser(headers);
+            User authenticatedUser = authenticationHelper.tryGetUser(headers);
             return userServices.update(user, authenticatedUser);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -93,7 +93,7 @@ public class UserController {
     @PutMapping("/{id}/permissions")
     public User updatePermissions(@PathVariable Long id, @RequestBody PermissionDTO permissionDTO, @RequestHeader HttpHeaders headers) {
         try {
-            User authenticatedUser = authentication.tryGetUser(headers);
+            User authenticatedUser = authenticationHelper.tryGetUser(headers);
             Permission permission = permissionMapper.dtoToObject(id, permissionDTO);
             permissionServices.update(permission, authenticatedUser);
             return userServices.getById(id);
@@ -107,7 +107,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id, @RequestHeader HttpHeaders headers) {
         try {
-            User user = authentication.tryGetUser(headers);
+            User user = authenticationHelper.tryGetUser(headers);
             userServices.delete(id, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

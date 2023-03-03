@@ -13,7 +13,8 @@ import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.forma
 
 @Service
 public class UserServicesImpl implements UserServices {
-    private final static String USER_CHANGE_OR_DELETE_ERROR_MESSAGE = "Only admins and owners of the account can delete or change their account!";
+    private final static String USER_CHANGE_OR_DELETE_ERROR_MESSAGE = "Only admin or owner of the account can delete or change their account!";
+    private final static String SUPER_USER_DELETION_ERROR_MESSAGE = "Super user cannot be deleted!";
     private final UserRepository userRepository;
 
     public UserServicesImpl(UserRepository userRepository) {
@@ -50,15 +51,17 @@ public class UserServicesImpl implements UserServices {
     public User update(User... users) {
         User userToUpdate = userRepository.getById(users[0].getId());
         checkAuthorizedPermissions(userToUpdate, users[1]);
-        users[0].setUsername(userToUpdate.getUsername());
         users[0].setJoiningDate(formatToLocalDateTime(userToUpdate.getJoiningDate()));
         users[0].setPermission(userToUpdate.getPermission());
+        users[0].setUsername("***");
         if (!userToUpdate.getEmail().equals(users[0].getEmail())) checkForDuplicate(users[0]);
+        users[0].setUsername(userToUpdate.getUsername());
         return userRepository.update(users[0]);
     }
 
     @Override
     public void delete(Long id, User user) {
+        if (id == 1) throw new UnauthorizedOperationException(SUPER_USER_DELETION_ERROR_MESSAGE);
         User userToDelete = userRepository.getById(id);
         checkAuthorizedPermissions(userToDelete, user);
         userRepository.delete(id);

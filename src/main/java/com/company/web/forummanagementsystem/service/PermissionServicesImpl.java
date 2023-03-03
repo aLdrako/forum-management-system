@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PermissionServicesImpl implements PermissionServices {
-    private final static String UPDATE_ADMIN_PERMISSION_ERROR_MESSAGE = "Only admin can modify these settings privileges: <<Block>>, <<Set Admin>>!";
+    private final static String UPDATE_ADMIN_PERMISSION_ERROR_MESSAGE = "Only admin can modify these settings: <<Block>>, <<Set Admin>>!";
+    private final static String UPDATE_SUPER_USER_PERMISSION_ERROR_MESSAGE = "Super user permissions cannot be changed!";
     private final PermissionRepository permissionRepository;
 
     public PermissionServicesImpl(PermissionRepository permissionRepository) {
@@ -22,6 +23,7 @@ public class PermissionServicesImpl implements PermissionServices {
 
     @Override
     public Permission update(Permission permission, User authenticatedUser) {
+        if (permission.getUser_id() == 1) throw new UnauthorizedOperationException(UPDATE_SUPER_USER_PERMISSION_ERROR_MESSAGE);
         permissionRepository.getById(permission.getUser_id());
         checkAdminPermissions(authenticatedUser);
         return permissionRepository.update(permission);
