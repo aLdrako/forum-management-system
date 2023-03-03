@@ -69,8 +69,8 @@ INSERT INTO `likes` (`user_id`, `post_id`) VALUES
                                                (14, 12);
 /*!40000 ALTER TABLE `likes` ENABLE KEYS */;
 
--- Dumping structure for table forum_system.permission
-CREATE TABLE IF NOT EXISTS `permission` (
+-- Dumping structure for table forum_system.permissions
+CREATE TABLE IF NOT EXISTS `permissions` (
                                              `user_id` bigint(20) NOT NULL,
                                              `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
                                              `is_blocked` tinyint(1) NOT NULL DEFAULT 0,
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
                                              CONSTRAINT `permissions_users_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dumping data for table forum_system.permission: ~15 rows (approximately)
+-- Dumping data for table forum_system.permissions: ~15 rows (approximately)
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
 INSERT INTO `permissions` (`user_id`, `is_deleted`, `is_blocked`, `is_admin`) VALUES
                                                                                   (1, 0, 0, 1),

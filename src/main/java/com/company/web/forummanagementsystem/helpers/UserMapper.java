@@ -18,6 +18,7 @@ public class UserMapper {
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
         user.setPhoneNumber(userDTO.getPhoneNumber().orElse(null));
+        user.setPhoto(userDTO.getPhoto().orElse(null));
         return user;
     }
 }

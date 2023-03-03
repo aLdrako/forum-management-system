@@ -37,7 +37,7 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public User create(User user) {
-//        checkForDuplicate(user);
+        checkForDuplicate(user);
         return userRepository.create(user);
     }
 

@@ -38,7 +38,21 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> search(String parameter) {
-        return null;
+        try (Session session = sessionFactory.openSession()) {
+            String[] params = parameter.split("=");
+            boolean hasParams = true;
+            String searchParams = switch (params[0]) {
+                case "email" -> "where email = ?1";
+                case "username" -> "where username = ?1";
+                case "firstName" -> "where firstName = ?1";
+                default -> { hasParams = false; yield ""; }
+            };
+            Query<User> query = session.createQuery("from User " + searchParams, User.class);
+            if (hasParams) query.setParameter(1, params[1]);
+            List<User> list = query.list();
+            if (list.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
+            return list;
+        }
     }
 
     @Override
@@ -63,6 +77,5 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void delete(Long id) {
-
     }
 }

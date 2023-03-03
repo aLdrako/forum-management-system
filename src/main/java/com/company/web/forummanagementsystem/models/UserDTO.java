@@ -19,6 +19,7 @@ public class UserDTO {
     private String password;
     @Size(min = 7, max = 16)
     private String phoneNumber;
+    private byte[] photo;
 
     public String getFirstName() {
         return firstName;
@@ -66,5 +67,13 @@ public class UserDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Optional<byte[]> getPhoto() {
+        return Optional.ofNullable(photo);
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 }
