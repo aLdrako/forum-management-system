@@ -12,7 +12,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -57,11 +59,13 @@ public class UserRepositoryImpl implements UserRepository {
                 case "firstName" -> "where firstName = ?1";
                 default -> { hasParams = false; yield ""; }
             };
-            Query<User> query = session.createQuery("from User " + searchParams, User.class);
-            if (hasParams) query.setParameter(1, params[1]);
-            List<User> list = query.list();
-            if (list.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
-            return list;
+            if (hasParams) {
+                Query<User> query = session.createQuery("from User " + searchParams, User.class);
+                query.setParameter(1, params[1]);
+                List<User> list = query.list();
+                if (list.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
+                return list;
+            } else return new ArrayList<>();
         }
     }
 
@@ -96,17 +100,19 @@ public class UserRepositoryImpl implements UserRepository {
             Permission permission = session.get(Permission.class, id);
             permission.setDeleted(true);
             session.merge(permission);
+            User user = session.get(User.class, id);
+            user.setUsername(generateString());
+            user.setFirstName(generateString());
+            user.setLastName(generateString());
+            user.setEmail(generateString() + "@mail.com");
+            session.merge(user);
             session.getTransaction().commit();
         }
     }
 
-    @Override
-    public User unique(String parameter) {
-        try (Session session = sessionFactory.openSession()) {
-            Query<User> query = session.createQuery("from User where email = ?1", User.class);
-            List<User> list = query.setParameter(1, parameter).getResultList();
-            if (list.size() == 0) throw new EntityNotFoundException("User", "email", parameter);
-            return list.get(0);
-        }
+    private String generateString() {
+        return new Random().ints(48, 123)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97)).limit(15)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
     }
 }

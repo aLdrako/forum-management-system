@@ -15,18 +15,18 @@
 -- Dumping data for table forum_system.comments: ~12 rows (approximately)
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
 INSERT INTO `comments` (`id`, `post_id`, `user_id`, `content`, `date_created`) VALUES
-   (1, 1, 1, 'I\'ve been practicing mindfulness for a few weeks now and I already feel more relaxed and focused.', '2023-02-11 12:43:57'),
-   (2, 1, 6, 'I\'ve tried a few different meditation apps, but the mindfulness exercises in this book really resonated with me.', '2023-02-12 08:44:53'),
-   (3, 2, 6, 'Virtual reality gaming is so much more fun than regular gaming. It\'s like you\'re actually in the game!', '2023-02-13 14:54:25'),
-   (4, 3, 8, 'I used to be intimidated by cooking, but after taking a cooking class, I feel much more confident in the kitchen.', '2023-02-13 16:11:21'),
-   (5, 3, 7, 'Learning to cook has been such a rewarding experience. I love being able to create delicious meals for myself and my family.', '2023-02-14 12:46:56'),
-   (6, 4, 9, 'I took an astronomy course in college and it really opened my eyes to the beauty and complexity of the universe.', '2023-02-16 12:47:16'),
-   (7, 3, 8, 'I\'ve been following this cooking blog for a few months now and I\'ve learned so many new techniques and recipes.', '2023-02-17 09:50:11'),
-   (8, 8, 10, 'It\'s amazing how much we can learn from the art, literature, and philosophy of ancient civilizations. Their ideas still resonate with us today.', '2023-02-17 12:49:04'),
-   (9, 8, 9, 'Learning about ancient civilizations has given me a greater appreciation for the history of our world and the people who came before us.', '2023-02-18 12:49:46'),
-   (10, 7, 10, 'I\'ve been following this motivational speaker and his messages about positive thinking have really resonated with me.', '2023-02-19 12:52:06'),
-   (12, 11, 13, 'Testing testing testing comment', '2023-02-20 00:00:00'),
-   (13, 12, 14, 'Another testing comment goes here', '2023-02-20 00:00:00');
+    (1, 1, 1, 'I\'ve been practicing mindfulness for a few weeks now and I already feel more relaxed and focused.', '2023-02-11 12:43:57'),
+    (2, 1, 6, 'I\'ve tried a few different meditation apps, but the mindfulness exercises in this book really resonated with me.', '2023-02-12 08:44:53'),
+    (3, 2, 6, 'Virtual reality gaming is so much more fun than regular gaming. It\'s like you\'re actually in the game!', '2023-02-13 14:54:25'),
+    (4, 3, 8, 'I used to be intimidated by cooking, but after taking a cooking class, I feel much more confident in the kitchen.', '2023-02-13 16:11:21'),
+    (5, 3, 7, 'Learning to cook has been such a rewarding experience. I love being able to create delicious meals for myself and my family.', '2023-02-14 12:46:56'),
+    (6, 4, 9, 'I took an astronomy course in college and it really opened my eyes to the beauty and complexity of the universe.', '2023-02-16 12:47:16'),
+    (7, 3, 8, 'I\'ve been following this cooking blog for a few months now and I\'ve learned so many new techniques and recipes.', '2023-02-17 09:50:11'),
+    (8, 8, 10, 'It\'s amazing how much we can learn from the art, literature, and philosophy of ancient civilizations. Their ideas still resonate with us today.', '2023-02-17 12:49:04'),
+    (9, 8, 9, 'Learning about ancient civilizations has given me a greater appreciation for the history of our world and the people who came before us.', '2023-02-18 12:49:46'),
+    (10, 7, 10, 'I\'ve been following this motivational speaker and his messages about positive thinking have really resonated with me.', '2023-02-19 12:52:06'),
+    (12, 11, 13, 'Testing testing testing comment', '2023-02-20 00:00:00'),
+    (13, 12, 14, 'Another testing comment goes here', '2023-02-20 00:00:00');
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 
 -- Dumping data for table forum_system.likes: ~6 rows (approximately)
@@ -40,7 +40,7 @@ INSERT INTO `likes` (`user_id`, `post_id`) VALUES
                                                (14, 12);
 /*!40000 ALTER TABLE `likes` ENABLE KEYS */;
 
--- Dumping data for table forum_system.permission: ~15 rows (approximately)
+-- Dumping data for table forum_system.permissions: ~15 rows (approximately)
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
 INSERT INTO `permissions` (`user_id`, `is_deleted`, `is_blocked`, `is_admin`) VALUES
                                                                                   (1, 0, 0, 1),
@@ -56,7 +56,7 @@ INSERT INTO `permissions` (`user_id`, `is_deleted`, `is_blocked`, `is_admin`) VA
                                                                                   (11, 0, 1, 0),
                                                                                   (12, 0, 1, 1),
                                                                                   (13, 1, 0, 0),
-                                                                                  (14, 1, 0, 1),
+                                                                                  (14, 0, 0, 1),
                                                                                   (15, 1, 1, 1);
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 
@@ -66,7 +66,7 @@ INSERT INTO `phones` (`user_id`, `phone_number`) VALUES
     (1, '347-173-8817');
 /*!40000 ALTER TABLE `phones` ENABLE KEYS */;
 
--- Dumping data for table forum_system.photos: ~1 rows (approximately)
+-- Dumping data for table forum_system.photos: ~0 rows (approximately)
 /*!40000 ALTER TABLE `photos` DISABLE KEYS */;
 /*!40000 ALTER TABLE `photos` ENABLE KEYS */;
 
@@ -108,7 +108,7 @@ INSERT INTO `tags` (`id`, `name`) VALUES
                                       (4, 'product');
 /*!40000 ALTER TABLE `tags` ENABLE KEYS */;
 
--- Dumping data for table forum_system.users: ~14 rows (approximately)
+-- Dumping data for table forum_system.users: ~15 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `username`, `password`, `join_date`) VALUES
     (1, 'Admin', 'Admin', 'admin@mail.com', 'admin', 'admin', '2023-01-01 00:00:00'),

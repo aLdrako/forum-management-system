@@ -50,12 +50,10 @@ public class UserServicesImpl implements UserServices {
     public User update(User... users) {
         User userToUpdate = userRepository.getById(users[0].getId());
         checkAuthorizedPermissions(userToUpdate, users[1]);
-        if (!userToUpdate.getEmail().equals(users[0].getEmail())) {
-            checkForDuplicate(users[0]);
-        }
         users[0].setUsername(userToUpdate.getUsername());
         users[0].setJoiningDate(formatToLocalDateTime(userToUpdate.getJoiningDate()));
         users[0].setPermission(userToUpdate.getPermission());
+        if (!userToUpdate.getEmail().equals(users[0].getEmail())) checkForDuplicate(users[0]);
         return userRepository.update(users[0]);
     }
 
@@ -67,17 +65,22 @@ public class UserServicesImpl implements UserServices {
     }
 
     private void checkForDuplicate(User user) {
-        boolean duplicateExists = true;
+        boolean duplicateEmail = true;
+        boolean duplicateUsername = true;
 
         try {
-            userRepository.unique(user.getEmail());
+            userRepository.search("email=" + user.getEmail());
         } catch (EntityNotFoundException e) {
-            duplicateExists = false;
+            duplicateEmail = false;
         }
+        if (duplicateEmail) throw new DuplicateEntityException("User", "email", user.getEmail());
 
-        if (duplicateExists) {
-            throw new DuplicateEntityException("User", "email", user.getEmail());
+        try {
+            userRepository.search("username=" + user.getUsername());
+        } catch (EntityNotFoundException e) {
+            duplicateUsername = false;
         }
+        if (duplicateUsername) throw new DuplicateEntityException("User", "username", user.getUsername());
     }
 
     private static void checkAuthorizedPermissions(User... users) {

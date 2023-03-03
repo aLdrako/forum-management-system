@@ -17,6 +17,8 @@ create or replace table users
     username   varchar(50)                          not null,
     password   varchar(50)                          not null,
     join_date  datetime default current_timestamp() not null,
+    constraint users_pk
+        unique (username),
     constraint users_pk2
         unique (email)
 );
@@ -97,3 +99,4 @@ create or replace table posts_tags
     constraint posts_tags_tags_fk
         foreign key (tag_id) references tags (id)
 );
+

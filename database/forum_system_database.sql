@@ -95,7 +95,7 @@ INSERT INTO `permissions` (`user_id`, `is_deleted`, `is_blocked`, `is_admin`) VA
                                                                                   (11, 0, 1, 0),
                                                                                   (12, 0, 1, 1),
                                                                                   (13, 1, 0, 0),
-                                                                                  (14, 1, 0, 1),
+                                                                                  (14, 0, 0, 1),
                                                                                   (15, 1, 1, 1);
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `photos` (
                                         CONSTRAINT `photos_users_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dumping data for table forum_system.photos: ~1 rows (approximately)
+-- Dumping data for table forum_system.photos: ~0 rows (approximately)
 /*!40000 ALTER TABLE `photos` DISABLE KEYS */;
 /*!40000 ALTER TABLE `photos` ENABLE KEYS */;
 
@@ -203,8 +203,9 @@ CREATE TABLE IF NOT EXISTS `users` (
                                        `password` varchar(50) NOT NULL,
                                        `join_date` datetime NOT NULL DEFAULT current_timestamp(),
                                        PRIMARY KEY (`id`),
-                                       UNIQUE KEY `users_pk2` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+                                       UNIQUE KEY `users_pk2` (`email`),
+                                       UNIQUE KEY `users_pk` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dumping data for table forum_system.users: ~15 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;

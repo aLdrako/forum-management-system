@@ -138,11 +138,6 @@ public class UserRepositoryJDBCImpl implements UserRepository {
         }
     }
 
-    @Override
-    public User unique(String s) {
-        return null;
-    }
-
     public User getIdByEmail(String email) {
         try (PreparedStatement statement = DriverManager.getConnection(dbUrl, dbUsername, dbPassword).prepareStatement(SQL_GET_ID)) {
             statement.setString(1, email);
