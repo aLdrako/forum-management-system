@@ -17,12 +17,10 @@ public class Like implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "user_id", updatable = false)
-    @Column(updatable = false)
     private User user;
 
     @OneToOne
     @JoinColumn(name = "post_id", updatable = false)
-    @Column(updatable = false)
     private Post post;
 
     public Like() {
