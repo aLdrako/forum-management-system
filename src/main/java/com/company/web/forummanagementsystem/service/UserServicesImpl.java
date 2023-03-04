@@ -46,6 +46,7 @@ public class UserServicesImpl implements UserServices {
      * @param users users[0] - user from Requested Body (JSON)
      *              users[1] - authenticated user from Header (Http Header)
      * @return updated user from DB
+     * {@code @Description} reset users[0] username to prevent username change
      */
     @Override
     public User update(User... users) {

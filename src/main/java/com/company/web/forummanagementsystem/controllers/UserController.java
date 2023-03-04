@@ -5,8 +5,7 @@ import com.company.web.forummanagementsystem.exceptions.DuplicateEntityException
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
 import com.company.web.forummanagementsystem.helpers.AuthenticationHelper;
-import com.company.web.forummanagementsystem.helpers.PermissionMapper;
-import com.company.web.forummanagementsystem.helpers.UserMapper;
+import com.company.web.forummanagementsystem.helpers.ModelMapper;
 import com.company.web.forummanagementsystem.models.Permission;
 import com.company.web.forummanagementsystem.models.PermissionDTO;
 import com.company.web.forummanagementsystem.models.User;
@@ -27,17 +26,15 @@ import java.util.Map;
 @RequestMapping("/api/users")
 public class UserController {
 
+    private final ModelMapper modelMapper;
     private final UserServices userServices;
-    private final UserMapper userMapper;
     private final PermissionServices permissionServices;
-    private final PermissionMapper permissionMapper;
     private final AuthenticationHelper authenticationHelper;
 
-    public UserController(UserServices userServices, UserMapper userMapper, AuthenticationHelper authenticationHelper, PermissionServices permissionServices, PermissionMapper permissionMapper) {
+    public UserController(ModelMapper modelMapper, UserServices userServices, AuthenticationHelper authenticationHelper, PermissionServices permissionServices) {
+        this.modelMapper = modelMapper;
         this.userServices = userServices;
-        this.userMapper = userMapper;
         this.permissionServices = permissionServices;
-        this.permissionMapper = permissionMapper;
         this.authenticationHelper = authenticationHelper;
     }
 
@@ -68,7 +65,7 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody UserDTO userDTO) {
         try {
-            User user = userMapper.dtoToObject(userDTO);
+            User user = modelMapper.dtoToObject(userDTO);
             return userServices.create(user);
         } catch (DuplicateEntityException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
@@ -78,7 +75,7 @@ public class UserController {
     @PutMapping("/{id}")
     public User update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader HttpHeaders headers) {
         try {
-            User user = userMapper.dtoToObject(id, userDTO);
+            User user = modelMapper.dtoToObject(id, userDTO);
             User authenticatedUser = authenticationHelper.tryGetUser(headers);
             return userServices.update(user, authenticatedUser);
         } catch (EntityNotFoundException e) {
@@ -94,7 +91,7 @@ public class UserController {
     public User updatePermissions(@PathVariable Long id, @RequestBody PermissionDTO permissionDTO, @RequestHeader HttpHeaders headers) {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(headers);
-            Permission permission = permissionMapper.dtoToObject(id, permissionDTO);
+            Permission permission = modelMapper.dtoToObject(id, permissionDTO);
             permissionServices.update(permission, authenticatedUser);
             return userServices.getById(id);
         } catch (EntityNotFoundException e) {
