@@ -7,6 +7,8 @@ import com.company.web.forummanagementsystem.service.PostServices;
 import com.company.web.forummanagementsystem.service.UserServices;
 import org.springframework.stereotype.Component;
 
+import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToLocalDateTime;
+
 @Component
 public class PostMapper {
     private final UserServices userServices;
@@ -18,17 +20,23 @@ public class PostMapper {
     }
 
     public Post dtoToObject(Long id, PostDTO postDTO) {
-        Post post = dtoToObject(postDTO);
+        //Post post = dtoToObject(postDTO);
         Post postFromRepo = postServices.getById(id);
-        post.setId(id);
-        post.setUserCreated(postFromRepo.getUserCreated());
-        return post;
+        //post.setId(id);
+        //post.setUserCreated(postFromRepo.getUserCreated());
+        //post.setDateCreated(formatToLocalDateTime(postFromRepo.getDateCreated()));
+        //post.setLikes(postFromRepo.getLikes());
+        postFromRepo.setTitle(postDTO.getTitle());
+        postFromRepo.setContent(postDTO.getContent());
+
+        return postFromRepo;
     }
 
     public Post dtoToObject(PostDTO postDTO) {
         Post post = new Post();
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
+        post.setLikes(0);
 
         return post;
     }

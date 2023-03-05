@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -25,14 +25,14 @@ public class Post {
     @Column(name = "content")
     private String content;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Like> likes;
-    //@JsonIgnore
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User userCreated;
-
+    @Temporal(TemporalType.TIMESTAMP)
+    @Generated(GenerationTime.ALWAYS)
     @Column(name = "date_created")
     private LocalDateTime dateCreated;
 
