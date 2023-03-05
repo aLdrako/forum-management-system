@@ -1,13 +1,17 @@
 package com.company.web.forummanagementsystem.helpers;
 
-import com.company.web.forummanagementsystem.models.Permission;
-import com.company.web.forummanagementsystem.models.PermissionDTO;
-import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.models.UserDTO;
+import com.company.web.forummanagementsystem.models.*;
+import com.company.web.forummanagementsystem.service.PostServices;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ModelMapper {
+
+    private final PostServices postServices;
+
+    public ModelMapper(PostServices postServices) {
+        this.postServices = postServices;
+    }
 
     public User dtoToObject(Long id, UserDTO userDTO) {
         User user = dtoToObject(userDTO);
@@ -38,5 +42,22 @@ public class ModelMapper {
         permission.setAdmin(permissionDTO.isAdmin());
         permission.setBlocked(permissionDTO.isBlocked());
         return permission;
+    }
+
+    public Post dtoToObject(Long id, PostDTO postDTO) {
+        Post postFromRepo = postServices.getById(id);
+        postFromRepo.setTitle(postDTO.getTitle());
+        postFromRepo.setContent(postDTO.getContent());
+
+        return postFromRepo;
+    }
+
+    public Post dtoToObject(PostDTO postDTO) {
+        Post post = new Post();
+        post.setTitle(postDTO.getTitle());
+        post.setContent(postDTO.getContent());
+        post.setLikes(0);
+
+        return post;
     }
 }

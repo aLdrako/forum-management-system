@@ -4,7 +4,7 @@ import com.company.web.forummanagementsystem.exceptions.AuthorizationException;
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
 import com.company.web.forummanagementsystem.helpers.AuthenticationHelper;
-import com.company.web.forummanagementsystem.helpers.PostMapper;
+import com.company.web.forummanagementsystem.helpers.ModelMapper;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.PostDTO;
 import com.company.web.forummanagementsystem.models.User;
@@ -22,11 +22,11 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class PostController {
     private final PostServices postServices;
-    private final PostMapper postMapper;
+    private final ModelMapper postMapper;
 
     private final AuthenticationHelper authenticationHelper;
 
-    public PostController(PostServices postServices, PostMapper postMapper,
+    public PostController(PostServices postServices, ModelMapper postMapper,
                           AuthenticationHelper authenticationHelper) {
         this.postServices = postServices;
         this.postMapper = postMapper;
