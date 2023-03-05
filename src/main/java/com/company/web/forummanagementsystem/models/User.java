@@ -1,11 +1,14 @@
 package com.company.web.forummanagementsystem.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
 
@@ -15,6 +18,7 @@ import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.forma
         @SecondaryTable(name = "photos", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id")),
         @SecondaryTable(name = "phones", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id"))
 })
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,9 +43,17 @@ public class User {
     @JoinColumn(name = "id", referencedColumnName = "user_id")
     private Permission permission;
     @Temporal(TemporalType.TIMESTAMP)
-    @org.hibernate.annotations.Generated(GenerationTime.ALWAYS)
+    @Generated(GenerationTime.ALWAYS)
     @Column(name = "join_date")
     private LocalDateTime joiningDate;
+    @JsonIgnore
+    @OneToMany(mappedBy = "userCreated", fetch = FetchType.LAZY)
+//    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<Post> posts = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+//    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<Comment> comment = new HashSet<>();
 
     public User() {}
 
@@ -127,6 +139,22 @@ public class User {
 
     public void setPermission(Permission permission) {
         this.permission = permission;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public Set<Comment> getComment() {
+        return comment;
+    }
+
+    public void setComment(Set<Comment> comment) {
+        this.comment = comment;
     }
 
     @Override

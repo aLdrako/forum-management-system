@@ -4,21 +4,21 @@ import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Comment;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 //@Repository
 @PropertySource("classpath:application.properties")
-public class CommentRepositorySql implements CommentRepository{
+public class CommentRepositoryJDBCImpl implements CommentRepository{
     private static final String SQL_COMMENTS_TABLE = """
             select * 
             from comments
             """;
     private final String dbUrl, dbUsername, dbPassword;
 
-    public CommentRepositorySql(Environment environment) {
+    public CommentRepositoryJDBCImpl(Environment environment) {
         dbUrl = environment.getProperty("database.url");
         dbUsername = environment.getProperty("database.username");
         dbPassword = environment.getProperty("database.password");
@@ -72,8 +72,8 @@ public class CommentRepositorySql implements CommentRepository{
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query)
                 ){
-            statement.setLong(1, comment.getPostId());
-            statement.setLong(2, comment.getUserId());
+//            statement.setLong(1, comment.getPostId());
+//            statement.setLong(2, comment.getUserId());
             statement.setString(3, comment.getContent());
             statement.executeUpdate();
             return getLatestComment();
@@ -233,14 +233,14 @@ public class CommentRepositorySql implements CommentRepository{
     private List<Comment> getComments(ResultSet resultSet) throws SQLException {
         List<Comment> comments = new ArrayList<>();
         while(resultSet.next()) {
-            Comment comment = new Comment(
-                    resultSet.getLong("id"),
-                    resultSet.getString("content"),
-                    resultSet.getLong("post_id"),
-                    resultSet.getLong("user_id"),
-                    resultSet.getTimestamp("date_created").toLocalDateTime()
-            );
-            comments.add(comment);
+//            Comment comment = new Comment(
+//                    resultSet.getLong("id"),
+//                    resultSet.getString("content"),
+//                    resultSet.getLong("post_id"),
+//                    resultSet.getLong("user_id"),
+//                    resultSet.getTimestamp("date_created").toLocalDateTime()
+//            );
+//            comments.add(comment);
         }
         return comments;
     }
