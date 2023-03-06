@@ -1,11 +1,12 @@
 package com.company.web.forummanagementsystem.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
 
@@ -39,9 +40,15 @@ public class User {
     @JoinColumn(name = "id", referencedColumnName = "user_id")
     private Permission permission;
     @Temporal(TemporalType.TIMESTAMP)
-    @org.hibernate.annotations.Generated(GenerationTime.ALWAYS)
+    @Generated(GenerationTime.ALWAYS)
     @Column(name = "join_date")
     private LocalDateTime joiningDate;
+    @JsonIgnore
+    @OneToMany(mappedBy = "userCreated")
+    private Set<Post> posts = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "createdBy")
+    private Set<Comment> comments = new HashSet<>();
 
     public User() {}
 
@@ -127,6 +134,22 @@ public class User {
 
     public void setPermission(Permission permission) {
         this.permission = permission;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override

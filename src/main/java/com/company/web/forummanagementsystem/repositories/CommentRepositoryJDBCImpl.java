@@ -4,21 +4,37 @@ import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Comment;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 //@Repository
 @PropertySource("classpath:application.properties")
-public class CommentRepositorySql implements CommentRepository{
-    private static final String SQL_COMMENTS_TABLE = """
-            select * 
-            from comments
+public class CommentRepositoryJDBCImpl implements CommentRepository{
+    private static final String SQL_GET = """
+            SELECT * FROM comments
             """;
+    private static final String SQL_CREATE = """
+            INSERT INTO comments (post_id, user_id, content)
+            VALUES (?, ?, ?);
+            """;
+    private static final String SQL_UPDATE = """
+            UPDATE comments SET content = ?
+            WHERE id = ?;
+            """;
+    private static final String SQL_DELETE = """
+            DELETE FROM comments
+            WHERE id = ?;
+            """;
+
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
     private final String dbUrl, dbUsername, dbPassword;
 
-    public CommentRepositorySql(Environment environment) {
+    public CommentRepositoryJDBCImpl(UserRepository userRepository, PostRepository postRepository, Environment environment) {
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
         dbUrl = environment.getProperty("database.url");
         dbUsername = environment.getProperty("database.username");
         dbPassword = environment.getProperty("database.password");
@@ -29,8 +45,8 @@ public class CommentRepositorySql implements CommentRepository{
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(SQL_COMMENTS_TABLE);
-                ){
+                ResultSet resultSet = statement.executeQuery(SQL_GET);
+        ){
             return getComments(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -39,14 +55,11 @@ public class CommentRepositorySql implements CommentRepository{
 
     @Override
     public Comment getById(Long id) {
-        String query = SQL_COMMENTS_TABLE;
-        query += """
-                where id = ? 
-                """;
+        String query = " WHERE id = ?;";
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(query)
-                ){
+                PreparedStatement statement = connection.prepareStatement(SQL_GET + query)
+        ){
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()){
                 List<Comment> result = getComments(resultSet);
@@ -62,18 +75,12 @@ public class CommentRepositorySql implements CommentRepository{
 
     @Override
     public Comment create(Comment comment) {
-        String query = """
-                insert into 
-                comments (post_id, user_id, content)
-                values 
-                (?, ?, ?);
-                """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(query)
-                ){
-            statement.setLong(1, comment.getPostId());
-            statement.setLong(2, comment.getUserId());
+                PreparedStatement statement = connection.prepareStatement(SQL_CREATE)
+        ){
+            statement.setLong(1, comment.getPostedOn().getId());
+            statement.setLong(2, comment.getCreatedBy().getId());
             statement.setString(3, comment.getContent());
             statement.executeUpdate();
             return getLatestComment();
@@ -83,10 +90,7 @@ public class CommentRepositorySql implements CommentRepository{
     }
 
     private Comment getLatestComment() {
-        String query = """
-                select max(id) as max
-                from comments;
-                """;
+        String query = "SELECT max(id) AS max FROM comments;";
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();
@@ -104,15 +108,10 @@ public class CommentRepositorySql implements CommentRepository{
 
     @Override
     public Comment update(Comment comment) {
-        String query = """
-                update comments set 
-                content = ?
-                where id = ?;
-                """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(query)
-                ){
+                PreparedStatement statement = connection.prepareStatement(SQL_UPDATE)
+        ){
             statement.setString(1, comment.getContent());
             statement.setLong(2, comment.getId());
             statement.executeUpdate();
@@ -125,15 +124,10 @@ public class CommentRepositorySql implements CommentRepository{
     @Override
     public void delete(Long id) {
         getById(id);
-        String query = """
-                delete
-                from comments
-                where id = ?;
-                """;
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(query)
-                ){
+                PreparedStatement statement = connection.prepareStatement(SQL_DELETE)
+        ){
             statement.setLong(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -143,14 +137,11 @@ public class CommentRepositorySql implements CommentRepository{
 
     @Override
     public List<Comment> getCommentsByUserId(Long userId) {
-        String query = SQL_COMMENTS_TABLE;
-        query += """
-                where user_id = ? 
-                """;
+        String query = " WHERE user_id = ?;";
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(query);
-                ){
+                PreparedStatement statement = connection.prepareStatement(SQL_GET + query);
+        ){
             statement.setLong(1, userId);
             try (ResultSet resultSet = statement.executeQuery()){
                 return getComments(resultSet);
@@ -162,14 +153,11 @@ public class CommentRepositorySql implements CommentRepository{
 
     @Override
     public Comment getCommentByUserId(Long userId, Long commentId) {
-        String query = SQL_COMMENTS_TABLE;
-        query += """
-                where user_id = ? and id = ? 
-                """;
+        String query = " WHERE user_id = ? AND id = ?;";
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(query)
-                ){
+                PreparedStatement statement = connection.prepareStatement(SQL_GET + query)
+        ){
             statement.setLong(1, userId);
             statement.setLong(2, commentId);
             try (ResultSet resultSet = statement.executeQuery()){
@@ -187,35 +175,28 @@ public class CommentRepositorySql implements CommentRepository{
     @Override
     public List<Comment> getCommentsByPostId(Long postId) {
         getById(postId);
-        String query = SQL_COMMENTS_TABLE;
-        query += """
-                where post_id = ?
-                """;
+        String query = " WHERE post_id = ?;";
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(query);
-                ){
+                PreparedStatement statement = connection.prepareStatement(SQL_GET + query);
+        ){
             statement.setLong(1, postId);
             try(ResultSet resultSet = statement.executeQuery()) {
                 return getComments(resultSet);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-                }
-
+        }
     }
 
     @Override
     public Comment getCommentByPostId(Long postId, Long commentId) {
         getById(commentId);
-        String query = SQL_COMMENTS_TABLE;
-        query += """
-                where id = ? and post_id = ?
-                """;
+        String query = " WHERE id = ? AND post_id = ?;";
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-                PreparedStatement statement = connection.prepareStatement(query);
-                ){
+                PreparedStatement statement = connection.prepareStatement(SQL_GET + query);
+        ){
             statement.setLong(1, commentId);
             statement.setLong(2, postId);
             try (ResultSet resultSet = statement.executeQuery()){
@@ -233,13 +214,12 @@ public class CommentRepositorySql implements CommentRepository{
     private List<Comment> getComments(ResultSet resultSet) throws SQLException {
         List<Comment> comments = new ArrayList<>();
         while(resultSet.next()) {
-            Comment comment = new Comment(
-                    resultSet.getLong("id"),
-                    resultSet.getString("content"),
-                    resultSet.getLong("post_id"),
-                    resultSet.getLong("user_id"),
-                    resultSet.getTimestamp("date_created").toLocalDateTime()
-            );
+            Comment comment = new Comment();
+            comment.setId(resultSet.getLong("id"));
+            comment.setContent(resultSet.getString("content"));
+            comment.setPostedOn(postRepository.getById(resultSet.getLong("post_id")));
+            comment.setCreatedBy(userRepository.getById(resultSet.getLong("user_id")));
+            comment.setDateCreated(resultSet.getTimestamp("date_created").toLocalDateTime());
             comments.add(comment);
         }
         return comments;

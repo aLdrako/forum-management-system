@@ -11,17 +11,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
-//@Service
+@Service
 public class CommentServicesImpl implements CommentServices {
 
-    private static final String UNAUTHORIZED_MESSAGE = "Only the user that created the post or an admin can update/delete a post.";
-    private static final String UNAUTHORIZED_MESSAGE_BLOCKED = "User is blocked";
+    private static final String UNAUTHORIZED_ERROR_MESSAGE = "Only the owner of comment or admin can delete or update comment!";
+    private static final String BLOCKED_ERROR_MESSAGE = "User is blocked and cannot create/edit/delete comment!";
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public CommentServicesImpl(CommentRepository commentRepository, UserRepository userRepository,
-                               PostRepository postRepository) {
+    public CommentServicesImpl(CommentRepository commentRepository, UserRepository userRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
@@ -43,22 +42,12 @@ public class CommentServicesImpl implements CommentServices {
         return commentRepository.create(comment);
     }
 
-    private void checkAuthorizedPermissions(Comment comment, User user) {
-        if (user.getPermission().isBlocked()) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE_BLOCKED);
-        }
-
-        if (!Objects.equals(comment.getUserId(), user.getId()) && !user.getPermission().isAdmin()) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE);
-        }
-    }
-
     @Override
     public Comment update(Comment comment, User user) {
-        Comment newComment = commentRepository.getById(comment.getId());
-        comment.setUserId(newComment.getUserId());
-        checkAuthorizedPermissions(comment, user);
-        return commentRepository.update(comment);
+        Comment commentToUpdate = commentRepository.getById(comment.getId());
+        commentToUpdate.setContent(comment.getContent());
+        checkAuthorizedPermissions(commentToUpdate, user);
+        return commentRepository.update(commentToUpdate);
     }
 
     @Override
@@ -90,5 +79,15 @@ public class CommentServicesImpl implements CommentServices {
     public Comment getCommentByPostId(Long postId, Long commentId) {
         postRepository.getById(postId);
         return commentRepository.getCommentByPostId(postId, commentId);
+    }
+
+    private void checkAuthorizedPermissions(Comment comment, User user) {
+        if (user.getPermission().isBlocked()) {
+            throw new UnauthorizedOperationException(BLOCKED_ERROR_MESSAGE);
+        }
+        if (user.getPermission().isAdmin() ||
+                Objects.equals(comment.getCreatedBy().getId(), user.getId())) return;
+
+        throw new UnauthorizedOperationException(UNAUTHORIZED_ERROR_MESSAGE);
     }
 }

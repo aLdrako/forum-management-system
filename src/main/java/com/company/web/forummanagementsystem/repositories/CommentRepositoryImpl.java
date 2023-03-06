@@ -2,109 +2,110 @@ package com.company.web.forummanagementsystem.repositories;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Comment;
-import com.company.web.forummanagementsystem.models.Post;
-import com.company.web.forummanagementsystem.models.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
-//@Repository
+@Repository
 public class CommentRepositoryImpl implements CommentRepository {
-    private final List<Comment> comments;
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
 
-    public CommentRepositoryImpl(UserRepository userRepository, PostRepository postRepository) {
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
-        List<User> users = this.userRepository.getAll();
-       // List<Post> posts = this.postRepository.getAll("parameter", "sortBy", "orderBy");
-        comments = new ArrayList<>();
+    private static final String USER_NO_COMMENT_WITH_ID = "User with id %d does not have comment with id %d!";
+    private static final String POST_NO_COMMENT_WITH_ID = "Post with id %d does not have comment with id %d!";
+    private final SessionFactory sessionFactory;
 
-        AtomicLong counter = new AtomicLong();
-        //comments.add(new Comment(counter.incrementAndGet(), "This is my first comment", posts.get(0).getId(), users.get(1).getId()));
-        //comments.add(new Comment(counter.incrementAndGet(), "Great idea, thanks", posts.get(1).getId(), users.get(1).getId()));
-        //comments.add(new Comment(counter.incrementAndGet(), "Some random comment here", posts.get(1).getId(), users.get(2).getId()));
+    public CommentRepositoryImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     @Override
     public List<Comment> getAll() {
-        return new ArrayList<>(comments);
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment", Comment.class);
+            return query.list();
+        }
     }
 
     @Override
     public Comment getById(Long id) {
-        return comments.stream()
-                .filter(comment -> Objects.equals(comment.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Comment", id));
+        try (Session session = sessionFactory.openSession()) {
+            Comment comment = session.get(Comment.class, id);
+            if (comment == null) throw new EntityNotFoundException("Comment", id);
+            return comment;
+        }
     }
 
     @Override
     public Comment create(Comment comment) {
-        long currentId = !comments.isEmpty() ? comments.get(comments.size() - 1).getId() + 1 : 1L;
-        comment.setId(currentId);
-        userRepository.getById(comment.getUserId());
-        postRepository.getById(comment.getPostId());
-        comments.add(comment);
-        return comment;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.persist(comment);
+            session.getTransaction().commit();
+            return comment;
+        }
     }
 
     @Override
     public Comment update(Comment comment) {
-        Comment commentToUpdate = getById(comment.getId());
-        userRepository.getById(comment.getUserId());
-        postRepository.getById(comment.getPostId());
-        commentToUpdate.setContent(comment.getContent());
-        commentToUpdate.setPostId(comment.getPostId());
-        commentToUpdate.setUserId(comment.getUserId());
-        return commentToUpdate;
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.merge(comment);
+            session.getTransaction().commit();
+            return comment;
+        }
     }
 
     @Override
     public void delete(Long id) {
-        Comment commentToDelete = getById(id);
-        comments.remove(commentToDelete);
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            Comment comment = session.get(Comment.class, id);
+            session.remove(comment);
+            session.getTransaction().commit();
+        }
     }
 
     @Override
     public List<Comment> getCommentsByUserId(Long userId) {
-        userRepository.getById(userId);
-        return comments.stream()
-                .filter(comment -> Objects.equals(comment.getUserId(), userId))
-                .collect(Collectors.toList());
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where createdBy.id = :userId", Comment.class);
+            query.setParameter("userId", userId);
+            return query.list();
+        }
     }
 
     @Override
     public Comment getCommentByUserId(Long userId, Long commentId) {
-        userRepository.getById(userId);
-        getById(commentId);
-        return comments.stream()
-                .filter(comment -> Objects.equals(comment.getUserId(), userId))
-                .filter(comment -> Objects.equals(comment.getId(), commentId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have comment with id %d!", userId, commentId)));
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where id = :commentId and createdBy.id = :userId", Comment.class);
+            query.setParameter("commentId", commentId);
+            query.setParameter("userId", userId);
+            List<Comment> list = query.list();
+            if (list.size() == 0) throw new EntityNotFoundException(String.format(USER_NO_COMMENT_WITH_ID, userId, commentId));
+            return list.get(0);
+        }
     }
 
     @Override
     public List<Comment> getCommentsByPostId(Long postId) {
-        postRepository.getById(postId);
-        return comments.stream()
-                .filter(comment -> Objects.equals(comment.getPostId(), postId))
-                .collect(Collectors.toList());
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where postedOn.id = :postId", Comment.class);
+            query.setParameter("postId", postId);
+            return query.list();
+        }
     }
 
     @Override
     public Comment getCommentByPostId(Long postId, Long commentId) {
-        postRepository.getById(postId);
-        getById(commentId);
-        return comments.stream()
-                .filter(comment -> Objects.equals(comment.getPostId(), postId))
-                .filter(comment -> Objects.equals(comment.getId(), commentId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Post with id %d does not have comment with id %d!", postId, commentId)));
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where id = :commentId and postedOn.id = :postId", Comment.class);
+            query.setParameter("commentId", commentId);
+            query.setParameter("postId", postId);
+            List<Comment> list = query.list();
+            if (list.size() == 0) throw new EntityNotFoundException(String.format(POST_NO_COMMENT_WITH_ID, postId, commentId));
+            return list.get(0);
+        }
     }
 }

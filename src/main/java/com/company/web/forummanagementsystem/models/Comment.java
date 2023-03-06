@@ -1,40 +1,37 @@
 package com.company.web.forummanagementsystem.models;
 
-import jakarta.validation.constraints.*;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.*;
 
+@Entity
+@Table(name = "comments")
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    @NotEmpty
-    @Size(min = 16, max = 1024, message = "Comment should be between 16 and 1024 symbols")
+    @Column(name = "content")
     private String content;
-    @NotNull
-    @Positive(message = "Post Id should be positive")
-    private Long postId;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User createdBy;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name ="post_id", referencedColumnName = "id")
+    private Post postedOn;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Generated(GenerationTime.ALWAYS)
+    @Column(name = "date_created")
     private LocalDateTime dateCreated;
 
     public Comment() {
-    }
-
-    public Comment(Long id, String content, Long postId, Long userId) {
-        this.id = id;
-        this.content = content;
-        this.postId = postId;
-        this.userId = userId;
-    }
-
-    public Comment(Long id, String content, Long postId, Long userId, LocalDateTime dateCreated) {
-        this.id = id;
-        this.content = content;
-        this.postId = postId;
-        this.userId = userId;
-        this.dateCreated = dateCreated;
     }
 
     public Long getId() {
@@ -53,25 +50,27 @@ public class Comment {
         this.content = content;
     }
 
-    public Long getPostId() {
-        return postId;
-    }
-    public Long getUserId() {
-        return userId;
-    }
-
     public String getDateCreated() {
         return formatToString(dateCreated);
-    }
-    public void setPostId(Long postId) {
-        this.postId = postId;
     }
     public void setDateCreated(LocalDateTime dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Post getPostedOn() {
+        return postedOn;
+    }
+
+    public void setPostedOn(Post postedOn) {
+        this.postedOn = postedOn;
     }
 
     @Override

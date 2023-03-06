@@ -4,13 +4,6 @@ import com.company.web.forummanagementsystem.models.*;
 import com.company.web.forummanagementsystem.service.PostServices;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
-
 @Component
 public class ModelMapper {
 
@@ -65,6 +58,20 @@ public class ModelMapper {
         post.setContent(postDTO.getContent());
 
         return post;
+    }
+
+    public Comment dtoToObject(Long id, CommentDTO commentDTO) {
+        Comment comment = new Comment();
+        comment.setId(id);
+        comment.setContent(commentDTO.getContent());
+        return comment;
+    }
+
+    public Comment dtoToObject(CommentDTO commentDTO) {
+        Comment comment = new Comment();
+        comment.setContent(commentDTO.getContent());
+        comment.setPostedOn(postServices.getById(commentDTO.getPostId()));
+        return comment;
     }
 
     public List<PostOutputDTO> dtoToObject(List<Post> allPosts) {
