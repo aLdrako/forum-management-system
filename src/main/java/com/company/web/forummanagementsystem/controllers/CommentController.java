@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -86,9 +87,9 @@ public class CommentController {
     }
 
     @GetMapping("users/{userId}/comments")
-    public List<Comment> getCommentsByUserId(@PathVariable Long userId) {
+    public List<Comment> getCommentsByUserId(@PathVariable Long userId, @RequestParam Map<String, String> parameters) {
         try {
-            return commentServices.getCommentsByUserId(userId);
+            return commentServices.getCommentsByUserId(userId, parameters);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -104,9 +105,9 @@ public class CommentController {
     }
 
     @GetMapping("posts/{postId}/comments")
-    public List<Comment> getCommentsByPostId(@PathVariable Long postId) {
+    public List<Comment> getCommentsByPostId(@PathVariable Long postId, @RequestParam Map<String, String> parameters) {
         try {
-            return commentServices.getCommentsByPostId(postId);
+            return commentServices.getCommentsByPostId(postId, parameters);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

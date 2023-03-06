@@ -7,7 +7,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -33,8 +32,7 @@ public class UserRepositoryImpl implements UserRepository {
             CriteriaQuery<User> query = builder.createQuery(User.class);
             Root<User> root = query.from(User.class);
             Join<User, Permission> permissionJoin = root.join("permission");
-            query.select(root);
-            query.where(builder.equal(permissionJoin.get("isDeleted"), false));
+            query.select(root).where(builder.equal(permissionJoin.get("isDeleted"), false));
             return session.createQuery(query).getResultList();
         }
     }

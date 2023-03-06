@@ -2,10 +2,12 @@ package com.company.web.forummanagementsystem.repositories;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Comment;
+import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -20,7 +22,7 @@ public class CommentRepositoryListImpl implements CommentRepository {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         List<User> users = this.userRepository.getAll();
-       // List<Post> posts = this.postRepository.getAll("parameter", "sortBy", "orderBy");
+//        List<Post> posts = this.postRepository.getAll("parameter", "sortBy", "orderBy");
         comments = new ArrayList<>();
 
         AtomicLong counter = new AtomicLong();
@@ -46,8 +48,8 @@ public class CommentRepositoryListImpl implements CommentRepository {
     public Comment create(Comment comment) {
         long currentId = !comments.isEmpty() ? comments.get(comments.size() - 1).getId() + 1 : 1L;
         comment.setId(currentId);
-//        userRepository.getById(comment.getUserId());
-//        postRepository.getById(comment.getPostId());
+        userRepository.getById(comment.getCreatedBy().getId());
+        postRepository.getById(comment.getPostedOn().getId());
         comments.add(comment);
         return comment;
     }
@@ -55,11 +57,11 @@ public class CommentRepositoryListImpl implements CommentRepository {
     @Override
     public Comment update(Comment comment) {
         Comment commentToUpdate = getById(comment.getId());
-//        userRepository.getById(comment.getUserId());
-//        postRepository.getById(comment.getPostId());
+        User user = userRepository.getById(comment.getCreatedBy().getId());
+        Post post = postRepository.getById(comment.getPostedOn().getId());
         commentToUpdate.setContent(comment.getContent());
-//        commentToUpdate.setPostId(comment.getPostId());
-//        commentToUpdate.setUserId(comment.getUserId());
+        commentToUpdate.setCreatedBy(user);
+        commentToUpdate.setPostedOn(post);
         return commentToUpdate;
     }
 
@@ -70,10 +72,10 @@ public class CommentRepositoryListImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> getCommentsByUserId(Long userId) {
+    public List<Comment> getCommentsByUserId(Long userId, Map<String, String> parameters) {
         userRepository.getById(userId);
         return comments.stream()
-//                .filter(comment -> Objects.equals(comment.getUserId(), userId))
+                .filter(comment -> Objects.equals(comment.getCreatedBy().getId(), userId))
                 .collect(Collectors.toList());
     }
 
@@ -82,17 +84,17 @@ public class CommentRepositoryListImpl implements CommentRepository {
         userRepository.getById(userId);
         getById(commentId);
         return comments.stream()
-//                .filter(comment -> Objects.equals(comment.getUserId(), userId))
+                .filter(comment -> Objects.equals(comment.getCreatedBy().getId(), userId))
                 .filter(comment -> Objects.equals(comment.getId(), commentId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have comment with id %d!", userId, commentId)));
     }
 
     @Override
-    public List<Comment> getCommentsByPostId(Long postId) {
+    public List<Comment> getCommentsByPostId(Long postId, Map<String, String> parameters) {
         postRepository.getById(postId);
         return comments.stream()
-//                .filter(comment -> Objects.equals(comment.getPostId(), postId))
+                .filter(comment -> Objects.equals(comment.getPostedOn().getId(), postId))
                 .collect(Collectors.toList());
     }
 
@@ -101,7 +103,7 @@ public class CommentRepositoryListImpl implements CommentRepository {
         postRepository.getById(postId);
         getById(commentId);
         return comments.stream()
-//                .filter(comment -> Objects.equals(comment.getPostId(), postId))
+                .filter(comment -> Objects.equals(comment.getPostedOn().getId(), postId))
                 .filter(comment -> Objects.equals(comment.getId(), commentId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Post with id %d does not have comment with id %d!", postId, commentId)));
