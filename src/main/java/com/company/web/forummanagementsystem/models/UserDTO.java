@@ -14,10 +14,12 @@ public class UserDTO {
     @Email(message = "Email has invalid format")
     private String email;
     @NotEmpty (message = "Username can't be empty")
+    @Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols")
     private String username;
     @NotEmpty (message = "Password can't be empty")
+    @Size(min = 6, max = 20, message = "Password should be between 6 and 20 symbols")
     private String password;
-    @Size(min = 7, max = 16)
+    @Size(min = 7, max = 16, message = "Phone number should be between 7 and 16 symbols")
     private String phoneNumber;
     private byte[] photo;
 

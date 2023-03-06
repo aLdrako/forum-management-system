@@ -2,9 +2,7 @@ package com.company.web.forummanagementsystem.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
@@ -18,7 +16,6 @@ import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.forma
         @SecondaryTable(name = "photos", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id")),
         @SecondaryTable(name = "phones", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id"))
 })
-//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,13 +44,11 @@ public class User {
     @Column(name = "join_date")
     private LocalDateTime joiningDate;
     @JsonIgnore
-    @OneToMany(mappedBy = "userCreated", fetch = FetchType.LAZY)
-//    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @OneToMany(mappedBy = "userCreated")
     private Set<Post> posts = new HashSet<>();
     @JsonIgnore
-    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
-//    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<Comment> comment = new HashSet<>();
+    @OneToMany(mappedBy = "createdBy")
+    private Set<Comment> comments = new HashSet<>();
 
     public User() {}
 
@@ -149,12 +144,12 @@ public class User {
         this.posts = posts;
     }
 
-    public Set<Comment> getComment() {
-        return comment;
+    public Set<Comment> getComments() {
+        return comments;
     }
 
-    public void setComment(Set<Comment> comment) {
-        this.comment = comment;
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override

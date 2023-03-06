@@ -1,19 +1,16 @@
 package com.company.web.forummanagementsystem.models;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import com.company.web.forummanagementsystem.models.validations.CreateValidationGroup;
+import com.company.web.forummanagementsystem.models.validations.UpdateValidationGroup;
+import jakarta.validation.constraints.*;
 
 public class CommentDTO {
-    @NotEmpty
-    @Size(min = 16, max = 1024, message = "Comment should be between 16 and 1024 symbols")
+    @NotEmpty(groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
+    @Size(min = 16, max = 1024, message = "Comment should be between 16 and 1024 symbols",
+            groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
     private String content;
-    @NotNull
-    @Positive(message = "User Id should be positive")
-    private Long userId;
-    @NotNull
-    @Positive(message = "Post Id should be positive")
+    @NotNull(groups = {CreateValidationGroup.class})
+    @Positive(message = "Post Id should be positive", groups = CreateValidationGroup.class)
     private Long postId;
 
     public String getContent() {
@@ -22,14 +19,6 @@ public class CommentDTO {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Long getPostId() {

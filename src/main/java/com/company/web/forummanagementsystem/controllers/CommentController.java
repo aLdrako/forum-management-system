@@ -8,10 +8,12 @@ import com.company.web.forummanagementsystem.helpers.ModelMapper;
 import com.company.web.forummanagementsystem.models.Comment;
 import com.company.web.forummanagementsystem.models.CommentDTO;
 import com.company.web.forummanagementsystem.models.User;
+import com.company.web.forummanagementsystem.models.validations.CreateValidationGroup;
+import com.company.web.forummanagementsystem.models.validations.UpdateValidationGroup;
 import com.company.web.forummanagementsystem.service.CommentServices;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -45,11 +47,11 @@ public class CommentController {
     }
 
     @PostMapping("/comments")
-    public Comment create(@Valid @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
+    public Comment create(@Validated(CreateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            commentDTO.setUserId(user.getId()); // taking ID from authenticated user
             Comment comment = modelMapper.dtoToObject(commentDTO);
+            comment.setCreatedBy(user);
             return commentServices.create(comment, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -59,7 +61,7 @@ public class CommentController {
     }
 
     @PutMapping("/comments/{id}")
-    public Comment update(@PathVariable Long id, @Valid @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
+    public Comment update(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Comment comment = modelMapper.dtoToObject(id, commentDTO);

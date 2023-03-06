@@ -14,14 +14,13 @@ import java.util.Objects;
 @Service
 public class CommentServicesImpl implements CommentServices {
 
-    private static final String COMMEND_UPDATE_DELETE_ERROR_MESSAGE = "Only the owner of comment or admin can delete or update comment!";
-    private static final String UNAUTHORIZED_MESSAGE_BLOCKED = "User is blocked and cannot create/edit/delete comment!";
+    private static final String UNAUTHORIZED_ERROR_MESSAGE = "Only the owner of comment or admin can delete or update comment!";
+    private static final String BLOCKED_ERROR_MESSAGE = "User is blocked and cannot create/edit/delete comment!";
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public CommentServicesImpl(CommentRepository commentRepository, UserRepository userRepository,
-                               PostRepository postRepository) {
+    public CommentServicesImpl(CommentRepository commentRepository, UserRepository userRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
@@ -84,11 +83,11 @@ public class CommentServicesImpl implements CommentServices {
 
     private void checkAuthorizedPermissions(Comment comment, User user) {
         if (user.getPermission().isBlocked()) {
-            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE_BLOCKED);
+            throw new UnauthorizedOperationException(BLOCKED_ERROR_MESSAGE);
         }
-        if (user.getPermission().isAdmin() || Objects.equals(comment.getCreatedBy().getId(), user.getId())) {
-            return;
-        }
-        throw new UnauthorizedOperationException(COMMEND_UPDATE_DELETE_ERROR_MESSAGE);
+        if (user.getPermission().isAdmin() ||
+                Objects.equals(comment.getCreatedBy().getId(), user.getId())) return;
+
+        throw new UnauthorizedOperationException(UNAUTHORIZED_ERROR_MESSAGE);
     }
 }

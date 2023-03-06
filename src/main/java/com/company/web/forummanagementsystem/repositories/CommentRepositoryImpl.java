@@ -12,6 +12,8 @@ import java.util.List;
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
 
+    private static final String USER_NO_COMMENT_WITH_ID = "User with id %d does not have comment with id %d!";
+    private static final String POST_NO_COMMENT_WITH_ID = "Post with id %d does not have comment with id %d!";
     private final SessionFactory sessionFactory;
 
     public CommentRepositoryImpl(SessionFactory sessionFactory) {
@@ -67,21 +69,43 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public List<Comment> getCommentsByUserId(Long userId) {
-        return null;
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where createdBy.id = :userId", Comment.class);
+            query.setParameter("userId", userId);
+            return query.list();
+        }
     }
 
     @Override
     public Comment getCommentByUserId(Long userId, Long commentId) {
-        return null;
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where id = :commentId and createdBy.id = :userId", Comment.class);
+            query.setParameter("commentId", commentId);
+            query.setParameter("userId", userId);
+            List<Comment> list = query.list();
+            if (list.size() == 0) throw new EntityNotFoundException(String.format(USER_NO_COMMENT_WITH_ID, userId, commentId));
+            return list.get(0);
+        }
     }
 
     @Override
     public List<Comment> getCommentsByPostId(Long postId) {
-        return null;
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where postedOn.id = :postId", Comment.class);
+            query.setParameter("postId", postId);
+            return query.list();
+        }
     }
 
     @Override
     public Comment getCommentByPostId(Long postId, Long commentId) {
-        return null;
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where id = :commentId and postedOn.id = :postId", Comment.class);
+            query.setParameter("commentId", commentId);
+            query.setParameter("postId", postId);
+            List<Comment> list = query.list();
+            if (list.size() == 0) throw new EntityNotFoundException(String.format(POST_NO_COMMENT_WITH_ID, postId, commentId));
+            return list.get(0);
+        }
     }
 }

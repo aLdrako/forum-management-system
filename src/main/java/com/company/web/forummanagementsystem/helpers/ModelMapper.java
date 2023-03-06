@@ -2,17 +2,14 @@ package com.company.web.forummanagementsystem.helpers;
 
 import com.company.web.forummanagementsystem.models.*;
 import com.company.web.forummanagementsystem.service.PostServices;
-import com.company.web.forummanagementsystem.service.UserServices;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ModelMapper {
 
-    private final UserServices userServices;
     private final PostServices postServices;
 
-    public ModelMapper(UserServices userServices, PostServices postServices) {
-        this.userServices = userServices;
+    public ModelMapper(PostServices postServices) {
         this.postServices = postServices;
     }
 
@@ -65,15 +62,15 @@ public class ModelMapper {
     }
 
     public Comment dtoToObject(Long id, CommentDTO commentDTO) {
-        Comment comment = dtoToObject(commentDTO);
+        Comment comment = new Comment();
         comment.setId(id);
+        comment.setContent(commentDTO.getContent());
         return comment;
     }
 
     public Comment dtoToObject(CommentDTO commentDTO) {
         Comment comment = new Comment();
         comment.setContent(commentDTO.getContent());
-        comment.setCreatedBy(userServices.getById(commentDTO.getUserId()));
         comment.setPostedOn(postServices.getById(commentDTO.getPostId()));
         return comment;
     }
