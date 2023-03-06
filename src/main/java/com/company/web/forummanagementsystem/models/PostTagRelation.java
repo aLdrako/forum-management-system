@@ -3,32 +3,31 @@ package com.company.web.forummanagementsystem.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.io.Serializable;
 import java.util.Objects;
-
-
 @Entity
-@Table(name = "likes")
-public class Like {
+@Table(name = "posts_tags")
+public class PostTagRelation {
+
     @EmbeddedId
-    private LikeId likeId;
+    private TagId postTagId;
     @JsonIgnore
     @ManyToOne
     @MapsId("id")
     private Post post;
 
-    public Like() {}
-
-    public Like(LikeId likeId) {
-        this.likeId = likeId;
+    public PostTagRelation() {
     }
 
-    public LikeId getLikeId() {
-        return likeId;
+    public PostTagRelation(TagId postTagId) {
+        this.postTagId = postTagId;
     }
 
-    public void setLikeId(LikeId likeId) {
-        this.likeId = likeId;
+    public TagId getPostTagId() {
+        return postTagId;
+    }
+
+    public void setPostTagId(TagId postTagId) {
+        this.postTagId = postTagId;
     }
 
     public Post getPost() {

@@ -1,6 +1,7 @@
 package com.company.web.forummanagementsystem.repositories;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
+import com.company.web.forummanagementsystem.models.Like;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.User;
 
@@ -85,6 +86,16 @@ public class PostRepositoryListImpl implements PostRepository {
                 .filter(post -> Objects.equals(post.getId(), postId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have post with id %d!", userId, postId)));
+    }
+
+    @Override
+    public void addLikeToPost(Like like) {
+
+    }
+
+    @Override
+    public void removeLikeFromPost(Like like) {
+
     }
 
 }

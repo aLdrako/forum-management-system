@@ -1,18 +1,14 @@
 package com.company.web.forummanagementsystem.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.*;
+
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -27,16 +23,22 @@ public class Post {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Like> likes;
-    @JsonIgnore
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<PostTagRelation> tags;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User userCreated;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Generated(GenerationTime.ALWAYS)
     @Column(name = "date_created")
     private LocalDateTime dateCreated;
 
     public Post() {
+        likes = new ArrayList<>();
+        tags = new ArrayList<>();
     }
 
     public Post(Long id, String title, String content, User userCreated) {
@@ -44,10 +46,22 @@ public class Post {
         this.title = title;
         this.content = content;
         this.userCreated = userCreated;
+        likes = new ArrayList<>();
+        tags = new ArrayList<>();
     }
     public Post(Long id, String title, String content, User userCreated, LocalDateTime dateCreated) {
         this(id, title, content, userCreated);
         this.dateCreated = dateCreated;
+        likes = new ArrayList<>();
+        tags = new ArrayList<>();
+    }
+
+    public List<PostTagRelation> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<PostTagRelation> tags) {
+        this.tags = tags;
     }
 
     @Override
@@ -87,8 +101,12 @@ public class Post {
         this.content = content;
     }
 
-    public int getLikes() {
-        return likes.size();
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<Like> likes) {
+        this.likes = likes;
     }
 
     public User getUserCreated() {
@@ -99,12 +117,8 @@ public class Post {
         this.userCreated = userCreated;
     }
 
-    public void setLikes(int likes) {
-        this.likes = Arrays.asList(new Like[likes]);
-    }
-
-    public String getDateCreated() {
-        return formatToString(dateCreated);
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
     }
 
     public void setDateCreated(LocalDateTime dateCreated) {

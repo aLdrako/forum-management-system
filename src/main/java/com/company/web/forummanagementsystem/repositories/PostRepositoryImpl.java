@@ -2,10 +2,13 @@ package com.company.web.forummanagementsystem.repositories;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Like;
+import com.company.web.forummanagementsystem.models.LikeId;
 import com.company.web.forummanagementsystem.models.Post;
+import com.company.web.forummanagementsystem.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.lang.management.ManagementPermission;
@@ -15,7 +18,7 @@ import java.util.*;
 public class PostRepositoryImpl implements PostRepository {
 
     private final SessionFactory sessionFactory;
-
+    @Autowired
     public PostRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
@@ -130,6 +133,24 @@ public class PostRepositoryImpl implements PostRepository {
                 throw new EntityNotFoundException("Post", postId, "user id", userId);
             }
             return result.get(0);
+        }
+    }
+
+    @Override
+    public void addLikeToPost(Like like) {
+        try (Session session = sessionFactory.openSession()){
+            session.beginTransaction();
+            session.persist(like);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void removeLikeFromPost(Like like) {
+        try (Session session = sessionFactory.openSession()){
+            session.beginTransaction();
+            session.remove(like);
+            session.getTransaction().commit();
         }
     }
 }

@@ -1,23 +1,29 @@
 package com.company.web.forummanagementsystem.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.io.Serializable;
 import java.util.Objects;
+
 @Embeddable
-public class LikeId implements Serializable {
+public class TagId implements Serializable {
+    @JsonIgnore
     @Column(name = "post_id")
     private Long postId;
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
 
-    public LikeId() {
+    public TagId() {
     }
 
-    public LikeId(Long postId, Long userId) {
+    public TagId(Long postId, Long tagId) {
         this.postId = postId;
-        this.userId = userId;
+
     }
 
     public Long getPostId() {
@@ -28,24 +34,24 @@ public class LikeId implements Serializable {
         this.postId = postId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Tag getTag() {
+        return tag;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setTag(Tag tag) {
+        this.tag = tag;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LikeId likeId = (LikeId) o;
-        return Objects.equals(postId, likeId.postId) && Objects.equals(userId, likeId.userId);
+        TagId tagId = (TagId) o;
+        return Objects.equals(postId, tagId.postId) && Objects.equals(tag, tagId.tag);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(postId, userId);
+        return Objects.hash(postId, tag);
     }
 }

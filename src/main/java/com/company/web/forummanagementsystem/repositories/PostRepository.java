@@ -1,6 +1,8 @@
 package com.company.web.forummanagementsystem.repositories;
 
+import com.company.web.forummanagementsystem.models.Like;
 import com.company.web.forummanagementsystem.models.Post;
+import com.company.web.forummanagementsystem.models.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +17,7 @@ public interface PostRepository {
     List<Post> getTopTenMostCommented();
     List<Post> getTopTenMostRecent();
     Post getPostByUserId(Long userId, Long postId);
+
+    void addLikeToPost(Like like);
+    void removeLikeFromPost(Like like);
 }

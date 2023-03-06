@@ -1,8 +1,11 @@
 package com.company.web.forummanagementsystem.service;
 
 import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
+import com.company.web.forummanagementsystem.models.Like;
+import com.company.web.forummanagementsystem.models.LikeId;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.User;
+import com.company.web.forummanagementsystem.repositories.LikeRepository;
 import com.company.web.forummanagementsystem.repositories.PostRepository;
 import com.company.web.forummanagementsystem.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -17,10 +20,13 @@ public class PostServicesImpl implements PostServices {
     private static final String UNAUTHORIZED_MESSAGE_BLOCKED = "User is blocked";
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
-    public PostServicesImpl(PostRepository postRepository, UserRepository userRepository) {
+    public PostServicesImpl(PostRepository postRepository, UserRepository userRepository,
+                            LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.likeRepository = likeRepository;
     }
 
     @Override
@@ -69,6 +75,22 @@ public class PostServicesImpl implements PostServices {
     public Post getPostByUserId(Long userId, Long postId) {
         userRepository.getById(userId);
         return postRepository.getPostByUserId(userId, postId);
+    }
+
+    @Override
+    public void changePostLikes(Long id, User user) {
+        postRepository.getById(id);
+        if (user.getPermission().isBlocked()) {
+            throw new UnauthorizedOperationException("User is blocked!");
+        }
+        Like like = likeRepository.getById(id, user.getId());
+
+        if (like == null) {
+            Like newLike = new Like(new LikeId(id, user.getId()));
+            postRepository.addLikeToPost(newLike);
+        } else {
+            postRepository.removeLikeFromPost(like);
+        }
     }
 
 }

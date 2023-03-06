@@ -1,7 +1,9 @@
 package com.company.web.forummanagementsystem.repositories;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
+import com.company.web.forummanagementsystem.models.Like;
 import com.company.web.forummanagementsystem.models.Post;
+import com.company.web.forummanagementsystem.models.User;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
@@ -309,6 +311,18 @@ public class PostRepositoryJDBCImpl implements PostRepository{
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void addLikeToPost(Like like) {
+
+    }
+
+    @Override
+    public void removeLikeFromPost(Like like) {
+
+    }
+
+
     private List<Post> getPosts(ResultSet postData) throws SQLException {
         List<Post> posts = new ArrayList<>();
         while (postData.next()) {
@@ -319,7 +333,7 @@ public class PostRepositoryJDBCImpl implements PostRepository{
                     userRepository.getById(postData.getLong("user_id")),
                     postData.getTimestamp("date_created").toLocalDateTime()
             );
-            post.setLikes(postData.getInt("likes"));
+            //post.setLikes(postData.getInt("likes"));
             posts.add(post);
         }
         return posts;

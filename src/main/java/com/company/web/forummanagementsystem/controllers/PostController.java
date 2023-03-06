@@ -7,6 +7,7 @@ import com.company.web.forummanagementsystem.helpers.AuthenticationHelper;
 import com.company.web.forummanagementsystem.helpers.ModelMapper;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.PostDTO;
+import com.company.web.forummanagementsystem.models.PostOutputDTO;
 import com.company.web.forummanagementsystem.models.User;
 import com.company.web.forummanagementsystem.service.PostServices;
 import jakarta.validation.Valid;
@@ -34,28 +35,30 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<Post> getAll(@RequestParam(required = false) Optional<String> title,
-                             @RequestParam(required = false) Optional<String> sortBy,
-                             @RequestParam(required = false) Optional<String> orderBy) {
-        return postServices.getAll(Optional.empty(), title, sortBy, orderBy);
+    public List<PostOutputDTO> getAll(@RequestParam(required = false) Optional<String> title,
+                                      @RequestParam(required = false) Optional<String> sortBy,
+                                      @RequestParam(required = false) Optional<String> orderBy) {
+        return postMapper.dtoToObject(postServices.getAll(Optional.empty(), title, sortBy, orderBy));
     }
 
     @GetMapping("/posts/{id}")
-    public Post getById(@PathVariable Long id) {
+    public PostOutputDTO getById(@PathVariable Long id) {
         try {
-            return postServices.getById(id);
+           Post post = postServices.getById(id);
+           return postMapper.dtoToObject(post);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @PostMapping("/posts")
-    public Post create(@Valid @RequestBody PostDTO postDTO, @RequestHeader HttpHeaders headers) {
+    public PostOutputDTO create(@Valid @RequestBody PostDTO postDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Post post = postMapper.dtoToObject(postDTO);
             post.setUserCreated(user);
-            return postServices.create(post, user);
+            Post postCreated = postServices.create(post, user);
+            return postMapper.dtoToObject(postCreated);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
@@ -64,15 +67,29 @@ public class PostController {
     }
 
     @PutMapping("/posts/{id}")
-    public Post update(@PathVariable Long id, @Valid @RequestBody PostDTO postDTO,
+    public PostOutputDTO update(@PathVariable Long id, @Valid @RequestBody PostDTO postDTO,
                        @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Post post = postMapper.dtoToObject(id, postDTO);
-            return postServices.update(post, user);
+            Post updatedPost = postServices.update(post, user);
+            return postMapper.dtoToObject(updatedPost);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthorizedOperationException |  AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
+    @PostMapping("/posts/{id}/like")
+    public void addLike(@PathVariable Long id,
+                         @RequestHeader HttpHeaders headers) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            postServices.changePostLikes(id, user);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
@@ -90,21 +107,22 @@ public class PostController {
     }
 
     @GetMapping("/users/{userId}/posts")
-    public List<Post> getPostsByUserId(@PathVariable Long userId,
+    public List<PostOutputDTO> getPostsByUserId(@PathVariable Long userId,
                                     @RequestParam(required = false) Optional<String> title,
                                     @RequestParam(required = false) Optional<String> sortBy,
                                     @RequestParam(required = false) Optional<String> orderBy) {
         try {
-            return postServices.getAll(userId.describeConstable(), title, sortBy, orderBy);
+            return postMapper.dtoToObject(postServices.getAll(userId.describeConstable(),
+                    title, sortBy, orderBy));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("/users/{userId}/posts/{postId}")
-    public Post getPostByUserId(@PathVariable Long userId, @PathVariable Long postId) {
+    public PostOutputDTO getPostByUserId(@PathVariable Long userId, @PathVariable Long postId) {
         try {
-            return postServices.getPostByUserId(userId, postId);
+            return postMapper.dtoToObject(postServices.getPostByUserId(userId, postId));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

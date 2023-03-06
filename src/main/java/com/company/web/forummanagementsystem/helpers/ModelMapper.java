@@ -4,6 +4,13 @@ import com.company.web.forummanagementsystem.models.*;
 import com.company.web.forummanagementsystem.service.PostServices;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
+
 @Component
 public class ModelMapper {
 
@@ -56,8 +63,25 @@ public class ModelMapper {
         Post post = new Post();
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
-        post.setLikes(0);
 
         return post;
+    }
+
+    public List<PostOutputDTO> dtoToObject(List<Post> allPosts) {
+        return allPosts.stream().map(this::dtoToObject).collect(Collectors.toList());
+    }
+    public PostOutputDTO dtoToObject(Post post) {
+        PostOutputDTO postOutputDTO = new PostOutputDTO();
+        postOutputDTO.setTitle(post.getTitle());
+        postOutputDTO.setContent(post.getContent());
+        postOutputDTO.setLikes(post.getLikes().size());
+        postOutputDTO.setTags(
+                post.getTags().stream().map(PostTagRelation::getPostTagId).map(TagId::getTag)
+                        .map(Tag::getName).collect(Collectors.toList())
+        );
+        postOutputDTO.setUserCreated(post.getUserCreated().getUsername());
+        postOutputDTO.setDateCreated(formatToString(post.getDateCreated()));
+
+        return postOutputDTO;
     }
 }
