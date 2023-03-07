@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.models.dto;
+package com.telerikacademy.web.fms.models.dto;
 
 public class PermissionDTO {
     private boolean isAdmin;

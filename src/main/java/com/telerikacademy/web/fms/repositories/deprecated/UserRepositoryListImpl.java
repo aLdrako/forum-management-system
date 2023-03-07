@@ -1,8 +1,8 @@
-package com.company.web.forummanagementsystem.repositories.deprecated;
+package com.telerikacademy.web.fms.repositories.deprecated;
 
-import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
-import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
+import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

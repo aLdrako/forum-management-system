@@ -1,8 +1,8 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.telerikacademy.web.fms.repositories;
 
-import com.company.web.forummanagementsystem.models.Like;
-import com.company.web.forummanagementsystem.models.LikeId;
-import com.company.web.forummanagementsystem.repositories.contracts.LikeRepository;
+import com.telerikacademy.web.fms.models.Like;
+import com.telerikacademy.web.fms.models.LikeId;
+import com.telerikacademy.web.fms.repositories.contracts.LikeRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

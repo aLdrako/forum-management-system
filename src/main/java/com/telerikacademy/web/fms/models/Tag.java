@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.models;
+package com.telerikacademy.web.fms.models;
 
 import jakarta.persistence.*;
 

@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.models.validations;
+package com.telerikacademy.web.fms.models.validations;
 
 public interface UpdateValidationGroup {
 

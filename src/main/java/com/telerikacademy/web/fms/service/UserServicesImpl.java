@@ -1,16 +1,16 @@
-package com.company.web.forummanagementsystem.service;
+package com.telerikacademy.web.fms.service;
 
-import com.company.web.forummanagementsystem.exceptions.DuplicateEntityException;
-import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
-import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
-import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
-import com.company.web.forummanagementsystem.service.contracts.UserServices;
+import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
+import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
+import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
+import com.telerikacademy.web.fms.service.contracts.UserServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToLocalDateTime;
+import static com.telerikacademy.web.fms.helpers.DateTimeFormat.formatToLocalDateTime;
 
 @Service
 public class UserServicesImpl implements UserServices {

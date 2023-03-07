@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.exceptions;
+package com.telerikacademy.web.fms.exceptions;
 
 public class AuthorizationException extends RuntimeException {
     public AuthorizationException() {

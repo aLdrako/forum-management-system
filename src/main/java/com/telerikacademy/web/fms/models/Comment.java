@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.models;
+package com.telerikacademy.web.fms.models;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.Generated;
@@ -6,7 +6,7 @@ import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.*;
+import static com.telerikacademy.web.fms.helpers.DateTimeFormat.*;
 
 @Entity
 @Table(name = "comments")

@@ -1,6 +1,6 @@
-package com.company.web.forummanagementsystem.repositories.contracts;
+package com.telerikacademy.web.fms.repositories.contracts;
 
-import com.company.web.forummanagementsystem.models.User;
+import com.telerikacademy.web.fms.models.User;
 
 import java.util.List;
 

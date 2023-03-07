@@ -1,10 +1,10 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.telerikacademy.web.fms.repositories;
 
-import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
-import com.company.web.forummanagementsystem.models.Comment;
-import com.company.web.forummanagementsystem.models.Post;
-import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.repositories.contracts.CommentRepository;
+import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.models.Comment;
+import com.telerikacademy.web.fms.models.Post;
+import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.repositories.contracts.CommentRepository;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

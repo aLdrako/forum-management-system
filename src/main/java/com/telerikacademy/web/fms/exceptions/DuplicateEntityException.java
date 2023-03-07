@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.exceptions;
+package com.telerikacademy.web.fms.exceptions;
 
 public class DuplicateEntityException extends RuntimeException {
 

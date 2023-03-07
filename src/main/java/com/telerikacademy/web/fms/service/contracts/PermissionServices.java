@@ -1,7 +1,7 @@
-package com.company.web.forummanagementsystem.service.contracts;
+package com.telerikacademy.web.fms.service.contracts;
 
-import com.company.web.forummanagementsystem.models.Permission;
-import com.company.web.forummanagementsystem.models.User;
+import com.telerikacademy.web.fms.models.Permission;
+import com.telerikacademy.web.fms.models.User;
 
 public interface PermissionServices {
     Permission getById(Long id);

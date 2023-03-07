@@ -1,10 +1,10 @@
-package com.company.web.forummanagementsystem.repositories.deprecated;
+package com.telerikacademy.web.fms.repositories.deprecated;
 
-import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
-import com.company.web.forummanagementsystem.models.Like;
-import com.company.web.forummanagementsystem.models.Post;
-import com.company.web.forummanagementsystem.repositories.contracts.PostRepository;
-import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
+import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.models.Like;
+import com.telerikacademy.web.fms.models.Post;
+import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
+import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 

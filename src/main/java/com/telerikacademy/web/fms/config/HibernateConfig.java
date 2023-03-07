@@ -1,6 +1,6 @@
-package com.company.web.forummanagementsystem.config;
+package com.telerikacademy.web.fms.config;
 
-import com.company.web.forummanagementsystem.models.User;
+import com.telerikacademy.web.fms.models.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

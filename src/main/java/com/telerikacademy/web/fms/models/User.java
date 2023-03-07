@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.models;
+package com.telerikacademy.web.fms.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -8,7 +8,7 @@ import org.hibernate.annotations.GenerationTime;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
+import static com.telerikacademy.web.fms.helpers.DateTimeFormat.formatToString;
 
 @Entity
 @Table(name = "users")

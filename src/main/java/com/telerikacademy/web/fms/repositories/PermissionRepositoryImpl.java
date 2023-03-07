@@ -1,8 +1,8 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.telerikacademy.web.fms.repositories;
 
-import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
-import com.company.web.forummanagementsystem.models.Permission;
-import com.company.web.forummanagementsystem.repositories.contracts.PermissionRepository;
+import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.models.Permission;
+import com.telerikacademy.web.fms.repositories.contracts.PermissionRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;

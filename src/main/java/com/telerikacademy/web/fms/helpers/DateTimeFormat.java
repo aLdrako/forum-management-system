@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.helpers;
+package com.telerikacademy.web.fms.helpers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

@@ -1,10 +1,10 @@
-package com.company.web.forummanagementsystem.service;
+package com.telerikacademy.web.fms.service;
 
-import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
-import com.company.web.forummanagementsystem.models.Permission;
-import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.repositories.contracts.PermissionRepository;
-import com.company.web.forummanagementsystem.service.contracts.PermissionServices;
+import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
+import com.telerikacademy.web.fms.models.Permission;
+import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.repositories.contracts.PermissionRepository;
+import com.telerikacademy.web.fms.service.contracts.PermissionServices;
 import org.springframework.stereotype.Service;
 
 @Service

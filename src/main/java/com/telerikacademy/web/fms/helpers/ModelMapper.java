@@ -1,15 +1,15 @@
-package com.company.web.forummanagementsystem.helpers;
+package com.telerikacademy.web.fms.helpers;
 
-import com.company.web.forummanagementsystem.models.*;
-import com.company.web.forummanagementsystem.models.dto.*;
-import com.company.web.forummanagementsystem.service.contracts.CommentServices;
-import com.company.web.forummanagementsystem.service.contracts.PostServices;
+import com.telerikacademy.web.fms.models.*;
+import com.telerikacademy.web.fms.models.dto.*;
+import com.telerikacademy.web.fms.service.contracts.CommentServices;
+import com.telerikacademy.web.fms.service.contracts.PostServices;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
+import static com.telerikacademy.web.fms.helpers.DateTimeFormat.formatToString;
 
 @Component
 public class ModelMapper {

@@ -1,14 +1,14 @@
-package com.company.web.forummanagementsystem.service;
+package com.telerikacademy.web.fms.service;
 
-import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
-import com.company.web.forummanagementsystem.models.Like;
-import com.company.web.forummanagementsystem.models.LikeId;
-import com.company.web.forummanagementsystem.models.Post;
-import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.repositories.contracts.LikeRepository;
-import com.company.web.forummanagementsystem.repositories.contracts.PostRepository;
-import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
-import com.company.web.forummanagementsystem.service.contracts.PostServices;
+import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
+import com.telerikacademy.web.fms.models.Like;
+import com.telerikacademy.web.fms.models.LikeId;
+import com.telerikacademy.web.fms.models.Post;
+import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.repositories.contracts.LikeRepository;
+import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
+import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
+import com.telerikacademy.web.fms.service.contracts.PostServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

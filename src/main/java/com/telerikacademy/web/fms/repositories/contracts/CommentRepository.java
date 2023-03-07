@@ -1,6 +1,6 @@
-package com.company.web.forummanagementsystem.repositories.contracts;
+package com.telerikacademy.web.fms.repositories.contracts;
 
-import com.company.web.forummanagementsystem.models.Comment;
+import com.telerikacademy.web.fms.models.Comment;
 
 import java.util.List;
 import java.util.Map;

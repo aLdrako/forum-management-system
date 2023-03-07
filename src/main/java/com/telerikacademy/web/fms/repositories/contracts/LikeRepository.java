@@ -1,6 +1,6 @@
-package com.company.web.forummanagementsystem.repositories.contracts;
+package com.telerikacademy.web.fms.repositories.contracts;
 
-import com.company.web.forummanagementsystem.models.Like;
+import com.telerikacademy.web.fms.models.Like;
 
 public interface LikeRepository {
 

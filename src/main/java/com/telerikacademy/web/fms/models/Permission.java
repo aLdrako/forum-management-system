@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.models;
+package com.telerikacademy.web.fms.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;

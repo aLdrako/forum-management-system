@@ -1,9 +1,9 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.telerikacademy.web.fms.repositories;
 
-import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
-import com.company.web.forummanagementsystem.models.Like;
-import com.company.web.forummanagementsystem.models.Post;
-import com.company.web.forummanagementsystem.repositories.contracts.PostRepository;
+import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.models.Like;
+import com.telerikacademy.web.fms.models.Post;
+import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;

@@ -1,8 +1,8 @@
-package com.company.web.forummanagementsystem.helpers;
+package com.telerikacademy.web.fms.helpers;
 
-import com.company.web.forummanagementsystem.exceptions.AuthorizationException;
-import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.service.contracts.UserServices;
+import com.telerikacademy.web.fms.exceptions.AuthorizationException;
+import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.service.contracts.UserServices;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 

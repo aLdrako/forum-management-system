@@ -1,7 +1,7 @@
-package com.company.web.forummanagementsystem.models.dto;
+package com.telerikacademy.web.fms.models.dto;
 
-import com.company.web.forummanagementsystem.models.validations.CreateValidationGroup;
-import com.company.web.forummanagementsystem.models.validations.UpdateValidationGroup;
+import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
+import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import jakarta.validation.constraints.*;
 
 public class CommentDTO {
