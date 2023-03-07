@@ -1,11 +1,11 @@
-package com.telerikacademy.web.fms.service;
+package com.telerikacademy.web.fms.services;
 
 import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
-import com.telerikacademy.web.fms.service.contracts.UserServices;
+import com.telerikacademy.web.fms.services.contracts.UserServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

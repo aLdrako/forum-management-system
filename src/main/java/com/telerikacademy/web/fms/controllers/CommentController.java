@@ -11,7 +11,7 @@ import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
 import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
-import com.telerikacademy.web.fms.service.contracts.CommentServices;
+import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -36,8 +36,7 @@ public class CommentController {
 
     @GetMapping("/comments")
     public List<CommentOutputDTO> getAll() {
-        List<Comment> comments = commentServices.getAll();
-        return modelMapper.objectToDto(comments);
+        return commentServices.getAll().stream().map(modelMapper::objectToDto).toList();
     }
 
     @GetMapping("/comments/{id}")
@@ -92,8 +91,7 @@ public class CommentController {
     @GetMapping("users/{userId}/comments")
     public List<CommentOutputDTO> getCommentsByUserId(@PathVariable Long userId, @RequestParam Map<String, String> parameters) {
         try {
-            List<Comment> comments = commentServices.getCommentsByUserId(userId, parameters);
-            return modelMapper.objectToDto(comments);
+            return commentServices.getCommentsByUserId(userId, parameters).stream().map(modelMapper::objectToDto).toList();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -112,8 +110,7 @@ public class CommentController {
     @GetMapping("posts/{postId}/comments")
     public List<CommentOutputDTO> getCommentsByPostId(@PathVariable Long postId, @RequestParam Map<String, String> parameters) {
         try {
-            List<Comment> comments = commentServices.getCommentsByPostId(postId, parameters);
-            return modelMapper.objectToDto(comments);
+            return commentServices.getCommentsByPostId(postId, parameters).stream().map(modelMapper::objectToDto).toList();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

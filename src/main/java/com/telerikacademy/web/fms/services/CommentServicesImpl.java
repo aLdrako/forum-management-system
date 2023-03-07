@@ -1,4 +1,4 @@
-package com.telerikacademy.web.fms.service;
+package com.telerikacademy.web.fms.services;
 
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.models.Comment;
@@ -6,7 +6,7 @@ import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.CommentRepository;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
-import com.telerikacademy.web.fms.service.contracts.CommentServices;
+import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -82,12 +82,12 @@ public class CommentServicesImpl implements CommentServices {
     }
 
     private void checkAuthorizedPermissions(Comment comment, User user) {
+        if (user.getPermission().isAdmin()) return;
         if (user.getPermission().isBlocked()) {
             throw new UnauthorizedOperationException(BLOCKED_ERROR_MESSAGE);
         }
-        if (user.getPermission().isAdmin() ||
-                Objects.equals(comment.getCreatedBy().getId(), user.getId())) return;
-
-        throw new UnauthorizedOperationException(UNAUTHORIZED_ERROR_MESSAGE);
+        if (!Objects.equals(comment.getCreatedBy().getId(), user.getId())) {
+            throw new UnauthorizedOperationException(UNAUTHORIZED_ERROR_MESSAGE);
+        }
     }
 }

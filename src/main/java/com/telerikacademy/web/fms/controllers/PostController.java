@@ -10,7 +10,7 @@ import com.telerikacademy.web.fms.models.dto.PostDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
-import com.telerikacademy.web.fms.service.contracts.PostServices;
+import com.telerikacademy.web.fms.services.contracts.PostServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
