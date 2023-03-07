@@ -4,6 +4,11 @@ import com.company.web.forummanagementsystem.models.*;
 import com.company.web.forummanagementsystem.service.PostServices;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.formatToString;
+
 @Component
 public class ModelMapper {
 

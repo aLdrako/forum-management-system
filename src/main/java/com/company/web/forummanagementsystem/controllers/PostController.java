@@ -9,10 +9,12 @@ import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.PostDTO;
 import com.company.web.forummanagementsystem.models.PostOutputDTO;
 import com.company.web.forummanagementsystem.models.User;
+import com.company.web.forummanagementsystem.models.validations.CreateValidationGroup;
 import com.company.web.forummanagementsystem.service.PostServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -52,7 +54,7 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public PostOutputDTO create(@Valid @RequestBody PostDTO postDTO, @RequestHeader HttpHeaders headers) {
+    public PostOutputDTO create(@Validated(CreateValidationGroup.class) @RequestBody PostDTO postDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Post post = postMapper.dtoToObject(postDTO);
