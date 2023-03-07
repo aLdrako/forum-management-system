@@ -5,9 +5,10 @@ import com.company.web.forummanagementsystem.models.Like;
 import com.company.web.forummanagementsystem.models.LikeId;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.repositories.LikeRepository;
-import com.company.web.forummanagementsystem.repositories.PostRepository;
-import com.company.web.forummanagementsystem.repositories.UserRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.LikeRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.PostRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
+import com.company.web.forummanagementsystem.service.contracts.PostServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

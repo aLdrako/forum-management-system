@@ -3,9 +3,10 @@ package com.company.web.forummanagementsystem.service;
 import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
 import com.company.web.forummanagementsystem.models.Comment;
 import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.repositories.CommentRepository;
-import com.company.web.forummanagementsystem.repositories.PostRepository;
-import com.company.web.forummanagementsystem.repositories.UserRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.CommentRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.PostRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
+import com.company.web.forummanagementsystem.service.contracts.CommentServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

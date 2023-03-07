@@ -2,6 +2,7 @@ package com.company.web.forummanagementsystem.repositories;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Permission;
+import com.company.web.forummanagementsystem.repositories.contracts.PermissionRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;

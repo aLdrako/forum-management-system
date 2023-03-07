@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.models;
+package com.company.web.forummanagementsystem.models.dto;
 
 public class PermissionDTO {
     private boolean isAdmin;

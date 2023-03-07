@@ -1,7 +1,10 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.company.web.forummanagementsystem.repositories.deprecated;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Comment;
+import com.company.web.forummanagementsystem.repositories.contracts.CommentRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.PostRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
@@ -12,7 +15,7 @@ import java.util.Map;
 
 //@Repository
 @PropertySource("classpath:application.properties")
-public class CommentRepositoryJDBCImpl implements CommentRepository{
+public class CommentRepositoryJDBCImpl implements CommentRepository {
     private static final String SQL_GET = """
             SELECT * FROM comments
             """;

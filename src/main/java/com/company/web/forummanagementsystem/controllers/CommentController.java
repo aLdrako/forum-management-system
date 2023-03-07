@@ -6,11 +6,11 @@ import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationExc
 import com.company.web.forummanagementsystem.helpers.AuthenticationHelper;
 import com.company.web.forummanagementsystem.helpers.ModelMapper;
 import com.company.web.forummanagementsystem.models.Comment;
-import com.company.web.forummanagementsystem.models.CommentDTO;
+import com.company.web.forummanagementsystem.models.dto.CommentDTO;
 import com.company.web.forummanagementsystem.models.User;
 import com.company.web.forummanagementsystem.models.validations.CreateValidationGroup;
 import com.company.web.forummanagementsystem.models.validations.UpdateValidationGroup;
-import com.company.web.forummanagementsystem.service.CommentServices;
+import com.company.web.forummanagementsystem.service.contracts.CommentServices;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;

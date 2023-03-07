@@ -6,11 +6,11 @@ import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationExc
 import com.company.web.forummanagementsystem.helpers.AuthenticationHelper;
 import com.company.web.forummanagementsystem.helpers.ModelMapper;
 import com.company.web.forummanagementsystem.models.Post;
-import com.company.web.forummanagementsystem.models.PostDTO;
-import com.company.web.forummanagementsystem.models.PostOutputDTO;
+import com.company.web.forummanagementsystem.models.dto.PostDTO;
+import com.company.web.forummanagementsystem.models.dto.PostOutputDTO;
 import com.company.web.forummanagementsystem.models.User;
 import com.company.web.forummanagementsystem.models.validations.CreateValidationGroup;
-import com.company.web.forummanagementsystem.service.PostServices;
+import com.company.web.forummanagementsystem.service.contracts.PostServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

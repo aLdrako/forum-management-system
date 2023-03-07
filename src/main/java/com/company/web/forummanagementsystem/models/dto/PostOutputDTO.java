@@ -1,12 +1,6 @@
-package com.company.web.forummanagementsystem.models;
+package com.company.web.forummanagementsystem.models.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class PostOutputDTO {
     private String title;
@@ -25,8 +19,6 @@ public class PostOutputDTO {
         this.tags = tags;
         this.dateCreated = dateCreated;
     }
-
-
 
     public String getTitle() {
         return title;
@@ -72,6 +64,4 @@ public class PostOutputDTO {
     public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
     }
-
-
 }

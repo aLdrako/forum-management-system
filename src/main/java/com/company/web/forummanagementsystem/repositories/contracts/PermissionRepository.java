@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.company.web.forummanagementsystem.repositories.contracts;
 
 import com.company.web.forummanagementsystem.models.Permission;
 

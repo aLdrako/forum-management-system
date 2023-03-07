@@ -4,7 +4,8 @@ import com.company.web.forummanagementsystem.exceptions.DuplicateEntityException
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
 import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.repositories.UserRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
+import com.company.web.forummanagementsystem.service.contracts.UserServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

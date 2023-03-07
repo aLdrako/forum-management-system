@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.service;
+package com.company.web.forummanagementsystem.service.contracts;
 
 import com.company.web.forummanagementsystem.models.Comment;
 import com.company.web.forummanagementsystem.models.User;

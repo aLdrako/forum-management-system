@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.models;
+package com.company.web.forummanagementsystem.models.dto;
 
 import com.company.web.forummanagementsystem.models.validations.CreateValidationGroup;
 import com.company.web.forummanagementsystem.models.validations.UpdateValidationGroup;

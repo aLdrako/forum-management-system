@@ -1,4 +1,4 @@
-package com.company.web.forummanagementsystem.models;
+package com.company.web.forummanagementsystem.models.dto;
 
 import jakarta.validation.constraints.*;
 

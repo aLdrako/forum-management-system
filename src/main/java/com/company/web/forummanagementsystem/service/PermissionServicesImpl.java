@@ -3,7 +3,8 @@ package com.company.web.forummanagementsystem.service;
 import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationException;
 import com.company.web.forummanagementsystem.models.Permission;
 import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.repositories.PermissionRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.PermissionRepository;
+import com.company.web.forummanagementsystem.service.contracts.PermissionServices;
 import org.springframework.stereotype.Service;
 
 @Service

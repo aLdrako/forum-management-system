@@ -2,16 +2,14 @@ package com.company.web.forummanagementsystem.repositories;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Like;
-import com.company.web.forummanagementsystem.models.LikeId;
 import com.company.web.forummanagementsystem.models.Post;
-import com.company.web.forummanagementsystem.models.User;
+import com.company.web.forummanagementsystem.repositories.contracts.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.lang.management.ManagementPermission;
 import java.util.*;
 
 @Repository

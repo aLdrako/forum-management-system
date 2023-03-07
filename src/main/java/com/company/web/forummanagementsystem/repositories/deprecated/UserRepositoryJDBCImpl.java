@@ -1,8 +1,9 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.company.web.forummanagementsystem.repositories.deprecated;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
-import com.company.web.forummanagementsystem.models.Permission;
 import com.company.web.forummanagementsystem.models.User;
+import com.company.web.forummanagementsystem.repositories.contracts.PermissionRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 

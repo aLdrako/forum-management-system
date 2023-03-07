@@ -1,9 +1,10 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.company.web.forummanagementsystem.repositories.deprecated;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Like;
 import com.company.web.forummanagementsystem.models.Post;
-import com.company.web.forummanagementsystem.models.User;
+import com.company.web.forummanagementsystem.repositories.contracts.PostRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
@@ -12,7 +13,7 @@ import java.util.*;
 
 //@Repository
 @PropertySource("classpath:application.properties")
-public class PostRepositoryJDBCImpl implements PostRepository{
+public class PostRepositoryJDBCImpl implements PostRepository {
     private static final String SQL_JOIN_LIKES_TABLE = """
             left join (select post_id, count(*) as likes 
                             from likes 

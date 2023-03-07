@@ -4,6 +4,7 @@ import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Comment;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.User;
+import com.company.web.forummanagementsystem.repositories.contracts.CommentRepository;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -82,10 +83,10 @@ public class CommentRepositoryImpl implements CommentRepository {
             } else {
                 CriteriaBuilder builder = session.getCriteriaBuilder();
                 CriteriaQuery<Comment> criteriaQuery = builder.createQuery(Comment.class);
-                Root<Comment> commentRoot = criteriaQuery.from(Comment.class);
-                Join<Comment, User> userJoin = commentRoot.join("createdBy");
-                criteriaQuery.select(commentRoot).where(builder.equal(userJoin.get("id"), userId));
-                return getComments(params, session, builder, criteriaQuery, commentRoot);
+                Root<Comment> root = criteriaQuery.from(Comment.class);
+                Join<Comment, User> userJoin = root.join("createdBy");
+                criteriaQuery.select(root).where(builder.equal(userJoin.get("id"), userId));
+                return getComments(params, session, builder, criteriaQuery, root);
             }
         }
     }
@@ -113,10 +114,10 @@ public class CommentRepositoryImpl implements CommentRepository {
             } else {
                 CriteriaBuilder builder = session.getCriteriaBuilder();
                 CriteriaQuery<Comment> criteriaQuery = builder.createQuery(Comment.class);
-                Root<Comment> commentRoot = criteriaQuery.from(Comment.class);
-                Join<Comment, Post> postJoin = commentRoot.join("postedOn");
-                criteriaQuery.select(commentRoot).where(builder.equal(postJoin.get("id"), postId));
-                return getComments(params, session, builder, criteriaQuery, commentRoot);
+                Root<Comment> root = criteriaQuery.from(Comment.class);
+                Join<Comment, Post> postJoin = root.join("postedOn");
+                criteriaQuery.select(root).where(builder.equal(postJoin.get("id"), postId));
+                return getComments(params, session, builder, criteriaQuery, root);
             }
         }
     }

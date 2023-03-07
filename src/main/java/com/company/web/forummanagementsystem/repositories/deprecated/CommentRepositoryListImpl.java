@@ -1,9 +1,12 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.company.web.forummanagementsystem.repositories.deprecated;
 
 import com.company.web.forummanagementsystem.exceptions.EntityNotFoundException;
 import com.company.web.forummanagementsystem.models.Comment;
 import com.company.web.forummanagementsystem.models.Post;
 import com.company.web.forummanagementsystem.models.User;
+import com.company.web.forummanagementsystem.repositories.contracts.CommentRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.PostRepository;
+import com.company.web.forummanagementsystem.repositories.contracts.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

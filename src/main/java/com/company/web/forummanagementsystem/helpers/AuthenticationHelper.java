@@ -2,7 +2,7 @@ package com.company.web.forummanagementsystem.helpers;
 
 import com.company.web.forummanagementsystem.exceptions.AuthorizationException;
 import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.service.UserServices;
+import com.company.web.forummanagementsystem.service.contracts.UserServices;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 

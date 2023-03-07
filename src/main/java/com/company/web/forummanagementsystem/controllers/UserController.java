@@ -7,11 +7,11 @@ import com.company.web.forummanagementsystem.exceptions.UnauthorizedOperationExc
 import com.company.web.forummanagementsystem.helpers.AuthenticationHelper;
 import com.company.web.forummanagementsystem.helpers.ModelMapper;
 import com.company.web.forummanagementsystem.models.Permission;
-import com.company.web.forummanagementsystem.models.PermissionDTO;
+import com.company.web.forummanagementsystem.models.dto.PermissionDTO;
 import com.company.web.forummanagementsystem.models.User;
-import com.company.web.forummanagementsystem.models.UserDTO;
-import com.company.web.forummanagementsystem.service.PermissionServices;
-import com.company.web.forummanagementsystem.service.UserServices;
+import com.company.web.forummanagementsystem.models.dto.UserDTO;
+import com.company.web.forummanagementsystem.service.contracts.PermissionServices;
+import com.company.web.forummanagementsystem.service.contracts.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

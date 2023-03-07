@@ -1,8 +1,9 @@
 package com.company.web.forummanagementsystem.helpers;
 
 import com.company.web.forummanagementsystem.models.*;
-import com.company.web.forummanagementsystem.service.CommentServices;
-import com.company.web.forummanagementsystem.service.PostServices;
+import com.company.web.forummanagementsystem.models.dto.*;
+import com.company.web.forummanagementsystem.service.contracts.CommentServices;
+import com.company.web.forummanagementsystem.service.contracts.PostServices;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

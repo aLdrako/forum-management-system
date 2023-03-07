@@ -3,10 +3,6 @@ package com.company.web.forummanagementsystem.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-
 @Entity
 @Table(name = "likes")
 public class Like {
