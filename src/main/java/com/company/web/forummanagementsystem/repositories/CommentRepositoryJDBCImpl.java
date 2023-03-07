@@ -8,6 +8,7 @@ import org.springframework.core.env.Environment;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 //@Repository
 @PropertySource("classpath:application.properties")
@@ -136,7 +137,7 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
     }
 
     @Override
-    public List<Comment> getCommentsByUserId(Long userId) {
+    public List<Comment> getCommentsByUserId(Long userId, Map<String, String> parameters) {
         String query = " WHERE user_id = ?;";
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -173,7 +174,7 @@ public class CommentRepositoryJDBCImpl implements CommentRepository{
     }
 
     @Override
-    public List<Comment> getCommentsByPostId(Long postId) {
+    public List<Comment> getCommentsByPostId(Long postId, Map<String, String> parameters) {
         getById(postId);
         String query = " WHERE post_id = ?;";
         try (

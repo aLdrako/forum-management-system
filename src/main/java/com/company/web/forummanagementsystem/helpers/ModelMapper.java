@@ -1,6 +1,7 @@
 package com.company.web.forummanagementsystem.helpers;
 
 import com.company.web.forummanagementsystem.models.*;
+import com.company.web.forummanagementsystem.service.CommentServices;
 import com.company.web.forummanagementsystem.service.PostServices;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +14,11 @@ import static com.company.web.forummanagementsystem.helpers.DateTimeFormat.forma
 public class ModelMapper {
 
     private final PostServices postServices;
+    private final CommentServices commentServices;
 
-    public ModelMapper(PostServices postServices) {
+    public ModelMapper(PostServices postServices, CommentServices commentServices) {
         this.postServices = postServices;
+        this.commentServices = commentServices;
     }
 
     public User dtoToObject(Long id, UserDTO userDTO) {
@@ -66,8 +69,7 @@ public class ModelMapper {
     }
 
     public Comment dtoToObject(Long id, CommentDTO commentDTO) {
-        Comment comment = new Comment();
-        comment.setId(id);
+        Comment comment = commentServices.getById(id);
         comment.setContent(commentDTO.getContent());
         return comment;
     }

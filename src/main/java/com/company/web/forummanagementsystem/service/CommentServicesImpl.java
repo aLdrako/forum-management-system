@@ -9,6 +9,7 @@ import com.company.web.forummanagementsystem.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -44,10 +45,8 @@ public class CommentServicesImpl implements CommentServices {
 
     @Override
     public Comment update(Comment comment, User user) {
-        Comment commentToUpdate = commentRepository.getById(comment.getId());
-        commentToUpdate.setContent(comment.getContent());
-        checkAuthorizedPermissions(commentToUpdate, user);
-        return commentRepository.update(commentToUpdate);
+        checkAuthorizedPermissions(comment, user);
+        return commentRepository.update(comment);
     }
 
     @Override
@@ -58,9 +57,9 @@ public class CommentServicesImpl implements CommentServices {
     }
 
     @Override
-    public List<Comment> getCommentsByUserId(Long userId) {
+    public List<Comment> getCommentsByUserId(Long userId, Map<String, String> parameters) {
         userRepository.getById(userId);
-        return commentRepository.getCommentsByUserId(userId);
+        return commentRepository.getCommentsByUserId(userId, parameters);
     }
 
     @Override
@@ -70,9 +69,9 @@ public class CommentServicesImpl implements CommentServices {
     }
 
     @Override
-    public List<Comment> getCommentsByPostId(Long postId) {
+    public List<Comment> getCommentsByPostId(Long postId, Map<String, String> parameters) {
         postRepository.getById(postId);
-        return commentRepository.getCommentsByPostId(postId);
+        return commentRepository.getCommentsByPostId(postId, parameters);
     }
 
     @Override
