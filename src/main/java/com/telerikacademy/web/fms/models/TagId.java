@@ -21,9 +21,9 @@ public class TagId implements Serializable {
     public TagId() {
     }
 
-    public TagId(Long postId, Long tagId) {
+    public TagId(Long postId, Tag tag) {
         this.postId = postId;
-
+        this.tag = tag;
     }
 
     public Long getPostId() {

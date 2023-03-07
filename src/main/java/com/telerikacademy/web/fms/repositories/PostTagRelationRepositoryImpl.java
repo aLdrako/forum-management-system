@@ -1,8 +1,10 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.telerikacademy.web.fms.repositories;
 
-import com.company.web.forummanagementsystem.models.PostTagRelation;
-import com.company.web.forummanagementsystem.models.Tag;
-import com.company.web.forummanagementsystem.models.TagId;
+import com.telerikacademy.web.fms.models.PostTagRelation;
+import com.telerikacademy.web.fms.models.Tag;
+import com.telerikacademy.web.fms.models.TagId;
+import com.telerikacademy.web.fms.repositories.contracts.PostTagRelationRepository;
+import com.telerikacademy.web.fms.repositories.contracts.TagRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;

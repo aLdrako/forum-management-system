@@ -1,6 +1,7 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.telerikacademy.web.fms.repositories;
 
-import com.company.web.forummanagementsystem.models.Tag;
+import com.telerikacademy.web.fms.models.Tag;
+import com.telerikacademy.web.fms.repositories.contracts.TagRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class TagRepositoryImpl implements TagRepository{
+public class TagRepositoryImpl implements TagRepository {
 
     private final SessionFactory sessionFactory;
 

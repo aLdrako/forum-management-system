@@ -74,8 +74,9 @@ public class PostController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Post post = postMapper.dtoToObject(id, postDTO);
-            Post updatedPost = postServices.update(post, user);
-            return postMapper.dtoToObject(updatedPost);
+            post = postServices.addTagsToPost(postDTO.getTags(), post);
+            post = postServices.update(post, user);
+            return postMapper.dtoToObject(post);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (UnauthorizedOperationException |  AuthorizationException e) {

@@ -1,13 +1,13 @@
-package com.company.web.forummanagementsystem.service;
+package com.telerikacademy.web.fms.service;
 
-import com.company.web.forummanagementsystem.models.Tag;
-import com.company.web.forummanagementsystem.models.TagId;
-import com.company.web.forummanagementsystem.repositories.TagRepository;
-import jakarta.websocket.server.ServerEndpoint;
+
+import com.telerikacademy.web.fms.models.Tag;
+import com.telerikacademy.web.fms.repositories.contracts.TagRepository;
+import com.telerikacademy.web.fms.service.contracts.TagServices;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TagServicesImpl implements TagServices{
+public class TagServicesImpl implements TagServices {
 
     private final TagRepository tagRepository;
 

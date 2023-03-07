@@ -17,4 +17,6 @@ public interface PostServices {
     Post getPostByUserId(Long userId, Long postId);
 
     void changePostLikes(Long id, User user);
+
+    Post addTagsToPost(List<String> tags, Post post);
 }

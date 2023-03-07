@@ -1,6 +1,7 @@
-package com.company.web.forummanagementsystem.repositories;
+package com.telerikacademy.web.fms.repositories.contracts;
 
-import com.company.web.forummanagementsystem.models.PostTagRelation;
+
+import com.telerikacademy.web.fms.models.PostTagRelation;
 
 public interface PostTagRelationRepository {
 

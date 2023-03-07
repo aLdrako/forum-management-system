@@ -1,14 +1,13 @@
 package com.telerikacademy.web.fms.service;
 
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
-import com.telerikacademy.web.fms.models.Like;
-import com.telerikacademy.web.fms.models.LikeId;
-import com.telerikacademy.web.fms.models.Post;
-import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.models.*;
 import com.telerikacademy.web.fms.repositories.contracts.LikeRepository;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
+import com.telerikacademy.web.fms.repositories.contracts.PostTagRelationRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import com.telerikacademy.web.fms.service.contracts.PostServices;
+import com.telerikacademy.web.fms.service.contracts.TagServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +21,17 @@ public class PostServicesImpl implements PostServices {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
+    private final TagServices tagServices;
+    private final PostTagRelationRepository postTagRelationRepository;
 
     public PostServicesImpl(PostRepository postRepository, UserRepository userRepository,
-                            LikeRepository likeRepository) {
+                            LikeRepository likeRepository, TagServices tagServices,
+                            PostTagRelationRepository postTagRelationRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
+        this.tagServices = tagServices;
+        this.postTagRelationRepository = postTagRelationRepository;
     }
 
     @Override
@@ -93,5 +97,25 @@ public class PostServicesImpl implements PostServices {
             postRepository.removeLikeFromPost(like);
         }
     }
+
+    @Override
+    public Post addTagsToPost(List<String> tags, Post post) {
+        if (tags == null) {
+            return post;
+        }
+
+        for (String tagsName:tags) {
+            Tag tag = tagServices.createTag(tagsName);
+            PostTagRelation postTagRelation = postTagRelationRepository.getRelationById(post.getId(),
+                    tag.getId());
+            if (postTagRelation == null) {
+                postTagRelationRepository.createRelation(new PostTagRelation(new TagId(post.getId(), tag)));
+            } else {
+                postTagRelationRepository.deleteRelation(postTagRelation);
+            }
+        }
+        return getById(post.getId());
+    }
+
 
 }
