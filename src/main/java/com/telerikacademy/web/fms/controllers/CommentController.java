@@ -8,6 +8,7 @@ import com.telerikacademy.web.fms.helpers.ModelMapper;
 import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.dto.CommentDTO;
 import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
 import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.service.contracts.CommentServices;
@@ -34,26 +35,28 @@ public class CommentController {
     }
 
     @GetMapping("/comments")
-    public List<Comment> getAll() {
-        return commentServices.getAll();
+    public List<CommentOutputDTO> getAll() {
+        List<Comment> comments = commentServices.getAll();
+        return modelMapper.objectToDto(comments);
     }
 
     @GetMapping("/comments/{id}")
-    public Comment getById(@PathVariable Long id) {
+    public CommentOutputDTO getById(@PathVariable Long id) {
         try {
-            return commentServices.getById(id);
+            Comment comment = commentServices.getById(id);
+            return modelMapper.objectToDto(comment);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @PostMapping("/comments")
-    public Comment create(@Validated(CreateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
+    public CommentOutputDTO create(@Validated(CreateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Comment comment = modelMapper.dtoToObject(commentDTO);
             comment.setCreatedBy(user);
-            return commentServices.create(comment, user);
+            return modelMapper.objectToDto(commentServices.create(comment, user));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
@@ -62,11 +65,11 @@ public class CommentController {
     }
 
     @PutMapping("/comments/{id}")
-    public Comment update(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
+    public CommentOutputDTO update(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Comment comment = modelMapper.dtoToObject(id, commentDTO);
-            return commentServices.update(comment, user);
+            return modelMapper.objectToDto(commentServices.update(comment, user));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
@@ -87,36 +90,40 @@ public class CommentController {
     }
 
     @GetMapping("users/{userId}/comments")
-    public List<Comment> getCommentsByUserId(@PathVariable Long userId, @RequestParam Map<String, String> parameters) {
+    public List<CommentOutputDTO> getCommentsByUserId(@PathVariable Long userId, @RequestParam Map<String, String> parameters) {
         try {
-            return commentServices.getCommentsByUserId(userId, parameters);
+            List<Comment> comments = commentServices.getCommentsByUserId(userId, parameters);
+            return modelMapper.objectToDto(comments);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("users/{userId}/comments/{commentId}")
-    public Comment getCommentByUserId(@PathVariable Long userId, @PathVariable Long commentId) {
+    public CommentOutputDTO getCommentByUserId(@PathVariable Long userId, @PathVariable Long commentId) {
         try {
-            return commentServices.getCommentByUserId(userId, commentId);
+            Comment comment = commentServices.getCommentByUserId(userId, commentId);
+            return modelMapper.objectToDto(comment);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("posts/{postId}/comments")
-    public List<Comment> getCommentsByPostId(@PathVariable Long postId, @RequestParam Map<String, String> parameters) {
+    public List<CommentOutputDTO> getCommentsByPostId(@PathVariable Long postId, @RequestParam Map<String, String> parameters) {
         try {
-            return commentServices.getCommentsByPostId(postId, parameters);
+            List<Comment> comments = commentServices.getCommentsByPostId(postId, parameters);
+            return modelMapper.objectToDto(comments);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("posts/{postId}/comments/{commentId}")
-    public Comment getCommentByPostId(@PathVariable Long postId, @PathVariable Long commentId) {
+    public CommentOutputDTO getCommentByPostId(@PathVariable Long postId, @PathVariable Long commentId) {
         try {
-            return commentServices.getCommentByPostId(postId, commentId);
+            Comment comment = commentServices.getCommentByPostId(postId, commentId);
+            return modelMapper.objectToDto(comment);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

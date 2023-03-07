@@ -6,7 +6,9 @@ import com.telerikacademy.web.fms.service.contracts.CommentServices;
 import com.telerikacademy.web.fms.service.contracts.PostServices;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.telerikacademy.web.fms.helpers.DateTimeFormat.formatToString;
@@ -82,9 +84,23 @@ public class ModelMapper {
         return comment;
     }
 
+    public CommentOutputDTO objectToDto(Comment comment) {
+        CommentOutputDTO commentOutputDTO = new CommentOutputDTO();
+        commentOutputDTO.setContent(comment.getContent());
+        commentOutputDTO.setCreatedBy(comment.getCreatedBy().getUsername());
+        commentOutputDTO.setPostedOn(comment.getPostedOn().getTitle());
+        commentOutputDTO.setDateCreated(comment.getDateCreated());
+        return commentOutputDTO;
+    }
+
+    public List<CommentOutputDTO> objectToDto(List<Comment> comments) {
+        return comments.stream().map(this::objectToDto).collect(Collectors.toList());
+    }
+
     public List<PostOutputDTO> dtoToObject(List<Post> allPosts) {
         return allPosts.stream().map(this::dtoToObject).collect(Collectors.toList());
     }
+
     public PostOutputDTO dtoToObject(Post post) {
         PostOutputDTO postOutputDTO = new PostOutputDTO();
         postOutputDTO.setTitle(post.getTitle());
