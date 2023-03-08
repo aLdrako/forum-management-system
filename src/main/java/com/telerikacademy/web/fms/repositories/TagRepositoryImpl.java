@@ -1,5 +1,6 @@
 package com.telerikacademy.web.fms.repositories;
 
+import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.models.Tag;
 import com.telerikacademy.web.fms.repositories.contracts.TagRepository;
 import org.hibernate.Session;
@@ -41,10 +42,10 @@ public class TagRepositoryImpl implements TagRepository {
             Query<Tag> query = session.createQuery("from Tag t where t.name = :tagName", Tag.class);
             query.setParameter("tagName", name);
             List<Tag> result = query.list();
-            if (!result.isEmpty()) {
-                return result.get(0);
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("Tag", "name", name);
             }
-            return null;
+            return result.get(0);
         }
     }
 }

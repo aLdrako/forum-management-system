@@ -18,5 +18,5 @@ public interface PostServices {
 
     void changePostLikes(Long id, User user);
 
-    Post addTagsToPost(List<String> tags, Post post);
+    Post updateTagsInPost(List<String> tags, Post post);
 }

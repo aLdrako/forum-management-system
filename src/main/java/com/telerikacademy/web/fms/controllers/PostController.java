@@ -9,12 +9,10 @@ import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.dto.PostDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
 import com.telerikacademy.web.fms.models.User;
-import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -54,7 +52,7 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public PostOutputDTO create(@Validated(CreateValidationGroup.class) @RequestBody PostDTO postDTO, @RequestHeader HttpHeaders headers) {
+    public PostOutputDTO create(@Valid @RequestBody PostDTO postDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Post post = postMapper.dtoToObject(postDTO);
@@ -74,8 +72,8 @@ public class PostController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Post post = postMapper.dtoToObject(id, postDTO);
-            post = postServices.update(post, user);
-            post = postServices.addTagsToPost(postDTO.getTags(), post);
+            postServices.update(post, user);
+            postServices.updateTagsInPost(postDTO.getTags(), post);
             return postMapper.dtoToObject(post);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -85,14 +83,14 @@ public class PostController {
     }
 
     @PostMapping("/posts/{id}/like")
-    public void addLike(@PathVariable Long id,
-                         @RequestHeader HttpHeaders headers) {
+    public void changePostLikes(@PathVariable Long id,
+                                @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             postServices.changePostLikes(id, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException e) {
+        } catch (UnauthorizedOperationException | AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }

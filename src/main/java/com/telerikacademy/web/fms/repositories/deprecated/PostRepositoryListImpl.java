@@ -1,7 +1,6 @@
 package com.telerikacademy.web.fms.repositories.deprecated;
 
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
-import com.telerikacademy.web.fms.models.Like;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
@@ -64,9 +63,8 @@ public class PostRepositoryListImpl implements PostRepository {
     }
 
     @Override
-    public void delete(Long id) {
-        Post postToDelete = getById(id);
-        posts.remove(postToDelete);
+    public void delete(Post post) {
+        posts.remove(post);
     }
 
     @Override
@@ -88,16 +86,6 @@ public class PostRepositoryListImpl implements PostRepository {
                 .filter(post -> Objects.equals(post.getId(), postId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have post with id %d!", userId, postId)));
-    }
-
-    @Override
-    public void addLikeToPost(Like like) {
-
-    }
-
-    @Override
-    public void removeLikeFromPost(Like like) {
-
     }
 
 }

@@ -1,8 +1,6 @@
 package com.telerikacademy.web.fms.repositories.contracts;
 
-import com.telerikacademy.web.fms.models.Like;
 import com.telerikacademy.web.fms.models.Post;
-import com.telerikacademy.web.fms.models.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +11,8 @@ public interface PostRepository {
                       Optional<String> sortBy, Optional<String> orderBy);
     Post create(Post post);
     Post update(Post post);
-    void delete(Long id);
+    void delete(Post post);
     List<Post> getTopTenMostCommented();
     List<Post> getTopTenMostRecent();
     Post getPostByUserId(Long userId, Long postId);
-
-    void addLikeToPost(Like like);
-    void removeLikeFromPost(Like like);
 }

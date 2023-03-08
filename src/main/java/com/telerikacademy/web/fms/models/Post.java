@@ -3,12 +3,10 @@ package com.telerikacademy.web.fms.models;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "posts")
@@ -22,17 +20,24 @@ public class Post {
     @Column(name = "content")
     private String content;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<Like> likes;
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<PostTagRelation> tags;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "likes",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> likes;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "comments",
-    joinColumns = @JoinColumn(name = "post_id"),
-    inverseJoinColumns = @JoinColumn(name = "id"))
-    private List<Comment> comments;
+    @JoinTable(
+            name = "posts_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags;
+
+    @OneToMany(mappedBy = "postedOn", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private Set<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -44,8 +49,8 @@ public class Post {
     private LocalDateTime dateCreated;
 
     public Post() {
-        likes = new ArrayList<>();
-        tags = new ArrayList<>();
+        likes = new HashSet<>();
+        tags = new HashSet<>();
     }
 
     public Post(Long id, String title, String content, User userCreated) {
@@ -53,44 +58,38 @@ public class Post {
         this.title = title;
         this.content = content;
         this.userCreated = userCreated;
-        likes = new ArrayList<>();
-        tags = new ArrayList<>();
+        likes = new HashSet<>();
+        tags = new HashSet<>();
     }
     public Post(Long id, String title, String content, User userCreated, LocalDateTime dateCreated) {
         this(id, title, content, userCreated);
         this.dateCreated = dateCreated;
-        likes = new ArrayList<>();
-        tags = new ArrayList<>();
+        likes = new HashSet<>();
+        tags = new HashSet<>();
     }
 
-    public List<Comment> getComments() {
-        return comments;
+    public Set<Comment> getComments() {
+        return new HashSet<>(comments);
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
-    public List<PostTagRelation> getTags() {
-        return tags;
+    public Set<Tag> getTags() {
+        return new HashSet<>(tags);
+    }
+    public void addTag(Tag tag) {
+        tags.add(tag);
+    }
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
     }
 
-    public void setTags(List<PostTagRelation> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Post post = (Post) o;
-        return Objects.equals(id, post.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 
     public Long getId() {
         return id;
@@ -116,11 +115,19 @@ public class Post {
         this.content = content;
     }
 
-    public List<Like> getLikes() {
-        return likes;
+    public Set<User> getLikes() {
+        return new HashSet<>(likes);
     }
 
-    public void setLikes(List<Like> likes) {
+    public void removeLike(User user) {
+        likes.remove(user);
+    }
+
+    public void addLike(User user) {
+        likes.add(user);
+    }
+
+    public void setLikes(Set<User> likes) {
         this.likes = likes;
     }
 
@@ -138,5 +145,17 @@ public class Post {
 
     public void setDateCreated(LocalDateTime dateCreated) {
         this.dateCreated = dateCreated;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return Objects.equals(id, post.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

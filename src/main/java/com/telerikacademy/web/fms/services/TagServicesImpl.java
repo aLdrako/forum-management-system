@@ -1,6 +1,7 @@
 package com.telerikacademy.web.fms.services;
 
 
+import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.models.Tag;
 import com.telerikacademy.web.fms.repositories.contracts.TagRepository;
 import com.telerikacademy.web.fms.services.contracts.TagServices;
@@ -21,17 +22,13 @@ public class TagServicesImpl implements TagServices {
     }
 
     @Override
-    public Tag createTag(Tag tag) {
-        Tag tagFromRepo = tagRepository.getTagByName(tag.getName());
-        if (tagFromRepo == null) {
-            return tagRepository.createTag(tag);
-        }
-        return tagFromRepo;
-    }
-
-    @Override
     public Tag createTag(String tagName) {
-        Tag newTag = new Tag(tagName);
-        return createTag(newTag);
+        Tag tag = new Tag(tagName);
+        try {
+            return tagRepository.getTagByName(tagName);
+        } catch (EntityNotFoundException e) {
+            tagRepository.createTag(tag);
+        }
+        return tag;
     }
 }

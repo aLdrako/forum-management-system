@@ -1,7 +1,6 @@
 package com.telerikacademy.web.fms.repositories;
 
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
-import com.telerikacademy.web.fms.models.Like;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import org.hibernate.Session;
@@ -100,11 +99,10 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public void delete(Long id) {
-        Post postToRemove = getById(id);
+    public void delete(Post post) {
         try (Session session = sessionFactory.openSession()){
             session.beginTransaction();
-            session.remove(postToRemove);
+            session.remove(post);
             session.getTransaction().commit();
         }
     }
@@ -131,24 +129,6 @@ public class PostRepositoryImpl implements PostRepository {
                 throw new EntityNotFoundException("Post", postId, "user id", userId);
             }
             return result.get(0);
-        }
-    }
-
-    @Override
-    public void addLikeToPost(Like like) {
-        try (Session session = sessionFactory.openSession()){
-            session.beginTransaction();
-            session.persist(like);
-            session.getTransaction().commit();
-        }
-    }
-
-    @Override
-    public void removeLikeFromPost(Like like) {
-        try (Session session = sessionFactory.openSession()){
-            session.beginTransaction();
-            session.remove(like);
-            session.getTransaction().commit();
         }
     }
 }

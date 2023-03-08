@@ -2,9 +2,7 @@ package com.telerikacademy.web.fms.services;
 
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.models.*;
-import com.telerikacademy.web.fms.repositories.contracts.LikeRepository;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
-import com.telerikacademy.web.fms.repositories.contracts.PostTagRelationRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.TagServices;
@@ -20,18 +18,13 @@ public class PostServicesImpl implements PostServices {
     private static final String UNAUTHORIZED_MESSAGE_BLOCKED = "User is blocked";
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final LikeRepository likeRepository;
     private final TagServices tagServices;
-    private final PostTagRelationRepository postTagRelationRepository;
 
     public PostServicesImpl(PostRepository postRepository, UserRepository userRepository,
-                            LikeRepository likeRepository, TagServices tagServices,
-                            PostTagRelationRepository postTagRelationRepository) {
+                            TagServices tagServices) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.likeRepository = likeRepository;
         this.tagServices = tagServices;
-        this.postTagRelationRepository = postTagRelationRepository;
     }
 
     @Override
@@ -72,7 +65,7 @@ public class PostServicesImpl implements PostServices {
     public void delete(Long id, User user) {
         Post post = postRepository.getById(id);
         checkAuthorizedPermissions(post, user);
-        postRepository.delete(id);
+        postRepository.delete(post);
     }
 
 
@@ -84,38 +77,31 @@ public class PostServicesImpl implements PostServices {
 
     @Override
     public void changePostLikes(Long id, User user) {
-        postRepository.getById(id);
+        Post post = postRepository.getById(id);
         if (user.getPermission().isBlocked()) {
-            throw new UnauthorizedOperationException("User is blocked!");
+            throw new UnauthorizedOperationException(UNAUTHORIZED_MESSAGE_BLOCKED);
         }
-        Like like = likeRepository.getById(id, user.getId());
-
-        if (like == null) {
-            Like newLike = new Like(new LikeId(id, user.getId()));
-            postRepository.addLikeToPost(newLike);
+        if (post.getLikes().contains(user)) {
+            post.removeLike(user);
         } else {
-            postRepository.removeLikeFromPost(like);
+            post.addLike(user);
         }
+        postRepository.update(post);
     }
 
     @Override
-    public Post addTagsToPost(List<String> tags, Post post) {
+    public Post updateTagsInPost(List<String> tags, Post post) {
         if (tags == null) {
             return post;
         }
-
-        for (String tagsName:tags) {
-            Tag tag = tagServices.createTag(tagsName);
-            PostTagRelation postTagRelation = postTagRelationRepository.getRelationById(post.getId(),
-                    tag.getId());
-            if (postTagRelation == null) {
-                postTagRelationRepository.createRelation(new PostTagRelation(new TagId(post.getId(), tag)));
+        tags.stream().map(tagServices::createTag).forEach(tag -> {
+            if (post.getTags().contains(tag)) {
+                post.removeTag(tag);
             } else {
-                postTagRelationRepository.deleteRelation(postTagRelation);
+                post.addTag(tag);
             }
-        }
-        return getById(post.getId());
+        });
+        postRepository.update(post);
+        return post;
     }
-
-
 }

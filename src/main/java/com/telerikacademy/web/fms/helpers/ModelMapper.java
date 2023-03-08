@@ -101,8 +101,7 @@ public class ModelMapper {
         postOutputDTO.setContent(post.getContent());
         postOutputDTO.setLikes(post.getLikes().size());
         postOutputDTO.setTags(
-                post.getTags().stream().map(PostTagRelation::getPostTagId).map(TagId::getTag)
-                        .map(Tag::getName).collect(Collectors.toList())
+                post.getTags().stream().map(Tag::getName).collect(Collectors.toList())
         );
         postOutputDTO.setUserCreated(post.getUserCreated().getUsername());
         postOutputDTO.setDateCreated(formatToString(post.getDateCreated()));

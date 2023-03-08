@@ -1,7 +1,6 @@
 package com.telerikacademy.web.fms.repositories.deprecated;
 
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
-import com.telerikacademy.web.fms.models.Like;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
@@ -177,10 +176,10 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         }
     }
     @Override
-    public void delete(Long id) {
-        getById(id);
-        deleteCommentsOfPost(id);
-        deleteLikesOfPost(id);
+    public void delete(Post post) {
+        getById(post.getId());
+        deleteCommentsOfPost(post.getId());
+        deleteLikesOfPost(post.getId());
         String query = """
                 delete from posts
                 where id = ?
@@ -189,7 +188,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query)
                 ){
-            statement.setLong(1, id);
+            statement.setLong(1, post.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -312,17 +311,6 @@ public class PostRepositoryJDBCImpl implements PostRepository {
             throw new RuntimeException(e);
         }
     }
-
-    @Override
-    public void addLikeToPost(Like like) {
-
-    }
-
-    @Override
-    public void removeLikeFromPost(Like like) {
-
-    }
-
 
     private List<Post> getPosts(ResultSet postData) throws SQLException {
         List<Post> posts = new ArrayList<>();
