@@ -4,7 +4,7 @@ import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
-import com.telerikacademy.web.fms.helpers.ModelMapper;
+import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.dto.PostDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;

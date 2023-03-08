@@ -46,21 +46,11 @@ public class UserServicesImpl implements UserServices {
         return userRepository.create(user);
     }
 
-    /**
-     * @param users users[0] - user from Requested Body (JSON)
-     *              users[1] - authenticated user from Header (Http Header)
-     * @return updated user from DB
-     * {@code @Description} reset users[0] username to prevent username change
-     */
     @Override
     public User update(User... users) {
         User userToUpdate = userRepository.getById(users[0].getId());
-        checkAuthorizedPermissions(userToUpdate, users[1]);
-        users[0].setJoiningDate(formatToLocalDateTime(userToUpdate.getJoiningDate()));
-        users[0].setPermission(userToUpdate.getPermission());
-        users[0].setUsername("***");
+        checkAuthorizedPermissions(users[0], users[1]);
         if (!userToUpdate.getEmail().equals(users[0].getEmail())) checkForDuplicateEmail(users[0]);
-        users[0].setUsername(userToUpdate.getUsername());
         return userRepository.update(users[0]);
     }
 

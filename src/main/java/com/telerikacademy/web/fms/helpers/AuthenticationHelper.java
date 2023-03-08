@@ -14,7 +14,6 @@ import java.util.Optional;
 public class AuthenticationHelper {
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication!";
-
     private final UserServices userServices;
 
     public AuthenticationHelper(UserServices userServices) {
@@ -25,7 +24,6 @@ public class AuthenticationHelper {
         if (!headers.containsKey(AUTHORIZATION_HEADER_NAME)) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
         }
-
         try {
             Optional<String> userInfo = Objects.requireNonNull(headers.getFirst(AUTHORIZATION_HEADER_NAME)).describeConstable();
             String[] credentials = validateHeaderValues(userInfo.orElse(""));
@@ -34,7 +32,6 @@ public class AuthenticationHelper {
             if (!user.getPassword().equals(credentials[1])) {
                 throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
             }
-
             return user;
         } catch (AuthorizationException e) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);

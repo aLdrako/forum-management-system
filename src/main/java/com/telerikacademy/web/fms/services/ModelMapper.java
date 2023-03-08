@@ -1,9 +1,10 @@
-package com.telerikacademy.web.fms.helpers;
+package com.telerikacademy.web.fms.services;
 
 import com.telerikacademy.web.fms.models.*;
 import com.telerikacademy.web.fms.models.dto.*;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
+import com.telerikacademy.web.fms.services.contracts.UserServices;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,17 +15,25 @@ import static com.telerikacademy.web.fms.helpers.DateTimeFormat.formatToString;
 @Component
 public class ModelMapper {
 
+    private final UserServices userServices;
     private final PostServices postServices;
     private final CommentServices commentServices;
 
-    public ModelMapper(PostServices postServices, CommentServices commentServices) {
+    public ModelMapper(UserServices userServices, PostServices postServices, CommentServices commentServices) {
+        this.userServices = userServices;
         this.postServices = postServices;
         this.commentServices = commentServices;
     }
 
     public User dtoToObject(Long id, UserDTO userDTO) {
-        User user = dtoToObject(userDTO);
-        user.setId(id);
+        User user = userServices.getById(id);
+        if (userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());
+        if (userDTO.getLastName() != null) user.setLastName(userDTO.getLastName());
+        if (userDTO.getEmail() != null) user.setEmail(userDTO.getEmail());
+        if (userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());
+        if (userDTO.getPassword() != null) user.setPassword(userDTO.getPassword());
+        if (userDTO.getPhoneNumber().isPresent()) user.setPhoneNumber(userDTO.getPhoneNumber().get());
+        if (userDTO.getPhoto().isPresent()) user.setPhoto(userDTO.getPhoto().get());
         return user;
     }
 
