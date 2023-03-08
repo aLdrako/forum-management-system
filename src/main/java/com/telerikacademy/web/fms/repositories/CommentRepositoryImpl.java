@@ -74,7 +74,6 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public List<Comment> getCommentsByUserId(Long userId, Map<String, String> parameters) {
-        Map<String, String> params = extractParams(parameters);
         try (Session session = sessionFactory.openSession()) {
             if (parameters.size() == 0) {
                 Query<Comment> query = session.createQuery("from Comment where createdBy.id = :userId", Comment.class);
@@ -86,7 +85,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                 Root<Comment> root = criteriaQuery.from(Comment.class);
                 Join<Comment, User> userJoin = root.join("createdBy");
                 criteriaQuery.select(root).where(builder.equal(userJoin.get("id"), userId));
-                return getComments(params, session, builder, criteriaQuery, root);
+                return getComments(parameters, session, builder, criteriaQuery, root);
             }
         }
     }
@@ -105,7 +104,6 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public List<Comment> getCommentsByPostId(Long postId, Map<String, String> parameters) {
-        Map<String, String> params = extractParams(parameters);
         try (Session session = sessionFactory.openSession()) {
             if (parameters.size() == 0) {
                 Query<Comment> query = session.createQuery("from Comment where postedOn.id = :postId", Comment.class);
@@ -117,7 +115,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                 Root<Comment> root = criteriaQuery.from(Comment.class);
                 Join<Comment, Post> postJoin = root.join("postedOn");
                 criteriaQuery.select(root).where(builder.equal(postJoin.get("id"), postId));
-                return getComments(params, session, builder, criteriaQuery, root);
+                return getComments(parameters, session, builder, criteriaQuery, root);
             }
         }
     }
@@ -134,23 +132,21 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
     }
 
-    private static List<Comment> getComments(Map<String, String> params, Session session, CriteriaBuilder builder, CriteriaQuery<Comment> criteriaQuery, Root<Comment> root) {
-        Path<Object> objectPath = root.get(params.get("sort"));
-        Order order = params.get("order").equals("asc") ? builder.asc(objectPath) : builder.desc(objectPath);
+    private static List<Comment> getComments(Map<String, String> parameters, Session session, CriteriaBuilder builder, CriteriaQuery<Comment> criteriaQuery, Root<Comment> commentRoot) {
+        Map<String, String> params = extractParams(parameters);
+        Path<Object> commentFieldPath = commentRoot.get(params.get("sort"));
+        Order order = params.get("order").equals("asc") ? builder.asc(commentFieldPath) : builder.desc(commentFieldPath);
         criteriaQuery.orderBy(order);
         return session.createQuery(criteriaQuery).getResultList();
     }
 
     private static Map<String, String> extractParams(Map<String, String> parameters) {
-        AtomicReference<String> sortBy = new AtomicReference<>("dateCreated");
-        AtomicReference<String> orderBy = new AtomicReference<>("asc");
+        AtomicReference<String> sort = new AtomicReference<>("dateCreated");
+        AtomicReference<String> order = new AtomicReference<>("asc");
         parameters.forEach((key, value) -> {
-            if (key.contains("sort")) sortBy.set(value);
-            if (key.contains("order")) orderBy.set(value);
+            if (key.contains("sort")) sort.set(value);
+            if (key.contains("order")) order.set(value);
         });
-        Map<String, String> params = new HashMap<>();
-        params.put("sort", String.valueOf(sortBy));
-        params.put("order", String.valueOf(orderBy));
-        return params;
+        return Map.of("sort", sort.get(), "order", order.get());
     }
 }
