@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "posts")
@@ -26,6 +27,12 @@ public class Post {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostTagRelation> tags;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "comments",
+    joinColumns = @JoinColumn(name = "post_id"),
+    inverseJoinColumns = @JoinColumn(name = "id"))
+    private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -54,6 +61,14 @@ public class Post {
         this.dateCreated = dateCreated;
         likes = new ArrayList<>();
         tags = new ArrayList<>();
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public List<PostTagRelation> getTags() {
