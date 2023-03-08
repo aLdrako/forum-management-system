@@ -173,12 +173,12 @@ public class UserServicesImplTests {
     @Test
     public void delete_Should_CallRepository_When_UserIsTheOwnerOfAccount() {
         // Arrange
-        User mockDifferentUser = createMockDifferentUser();
+        User mockUser = createMockUser();
 
-        when(mockUserRepository.getById(anyLong())).thenReturn(mockDifferentUser);
+        when(mockUserRepository.getById(anyLong())).thenReturn(mockUser);
 
         // Act
-        userServices.delete(2L, mockDifferentUser);
+        userServices.delete(2L, mockUser);
 
         // Assert
         verify(mockUserRepository).delete(2L);

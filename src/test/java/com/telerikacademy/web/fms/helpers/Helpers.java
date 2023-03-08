@@ -12,13 +12,14 @@ public class Helpers {
 
     public static User createMockAdmin() {
         User mockAdminUser = createMockUser();
+        mockAdminUser.setId(1L);
         mockAdminUser.getPermission().setAdmin(true);
         return mockAdminUser;
     }
 
     public static User createMockUser() {
         User mockUser = new User();
-        mockUser.setId(1L);
+        mockUser.setId(2L);
         mockUser.setFirstName("MockFirstName");
         mockUser.setLastName("MockLastName");
         mockUser.setEmail("mock@mail.com");
@@ -33,7 +34,7 @@ public class Helpers {
 
     public static User createMockDifferentUser() {
         User mockDifferentUser = createMockUser();
-        mockDifferentUser.setId(2L);
+        mockDifferentUser.setId(3L);
         mockDifferentUser.setUsername("MockDifferentUsername");
         mockDifferentUser.setEmail("mockdifferent@mail.com");
         return mockDifferentUser;
