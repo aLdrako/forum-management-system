@@ -18,7 +18,7 @@ public class UserRepositoryJDBCImpl implements UserRepository {
     private static final String SQL_GET = """
             SELECT id, first_name, last_name, email, username, password, join_date, is_admin, is_blocked, is_deleted, phone_number, photo
             FROM users
-            lEFT JOIN permission p on users.id = p.user_id
+            lEFT JOIN permissions p on users.id = p.user_id
             lEFT JOIN phones p2 on users.id = p2.user_id
             lEFT JOIN photos p3 on users.id = p3.user_id
             WHERE is_deleted <> 1
@@ -28,7 +28,7 @@ public class UserRepositoryJDBCImpl implements UserRepository {
             VALUES (?, ?, ?, ?, ?);
             """;
     private static final String SQL_CREATE_PERMISSIONS = """
-            INSERT INTO permission (is_deleted, is_blocked, is_admin, user_id)
+            INSERT INTO permissions (is_deleted, is_blocked, is_admin, user_id)
             VALUES (?, ?, ?, ?);
             """;
     private static final String SQL_CREATE_PHONE = """
@@ -44,19 +44,19 @@ public class UserRepositoryJDBCImpl implements UserRepository {
             WHERE id = ?;
             """;
     private static final String SQL_UPDATE_PERMISSIONS = """
-            UPDATE permission SET is_deleted = ?, is_blocked = ?, is_admin = ?
+            UPDATE permissions SET is_deleted = ?, is_blocked = ?, is_admin = ?
             WHERE user_id = ?;
             """;
     private static final String SQL_UPDATE_PHONE = """
-            UPDATE permission SET phone_number = ?
+            UPDATE phones SET phone_number = ?
             WHERE user_id = ?;
             """;
     private static final String SQL_UPDATE_PHOTO = """
-            UPDATE permission SET photo = ?
+            UPDATE photos SET photo = ?
             WHERE user_id = ?;
             """;
     private static final String SQL_DELETE = """
-            UPDATE permission SET is_deleted = true
+            UPDATE permissions SET is_deleted = true
             WHERE user_id = ?;
             """;
     private static final String SQL_GET_ID = """

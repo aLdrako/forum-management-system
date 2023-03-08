@@ -1,9 +1,9 @@
-package com.telerikacademy.web.fms.service;
+package com.telerikacademy.web.fms.services;
 
 
 import com.telerikacademy.web.fms.models.Tag;
 import com.telerikacademy.web.fms.repositories.contracts.TagRepository;
-import com.telerikacademy.web.fms.service.contracts.TagServices;
+import com.telerikacademy.web.fms.services.contracts.TagServices;
 import org.springframework.stereotype.Service;
 
 @Service

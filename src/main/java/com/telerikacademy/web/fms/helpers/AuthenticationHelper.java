@@ -2,7 +2,7 @@ package com.telerikacademy.web.fms.helpers;
 
 import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.models.User;
-import com.telerikacademy.web.fms.service.contracts.UserServices;
+import com.telerikacademy.web.fms.services.contracts.UserServices;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 

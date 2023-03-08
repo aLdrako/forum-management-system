@@ -10,8 +10,8 @@ import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.dto.PermissionDTO;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
-import com.telerikacademy.web.fms.service.contracts.PermissionServices;
-import com.telerikacademy.web.fms.service.contracts.UserServices;
+import com.telerikacademy.web.fms.services.contracts.PermissionServices;
+import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -75,8 +75,8 @@ public class UserController {
     @PutMapping("/{id}")
     public User update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader HttpHeaders headers) {
         try {
-            User user = modelMapper.dtoToObject(id, userDTO);
             User authenticatedUser = authenticationHelper.tryGetUser(headers);
+            User user = modelMapper.dtoToObject(id, userDTO);
             return userServices.update(user, authenticatedUser);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

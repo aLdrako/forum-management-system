@@ -1,11 +1,11 @@
-package com.telerikacademy.web.fms.service;
+package com.telerikacademy.web.fms.services;
 
 import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
-import com.telerikacademy.web.fms.service.contracts.UserServices;
+import com.telerikacademy.web.fms.services.contracts.UserServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +16,8 @@ import static com.telerikacademy.web.fms.helpers.DateTimeFormat.formatToLocalDat
 public class UserServicesImpl implements UserServices {
     private final static String USER_CHANGE_OR_DELETE_ERROR_MESSAGE = "Only admin or owner of the account can delete or change their account!";
     private final static String SUPER_USER_DELETION_ERROR_MESSAGE = "Super user cannot be deleted!";
+    private static final String EMAIL_PREFIX = "email=";
+    private static final String USERNAME_PREFIX = "username=";
     private final UserRepository userRepository;
 
     public UserServicesImpl(UserRepository userRepository) {
@@ -39,7 +41,8 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public User create(User user) {
-        checkForDuplicate(user);
+        checkForDuplicateEmail(user);
+        checkForDuplicateUsername(user);
         return userRepository.create(user);
     }
 
@@ -56,7 +59,7 @@ public class UserServicesImpl implements UserServices {
         users[0].setJoiningDate(formatToLocalDateTime(userToUpdate.getJoiningDate()));
         users[0].setPermission(userToUpdate.getPermission());
         users[0].setUsername("***");
-        if (!userToUpdate.getEmail().equals(users[0].getEmail())) checkForDuplicate(users[0]);
+        if (!userToUpdate.getEmail().equals(users[0].getEmail())) checkForDuplicateEmail(users[0]);
         users[0].setUsername(userToUpdate.getUsername());
         return userRepository.update(users[0]);
     }
@@ -69,19 +72,21 @@ public class UserServicesImpl implements UserServices {
         userRepository.delete(id);
     }
 
-    private void checkForDuplicate(User user) {
+    private void checkForDuplicateEmail(User user) {
         boolean duplicateEmail = true;
-        boolean duplicateUsername = true;
-
         try {
-            userRepository.search("email=" + user.getEmail());
+            userRepository.search(EMAIL_PREFIX + user.getEmail());
         } catch (EntityNotFoundException e) {
             duplicateEmail = false;
         }
         if (duplicateEmail) throw new DuplicateEntityException("User", "email", user.getEmail());
 
+    }
+
+    private void checkForDuplicateUsername(User user) {
+        boolean duplicateUsername = true;
         try {
-            userRepository.search("username=" + user.getUsername());
+            userRepository.search(USERNAME_PREFIX + user.getUsername());
         } catch (EntityNotFoundException e) {
             duplicateUsername = false;
         }

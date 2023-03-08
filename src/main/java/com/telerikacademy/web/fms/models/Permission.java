@@ -49,7 +49,7 @@ public class Permission {
     public void setBlocked(boolean blocked) {
         isBlocked = blocked;
     }
-
+    @JsonIgnore
     public boolean isDeleted() {
         return isDeleted;
     }

@@ -2,8 +2,8 @@ package com.telerikacademy.web.fms.helpers;
 
 import com.telerikacademy.web.fms.models.*;
 import com.telerikacademy.web.fms.models.dto.*;
-import com.telerikacademy.web.fms.service.contracts.CommentServices;
-import com.telerikacademy.web.fms.service.contracts.PostServices;
+import com.telerikacademy.web.fms.services.contracts.CommentServices;
+import com.telerikacademy.web.fms.services.contracts.PostServices;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -82,9 +82,19 @@ public class ModelMapper {
         return comment;
     }
 
+    public CommentOutputDTO objectToDto(Comment comment) {
+        CommentOutputDTO commentOutputDTO = new CommentOutputDTO();
+        commentOutputDTO.setContent(comment.getContent());
+        commentOutputDTO.setCreatedBy(comment.getCreatedBy().getUsername());
+        commentOutputDTO.setPostedOn(comment.getPostedOn().getTitle());
+        commentOutputDTO.setDateCreated(comment.getDateCreated());
+        return commentOutputDTO;
+    }
+
     public List<PostOutputDTO> dtoToObject(List<Post> allPosts) {
         return allPosts.stream().map(this::dtoToObject).collect(Collectors.toList());
     }
+
     public PostOutputDTO dtoToObject(Post post) {
         PostOutputDTO postOutputDTO = new PostOutputDTO();
         postOutputDTO.setTitle(post.getTitle());

@@ -1,10 +1,10 @@
-package com.telerikacademy.web.fms.service;
+package com.telerikacademy.web.fms.services;
 
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.PermissionRepository;
-import com.telerikacademy.web.fms.service.contracts.PermissionServices;
+import com.telerikacademy.web.fms.services.contracts.PermissionServices;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,4 +1,4 @@
-package com.telerikacademy.web.fms.service;
+package com.telerikacademy.web.fms.services;
 
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.models.*;
@@ -6,8 +6,8 @@ import com.telerikacademy.web.fms.repositories.contracts.LikeRepository;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import com.telerikacademy.web.fms.repositories.contracts.PostTagRelationRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
-import com.telerikacademy.web.fms.service.contracts.PostServices;
-import com.telerikacademy.web.fms.service.contracts.TagServices;
+import com.telerikacademy.web.fms.services.contracts.PostServices;
+import com.telerikacademy.web.fms.services.contracts.TagServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.telerikacademy.web.fms.service.contracts;
+package com.telerikacademy.web.fms.services.contracts;
 
 import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.User;
