@@ -5,11 +5,11 @@ import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import jakarta.validation.constraints.*;
 
 public class CommentDTO {
-    @NotEmpty(groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
+    @NotEmpty(message = "Content can't be empty", groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
     @Size(min = 16, max = 1024, message = "Comment should be between 16 and 1024 symbols",
             groups = {CreateValidationGroup.class, UpdateValidationGroup.class})
     private String content;
-    @NotNull(groups = {CreateValidationGroup.class})
+    @NotNull(message = "Post Id can't be null", groups = {CreateValidationGroup.class})
     @Positive(message = "Post Id should be positive", groups = CreateValidationGroup.class)
     private Long postId;
 

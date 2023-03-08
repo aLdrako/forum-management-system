@@ -5,7 +5,9 @@ import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
-import com.telerikacademy.web.fms.helpers.ModelMapper;
+import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
+import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
+import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.dto.PermissionDTO;
 import com.telerikacademy.web.fms.models.User;
@@ -15,6 +17,7 @@ import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -73,7 +76,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader HttpHeaders headers) {
+    public User update(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody UserDTO userDTO, @RequestHeader HttpHeaders headers) {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(headers);
             User user = modelMapper.dtoToObject(id, userDTO);
