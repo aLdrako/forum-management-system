@@ -23,12 +23,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class CommentController {
+public class CommentRestController {
     private final ModelMapper modelMapper;
     private final CommentServices commentServices;
     private final AuthenticationHelper authenticationHelper;
 
-    public CommentController(ModelMapper modelMapper, CommentServices commentServices, AuthenticationHelper authenticationHelper) {
+    public CommentRestController(ModelMapper modelMapper, CommentServices commentServices, AuthenticationHelper authenticationHelper) {
         this.modelMapper = modelMapper;
         this.commentServices = commentServices;
         this.authenticationHelper = authenticationHelper;

@@ -11,8 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import java.util.List;
 
@@ -85,21 +83,24 @@ public class UserServicesImplTests {
     }
 
     @Test
-    public void create_Should_Throw_When_UserWithSameEmailExists() {
+    public void create_Should_ThrowException_When_UserWithSameEmailExists() {
         // Arrange
         User mockUser = createMockUser();
+        User mockDifferentUser = createMockDifferentUser();
 
-        when(mockUserRepository.search(EMAIL_PREFIX + mockUser.getEmail()))
+        when(mockUserRepository.search(EMAIL_PREFIX + mockDifferentUser.getEmail()))
                 .thenReturn(List.of(mockUser));
 
         // Act, Assert
-        Assertions.assertThrows(DuplicateEntityException.class, () -> userServices.create(mockUser));
+        Assertions.assertThrows(DuplicateEntityException.class, () -> userServices.create(mockDifferentUser));
     }
 
     @Test
-    public void create_Should_Throw_When_UserWithSameUsernameExists() {
+    public void create_Should_ThrowException_When_UserWithSameUsernameExists() {
         // Arrange
         User mockUser = createMockUser();
+
+        when(mockUserRepository.search(EMAIL_PREFIX + mockUser.getEmail())).thenReturn(null);
 
         lenient().when(mockUserRepository.search(USERNAME_PREFIX + mockUser.getUsername()))
                 .thenReturn(List.of(mockUser));

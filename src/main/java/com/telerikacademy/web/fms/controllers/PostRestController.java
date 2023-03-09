@@ -22,14 +22,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-public class PostController {
+public class PostRestController {
     private final PostServices postServices;
     private final ModelMapper postMapper;
 
     private final AuthenticationHelper authenticationHelper;
 
-    public PostController(PostServices postServices, ModelMapper postMapper,
-                          AuthenticationHelper authenticationHelper) {
+    public PostRestController(PostServices postServices, ModelMapper postMapper,
+                              AuthenticationHelper authenticationHelper) {
         this.postServices = postServices;
         this.postMapper = postMapper;
         this.authenticationHelper = authenticationHelper;

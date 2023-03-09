@@ -105,6 +105,8 @@ public class UserRepositoryImpl implements UserRepository {
             user.setFirstName(generateString());
             user.setLastName(generateString());
             user.setEmail(generateString() + "@mail.com");
+            user.setPhoneNumber(null);
+            user.setPhoto(null);
             session.merge(user);
             session.getTransaction().commit();
         }

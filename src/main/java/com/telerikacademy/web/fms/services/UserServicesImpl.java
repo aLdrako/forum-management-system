@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.telerikacademy.web.fms.helpers.DateTimeFormat.formatToLocalDateTime;
-
 @Service
 public class UserServicesImpl implements UserServices {
     private final static String USER_CHANGE_OR_DELETE_ERROR_MESSAGE = "Only admin or owner of the account can delete or change their account!";
@@ -70,7 +68,6 @@ public class UserServicesImpl implements UserServices {
             duplicateEmail = false;
         }
         if (duplicateEmail) throw new DuplicateEntityException("User", "email", user.getEmail());
-
     }
 
     private void checkForDuplicateUsername(User user) {

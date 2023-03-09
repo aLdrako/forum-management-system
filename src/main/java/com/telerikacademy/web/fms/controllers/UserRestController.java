@@ -5,7 +5,6 @@ import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
-import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.models.Permission;
@@ -27,14 +26,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserController {
+public class UserRestController {
 
     private final ModelMapper modelMapper;
     private final UserServices userServices;
     private final PermissionServices permissionServices;
     private final AuthenticationHelper authenticationHelper;
 
-    public UserController(ModelMapper modelMapper, UserServices userServices, AuthenticationHelper authenticationHelper, PermissionServices permissionServices) {
+    public UserRestController(ModelMapper modelMapper, UserServices userServices, AuthenticationHelper authenticationHelper, PermissionServices permissionServices) {
         this.modelMapper = modelMapper;
         this.userServices = userServices;
         this.permissionServices = permissionServices;
