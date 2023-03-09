@@ -8,9 +8,7 @@ import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.TagServices;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostServicesImpl implements PostServices {
@@ -103,5 +101,11 @@ public class PostServicesImpl implements PostServices {
         });
         postRepository.update(post);
         return post;
+    }
+
+    @Override
+    public List<Post> search(Map<String, String> param) {
+        if (param.size() == 0) param.put("*", "*");
+        return postRepository.search(param.entrySet().iterator().next());
     }
 }

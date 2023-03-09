@@ -4,6 +4,7 @@ import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface PostServices {
@@ -19,4 +20,6 @@ public interface PostServices {
     void changePostLikes(Long id, User user);
 
     Post updateTagsInPost(List<String> tags, Post post);
+
+    List<Post> search(Map<String, String> param);
 }

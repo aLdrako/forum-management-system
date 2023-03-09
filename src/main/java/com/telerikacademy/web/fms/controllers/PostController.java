@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -118,6 +119,11 @@ public class PostController {
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    @GetMapping("/posts/search")
+    public List<PostOutputDTO> searchPosts(@RequestParam Map<String, String> param) {
+        return postMapper.dtoToObject(postServices.search(param));
     }
 
     @GetMapping("/users/{userId}/posts/{postId}")

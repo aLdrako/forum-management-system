@@ -312,6 +312,11 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         }
     }
 
+    @Override
+    public List<Post> search(Map.Entry<String, String> param) {
+        return null;
+    }
+
     private List<Post> getPosts(ResultSet postData) throws SQLException {
         List<Post> posts = new ArrayList<>();
         while (postData.next()) {

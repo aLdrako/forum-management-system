@@ -3,6 +3,7 @@ package com.telerikacademy.web.fms.repositories.contracts;
 import com.telerikacademy.web.fms.models.Post;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface PostRepository {
@@ -15,4 +16,6 @@ public interface PostRepository {
     List<Post> getTopTenMostCommented();
     List<Post> getTopTenMostRecent();
     Post getPostByUserId(Long userId, Long postId);
+
+    List<Post> search(Map.Entry<String, String> param);
 }

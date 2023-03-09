@@ -88,4 +88,10 @@ public class PostRepositoryListImpl implements PostRepository {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have post with id %d!", userId, postId)));
     }
 
+    @Override
+    public List<Post> search(Map.Entry<String, String> param) {
+        return null;
+    }
+
+
 }
