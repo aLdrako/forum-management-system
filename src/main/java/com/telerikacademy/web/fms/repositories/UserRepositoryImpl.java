@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -44,6 +45,8 @@ public class UserRepositoryImpl implements UserRepository {
             User user = session.get(User.class, id);
             Permission permission = session.get(Permission.class, id);
             if (user == null || permission.isDeleted()) throw new EntityNotFoundException("User", id);
+            Hibernate.initialize(user.getComments());
+            Hibernate.initialize(user.getPosts());
             return user;
         }
     }
@@ -102,6 +105,7 @@ public class UserRepositoryImpl implements UserRepository {
             session.merge(permission);
             User user = session.get(User.class, id);
             user.setUsername(generateString());
+            user.setPassword(generateString());
             user.setFirstName(generateString());
             user.setLastName(generateString());
             user.setEmail(generateString() + "@mail.com");

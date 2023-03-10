@@ -1,16 +1,12 @@
 package com.telerikacademy.web.fms.helpers;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.User;
-import com.telerikacademy.web.fms.models.dto.PermissionDTO;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 public class Helpers {
 

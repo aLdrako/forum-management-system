@@ -1,4 +1,4 @@
-package com.telerikacademy.web.fms.controllers;
+package com.telerikacademy.web.fms.controllers.rest;
 
 import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
@@ -88,7 +88,8 @@ public class CommentRestController {
         }
     }
 
-    @GetMapping("users/{userId}/comments")
+    // TODO - MOVED TO USER CONTROLLER - UNDER REVIEW / TO BE REMOVED
+//    @GetMapping("users/{userId}/comments")
     public List<CommentOutputDTO> getCommentsByUserId(@PathVariable Long userId, @RequestParam Map<String, String> parameters) {
         try {
             return commentServices.getCommentsByUserId(userId, parameters).stream().map(modelMapper::objectToDto).toList();
@@ -97,7 +98,8 @@ public class CommentRestController {
         }
     }
 
-    @GetMapping("users/{userId}/comments/{commentId}")
+    // TODO - MOVED TO USER CONTROLLER - UNDER REVIEW / TO BE REMOVED
+//    @GetMapping("users/{userId}/comments/{commentId}")
     public CommentOutputDTO getCommentByUserId(@PathVariable Long userId, @PathVariable Long commentId) {
         try {
             Comment comment = commentServices.getCommentByUserId(userId, commentId);
@@ -107,6 +109,7 @@ public class CommentRestController {
         }
     }
 
+    // TODO - TO BE MOVED TO USER POSTS - UNDER REVIEW / TO BE REMOVED
     @GetMapping("posts/{postId}/comments")
     public List<CommentOutputDTO> getCommentsByPostId(@PathVariable Long postId, @RequestParam Map<String, String> parameters) {
         try {
@@ -116,6 +119,7 @@ public class CommentRestController {
         }
     }
 
+    // TODO - TO BE MOVED TO USER POSTS - UNDER REVIEW / TO BE REMOVED
     @GetMapping("posts/{postId}/comments/{commentId}")
     public CommentOutputDTO getCommentByPostId(@PathVariable Long postId, @PathVariable Long commentId) {
         try {

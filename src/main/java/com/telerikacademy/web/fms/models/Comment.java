@@ -6,7 +6,7 @@ import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import static com.telerikacademy.web.fms.helpers.DateTimeFormat.*;
+import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.*;
 
 @Entity
 @Table(name = "comments")
@@ -79,11 +79,11 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return Objects.equals(id, comment.id);
+        return Objects.equals(id, comment.id) && Objects.equals(content, comment.content) && Objects.equals(createdBy, comment.createdBy) && Objects.equals(postedOn, comment.postedOn) && Objects.equals(dateCreated, comment.dateCreated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, content, createdBy, postedOn, dateCreated);
     }
 }

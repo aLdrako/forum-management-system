@@ -12,7 +12,8 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+
+import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.extractParams;
 
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
@@ -72,6 +73,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
     }
 
+    // TODO - BELOW METHODS UNDER REVIEW / TO BE REMOVED
     @Override
     public List<Comment> getCommentsByUserId(Long userId, Map<String, String> parameters) {
         try (Session session = sessionFactory.openSession()) {
@@ -138,15 +140,5 @@ public class CommentRepositoryImpl implements CommentRepository {
         Order order = params.get("order").equals("asc") ? builder.asc(commentFieldPath) : builder.desc(commentFieldPath);
         criteriaQuery.orderBy(order);
         return session.createQuery(criteriaQuery).getResultList();
-    }
-
-    private static Map<String, String> extractParams(Map<String, String> parameters) {
-        AtomicReference<String> sort = new AtomicReference<>("dateCreated");
-        AtomicReference<String> order = new AtomicReference<>("asc");
-        parameters.forEach((key, value) -> {
-            if (key.contains("sort")) sort.set(value);
-            if (key.contains("order")) order.set(value);
-        });
-        return Map.of("sort", sort.get(), "order", order.get());
     }
 }

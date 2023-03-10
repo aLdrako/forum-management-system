@@ -8,7 +8,7 @@ import org.hibernate.annotations.GenerationTime;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.telerikacademy.web.fms.helpers.DateTimeFormat.formatToString;
+import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
 
 @Entity
 @Table(name = "users")
@@ -44,10 +44,10 @@ public class User {
     @Column(name = "join_date")
     private LocalDateTime joiningDate;
     @JsonIgnore
-    @OneToMany(mappedBy = "userCreated")
+    @OneToMany(mappedBy = "userCreated", cascade = CascadeType.MERGE)
     private Set<Post> posts = new HashSet<>();
     @JsonIgnore
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.MERGE)
     private Set<Comment> comments = new HashSet<>();
 
     public User() {}

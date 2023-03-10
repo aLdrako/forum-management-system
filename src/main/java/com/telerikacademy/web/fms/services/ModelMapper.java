@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.telerikacademy.web.fms.helpers.DateTimeFormat.formatToString;
+import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
 
 @Component
 public class ModelMapper {
@@ -100,11 +100,11 @@ public class ModelMapper {
         return commentOutputDTO;
     }
 
-    public List<PostOutputDTO> dtoToObject(List<Post> allPosts) {
-        return allPosts.stream().map(this::dtoToObject).collect(Collectors.toList());
+    public List<PostOutputDTO> objectToDto(List<Post> allPosts) {
+        return allPosts.stream().map(this::objectToDto).collect(Collectors.toList());
     }
 
-    public PostOutputDTO dtoToObject(Post post) {
+    public PostOutputDTO objectToDto(Post post) {
         PostOutputDTO postOutputDTO = new PostOutputDTO();
         postOutputDTO.setTitle(post.getTitle());
         postOutputDTO.setContent(post.getContent());

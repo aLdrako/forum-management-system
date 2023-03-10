@@ -3,7 +3,7 @@ package com.telerikacademy.web.fms.helpers;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class DateTimeFormat {
+public class DateTimeFormatHelper {
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm:ss");
 
     public static String formatToString(LocalDateTime localDateTime) {

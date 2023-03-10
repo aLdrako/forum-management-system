@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
                                           `id` bigint(20) NOT NULL AUTO_INCREMENT,
                                           `post_id` bigint(20) NOT NULL,
                                           `user_id` bigint(20) NOT NULL,
-                                          `content` text DEFAULT NULL,
+                                          `content` varchar(1024) DEFAULT NULL,
                                           `date_created` datetime NOT NULL DEFAULT current_timestamp(),
                                           PRIMARY KEY (`id`),
                                           KEY `comments_posts_fk` (`post_id`),
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `photos` (
 CREATE TABLE IF NOT EXISTS `posts` (
                                        `id` bigint(20) NOT NULL AUTO_INCREMENT,
                                        `title` varchar(100) NOT NULL,
-                                       `content` text DEFAULT NULL,
+                                       `content` varchar(8192) DEFAULT NULL,
                                        `user_id` bigint(20) NOT NULL,
                                        `date_created` datetime NOT NULL DEFAULT current_timestamp(),
                                        PRIMARY KEY (`id`),

@@ -1,10 +1,12 @@
-package com.telerikacademy.web.fms.controllers;
+package com.telerikacademy.web.fms.controllers.rest;
 
 import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
+import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
+import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.models.Permission;
@@ -20,14 +22,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.*;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
-
+    private static final String USER_NO_COMMENT_WITH_ID = "User with id %d does not have comment with id %d!";
+    private static final String USER_NO_POST_WITH_ID = "User with id %d does not have post with id %d!";
     private final ModelMapper modelMapper;
     private final UserServices userServices;
     private final PermissionServices permissionServices;
@@ -114,4 +117,49 @@ public class UserRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
+
+    @GetMapping("/{id}/posts")
+    public List<PostOutputDTO> getUserPosts(@PathVariable Long id,  @RequestParam Map<String, String> parameters) {
+        try {
+            List<PostOutputDTO> postOutputDTOS = userServices.getById(id).getPosts().stream().filter(getPostFilter(parameters)).map(modelMapper::objectToDto).toList();
+            return postOutputDTOS.stream().sorted(getPostDTOComparator(parameters)).toList();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+        @GetMapping("/{userId}/posts/{postId}")
+    public PostOutputDTO getUserPost(@PathVariable Long userId, @PathVariable Long postId) {
+        try {
+            return userServices.getById(userId).getPosts().stream()
+                    .filter(comment -> Objects.equals(comment.getId(), postId))
+                    .map(modelMapper::objectToDto).findFirst()
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NO_POST_WITH_ID, userId, postId)));
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<CommentOutputDTO> getUserComments(@PathVariable Long id, @RequestParam Map<String, String> parameters) {
+        try {
+            List<CommentOutputDTO> commentOutputDTOS = userServices.getById(id).getComments().stream().map(modelMapper::objectToDto).toList();
+            return commentOutputDTOS.stream().sorted(getCommentDTOComparator(parameters)).toList();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("/{userId}/comments/{commentId}")
+    public CommentOutputDTO getUserComment(@PathVariable Long userId, @PathVariable Long commentId) {
+        try {
+            return userServices.getById(userId).getComments().stream()
+                    .filter(comment -> Objects.equals(comment.getId(), commentId))
+                    .map(modelMapper::objectToDto).findFirst()
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NO_COMMENT_WITH_ID, userId, commentId)));
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
 }
