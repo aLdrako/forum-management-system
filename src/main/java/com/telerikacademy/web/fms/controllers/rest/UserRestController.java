@@ -121,8 +121,10 @@ public class UserRestController {
     @GetMapping("/{id}/posts")
     public List<PostOutputDTO> getUserPosts(@PathVariable Long id,  @RequestParam Map<String, String> parameters) {
         try {
-            List<PostOutputDTO> postOutputDTOS = userServices.getById(id).getPosts().stream().filter(getPostFilter(parameters)).map(modelMapper::objectToDto).toList();
-            return postOutputDTOS.stream().sorted(getPostDTOComparator(parameters)).toList();
+            return userServices.getById(id).getPosts().stream()
+                    .filter(getPostFilter(parameters))
+                    .map(modelMapper::objectToDto)
+                    .sorted(getPostDTOComparator(parameters)).toList();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -143,8 +145,9 @@ public class UserRestController {
     @GetMapping("/{id}/comments")
     public List<CommentOutputDTO> getUserComments(@PathVariable Long id, @RequestParam Map<String, String> parameters) {
         try {
-            List<CommentOutputDTO> commentOutputDTOS = userServices.getById(id).getComments().stream().map(modelMapper::objectToDto).toList();
-            return commentOutputDTOS.stream().sorted(getCommentDTOComparator(parameters)).toList();
+            return userServices.getById(id).getComments().stream()
+                    .map(modelMapper::objectToDto)
+                    .sorted(getCommentDTOComparator(parameters)).toList();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

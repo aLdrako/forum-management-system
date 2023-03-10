@@ -21,13 +21,11 @@ public class FilterAndSortParameters {
     public static Map<String, String> extractParams(Map<String, String> parameters) {
         AtomicReference<String> sort = new AtomicReference<>("dateCreated");
         AtomicReference<String> order = new AtomicReference<>("asc");
-        AtomicReference<String> filter = new AtomicReference<>("");
         parameters.forEach((key, value) -> {
             if (key.contains("sort")) sort.set(value);
             if (key.contains("order")) order.set(value);
-            if (key.contains("filter")) filter.set(value.toLowerCase());
         });
-        return Map.of("sort", sort.get(), "order", order.get(), "filter", filter.get());
+        return Map.of("sort", sort.get(), "order", order.get());
     }
 
     /**
@@ -37,10 +35,9 @@ public class FilterAndSortParameters {
      */
     public static Predicate<Post> getPostFilter(Map<String, String> parameters) {
         if (parameters.get("filter") == null || parameters.get("filter").isEmpty()) return post -> true;
-        Map<String, String> params = extractParams(parameters);
-        Predicate<Post> filterTitle = post -> post.getTitle().contains(params.get("filter"));
-        Predicate<Post> filterContent = post -> post.getContent().contains(params.get("filter"));
-        Predicate<Post> filterTags = post -> post.getTags().stream().map(Tag::getName).anyMatch(name -> name.contains(params.get("filter")));
+        Predicate<Post> filterTitle = post -> post.getTitle().toLowerCase().contains(parameters.get("filter").toLowerCase());
+        Predicate<Post> filterContent = post -> post.getContent().toLowerCase().contains(parameters.get("filter").toLowerCase());
+        Predicate<Post> filterTags = post -> post.getTags().stream().map(Tag::getName).anyMatch(name -> name.contains(parameters.get("filter").toLowerCase()));
         return filterTitle.or(filterContent).or(filterTags);
     }
 
