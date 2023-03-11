@@ -1,8 +1,8 @@
 package com.telerikacademy.web.fms.repositories.deprecated;
 
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.User;
-import com.telerikacademy.web.fms.repositories.contracts.PermissionRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -22,6 +22,11 @@ public class UserRepositoryJDBCImpl implements UserRepository {
             lEFT JOIN phones p2 on users.id = p2.user_id
             lEFT JOIN photos p3 on users.id = p3.user_id
             WHERE is_deleted <> 1
+            """;
+    private static final String SQL_GET_PERMISSIONS = """
+            SELECT user_id, is_deleted, is_blocked, is_admin
+            FROM permissions
+            WHERE user_id = ?;
             """;
     private static final String SQL_CREATE = """
             INSERT INTO users (first_name, last_name, email, username, password)
@@ -65,10 +70,8 @@ public class UserRepositoryJDBCImpl implements UserRepository {
             """;
 
     private final String dbUrl, dbUsername, dbPassword;
-    private final PermissionRepository permissionRepository;
 
-    public UserRepositoryJDBCImpl(PermissionRepository permissionRepository, Environment environment) {
-        this.permissionRepository = permissionRepository;
+    public UserRepositoryJDBCImpl(Environment environment) {
         dbUrl = environment.getProperty("database.url");
         dbUsername = environment.getProperty("database.username");
         dbPassword = environment.getProperty("database.password");
@@ -82,6 +85,24 @@ public class UserRepositoryJDBCImpl implements UserRepository {
     @Override
     public User getById(Long id) {
         return search("id=" + id).get(0);
+    }
+
+    public Permission getPermissionById(Long id) {
+        try (PreparedStatement statement = DriverManager.getConnection(dbUrl, dbUsername, dbPassword).prepareStatement(SQL_GET_PERMISSIONS)) {
+            statement.setLong(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                Permission permission = new Permission();
+                if (resultSet.next()) {
+                    permission.setUserId(resultSet.getLong("user_id"));
+                    permission.setDeleted(resultSet.getBoolean("is_deleted"));
+                    permission.setBlocked(resultSet.getBoolean("is_blocked"));
+                    permission.setAdmin(resultSet.getBoolean("id_admin"));
+                }
+                return permission;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
@@ -165,6 +186,11 @@ public class UserRepositoryJDBCImpl implements UserRepository {
     }
 
     @Override
+    public Permission updatePermissions(Permission permission) {
+        return null;
+    }
+
+    @Override
     public void delete(Long id) {
         getById(id);
         try (PreparedStatement statement = DriverManager.getConnection(dbUrl, dbUsername, dbPassword).prepareStatement(SQL_DELETE)) {
@@ -226,7 +252,7 @@ public class UserRepositoryJDBCImpl implements UserRepository {
             user.setJoiningDate(usersData.getTimestamp("join_date").toLocalDateTime());
             user.setPhoneNumber(usersData.getString("phone_number"));
             user.setPhoto(usersData.getBytes("photo"));
-            user.setPermission(permissionRepository.getById(usersData.getLong("id")));
+            user.setPermission(getPermissionById(usersData.getLong("id")));
             users.add(user);
         }
         return users;

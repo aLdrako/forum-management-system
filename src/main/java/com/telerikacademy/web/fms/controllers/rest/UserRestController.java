@@ -13,7 +13,7 @@ import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.dto.PermissionDTO;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
-import com.telerikacademy.web.fms.services.contracts.PermissionServices;
+import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -32,14 +32,14 @@ public class UserRestController {
     private static final String USER_NO_COMMENT_WITH_ID = "User with id %d does not have comment with id %d!";
     private static final String USER_NO_POST_WITH_ID = "User with id %d does not have post with id %d!";
     private final ModelMapper modelMapper;
+    private final PostServices postServices;
     private final UserServices userServices;
-    private final PermissionServices permissionServices;
     private final AuthenticationHelper authenticationHelper;
 
-    public UserRestController(ModelMapper modelMapper, UserServices userServices, AuthenticationHelper authenticationHelper, PermissionServices permissionServices) {
+    public UserRestController(ModelMapper modelMapper, PostServices postServices, UserServices userServices, AuthenticationHelper authenticationHelper) {
         this.modelMapper = modelMapper;
+        this.postServices = postServices;
         this.userServices = userServices;
-        this.permissionServices = permissionServices;
         this.authenticationHelper = authenticationHelper;
     }
 
@@ -97,8 +97,7 @@ public class UserRestController {
         try {
             User authenticatedUser = authenticationHelper.tryGetUser(headers);
             Permission permission = modelMapper.dtoToObject(id, permissionDTO);
-            permissionServices.update(permission, authenticatedUser);
-            return userServices.getById(id);
+            return userServices.updatePermissions(permission, authenticatedUser);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
@@ -118,25 +117,23 @@ public class UserRestController {
         }
     }
 
-    @GetMapping("/{id}/posts")
-    public List<PostOutputDTO> getUserPosts(@PathVariable Long id,  @RequestParam Map<String, String> parameters) {
+    @GetMapping("/{userId}/posts")
+    public List<PostOutputDTO> getPostsByUserId(@PathVariable Long userId,
+                                                @RequestParam(required = false) Optional<String> title,
+                                                @RequestParam(required = false) Optional<String> sortBy,
+                                                @RequestParam(required = false) Optional<String> orderBy) {
         try {
-            return userServices.getById(id).getPosts().stream()
-                    .filter(getPostFilter(parameters))
-                    .map(modelMapper::objectToDto)
-                    .sorted(getPostDTOComparator(parameters)).toList();
+            return modelMapper.objectToDto(postServices.getAll(userId.describeConstable(),
+                    title, sortBy, orderBy));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
-        @GetMapping("/{userId}/posts/{postId}")
-    public PostOutputDTO getUserPost(@PathVariable Long userId, @PathVariable Long postId) {
+    @GetMapping("/{userId}/posts/{postId}")
+    public PostOutputDTO getPostByUserId(@PathVariable Long userId, @PathVariable Long postId) {
         try {
-            return userServices.getById(userId).getPosts().stream()
-                    .filter(comment -> Objects.equals(comment.getId(), postId))
-                    .map(modelMapper::objectToDto).findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NO_POST_WITH_ID, userId, postId)));
+            return modelMapper.objectToDto(postServices.getPostByUserId(userId, postId));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -164,5 +161,4 @@ public class UserRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-
 }

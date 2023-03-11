@@ -1,17 +1,15 @@
 package com.telerikacademy.web.fms.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "permissions")
 public class Permission {
     @Id
     @JsonIgnore
-    private Long user_id;
+    @Column(name = "user_id")
+    private Long userId;
     @Column(name = "is_admin")
     private boolean isAdmin;
     @Column(name = "is_blocked")
@@ -22,16 +20,16 @@ public class Permission {
     public Permission() {
     }
 
-    public Permission(Long user_id) {
-        this.user_id = user_id;
+    public Permission(Long userId) {
+        this.userId = userId;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public boolean isAdmin() {

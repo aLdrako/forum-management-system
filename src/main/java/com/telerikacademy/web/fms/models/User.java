@@ -31,11 +31,11 @@ public class User {
     private String username;
     @Column(name = "password")
     private String password;
+    @Column(name = "phone_number", table = "phones")
+    private String phoneNumber;
     @Lob
     @Column(name = "photo", table = "photos")
     private byte[] photo;
-    @Column(name = "phone_number", table = "phones")
-    private String phoneNumber;
     @OneToOne
     @JoinColumn(name = "id", referencedColumnName = "user_id")
     private Permission permission;
@@ -104,20 +104,20 @@ public class User {
         this.password = password;
     }
 
-    public Optional<byte[]> getPhoto() {
-        return Optional.ofNullable(photo);
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
-    }
-
     public Optional<String> getPhoneNumber() {
         return Optional.ofNullable(phoneNumber);
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Optional<byte[]> getPhoto() {
+        return Optional.ofNullable(photo);
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 
     public String getJoiningDate() {

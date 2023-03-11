@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 public class FilterAndSortParameters {
 
     /**
-     * Method to extract parameters from URL query {path}?sort=***&order=***&filter=***
-     * Used for sorting/ordering/filtering comments/posts
+     * Method to extract parameters from URL query {path}?sort=***&order=***
+     * Used for sorting/ordering comments/posts
      * @param parameters sort and order params
      * @return Map containing sort/order key-values
      */
@@ -56,7 +56,7 @@ public class FilterAndSortParameters {
         Comparator<PostOutputDTO> comparator = switch (params.get("sort")) {
             case "title" -> Comparator.comparing(PostOutputDTO::getTitle);
             case "content" -> Comparator.comparing(PostOutputDTO::getContent);
-            case "postedOn" -> Comparator.comparing(PostOutputDTO::getLikes);
+            case "likes" -> Comparator.comparing(PostOutputDTO::getLikes);
             default -> Comparator.comparing(PostOutputDTO::getDateCreated);
         };
         return (params.get("order").equals("desc")) ? comparator.reversed() : comparator;

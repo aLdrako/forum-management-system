@@ -51,7 +51,7 @@ public class ModelMapper {
 
     public Permission dtoToObject(Long id, PermissionDTO permissionDTO) {
         Permission permission = dtoToObject(permissionDTO);
-        permission.setUser_id(id);
+        permission.setUserId(id);
         return permission;
     }
 

@@ -1,6 +1,7 @@
 package com.telerikacademy.web.fms.repositories.deprecated;
 
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 
@@ -78,6 +79,11 @@ public class UserRepositoryListImpl implements UserRepository {
 //        userToUpdate.setAdmin(user.isAdmin());
 //        userToUpdate.setBlocked(user.isBlocked());
         return userToUpdate;
+    }
+
+    @Override
+    public Permission updatePermissions(Permission permission) {
+        return null;
     }
 
     @Override

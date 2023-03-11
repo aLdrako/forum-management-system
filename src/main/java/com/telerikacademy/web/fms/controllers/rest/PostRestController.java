@@ -4,6 +4,7 @@ import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
+import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.dto.PostDTO;
@@ -20,12 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.getCommentDTOComparator;
+
 @RestController
 @RequestMapping("/api")
 public class PostRestController {
+    private static final String POST_NO_COMMENT_WITH_ID = "Post with id %d does not have comment with id %d!";
     private final PostServices postServices;
     private final ModelMapper postMapper;
-
     private final AuthenticationHelper authenticationHelper;
 
     public PostRestController(PostServices postServices, ModelMapper postMapper,
@@ -108,15 +111,24 @@ public class PostRestController {
         }
     }
 
-    // TODO - MOVED TO USER CONTROLLER - UNDER REVIEW / TO BE REMOVED
-//    @GetMapping("/users/{userId}/posts")
-    public List<PostOutputDTO> getPostsByUserId(@PathVariable Long userId,
-                                    @RequestParam(required = false) Optional<String> title,
-                                    @RequestParam(required = false) Optional<String> sortBy,
-                                    @RequestParam(required = false) Optional<String> orderBy) {
+    @GetMapping("posts/{postId}/comments")
+    public List<CommentOutputDTO> getPostComments(@PathVariable Long postId, @RequestParam Map<String, String> parameters) {
         try {
-            return postMapper.objectToDto(postServices.getAll(userId.describeConstable(),
-                    title, sortBy, orderBy));
+            return postServices.getById(postId).getComments().stream()
+                    .map(postMapper::objectToDto)
+                    .sorted(getCommentDTOComparator(parameters)).toList();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("posts/{postId}/comments/{commentId}")
+    public CommentOutputDTO getPostComment(@PathVariable Long postId, @PathVariable Long commentId) {
+        try {
+            return postServices.getById(postId).getComments().stream()
+                    .filter(comment -> comment.getId().equals(commentId))
+                    .map(postMapper::objectToDto).findFirst()
+                    .orElseThrow(() -> new EntityNotFoundException(String.format(POST_NO_COMMENT_WITH_ID, postId, commentId)));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
@@ -125,15 +137,5 @@ public class PostRestController {
     @GetMapping("/posts/search")
     public List<PostOutputDTO> searchPosts(@RequestParam Map<String, String> param) {
         return postMapper.objectToDto(postServices.search(param));
-    }
-
-    // TODO - MOVED TO USER CONTROLLER - UNDER REVIEW / TO BE REMOVED
-//    @GetMapping("/users/{userId}/posts/{postId}")
-    public PostOutputDTO getPostByUserId(@PathVariable Long userId, @PathVariable Long postId) {
-        try {
-            return postMapper.objectToDto(postServices.getPostByUserId(userId, postId));
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
     }
 }

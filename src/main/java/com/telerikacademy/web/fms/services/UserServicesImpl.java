@@ -3,6 +3,7 @@ package com.telerikacademy.web.fms.services;
 import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
+import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
@@ -12,7 +13,9 @@ import java.util.List;
 
 @Service
 public class UserServicesImpl implements UserServices {
+    private final static String UPDATE_ADMIN_PERMISSION_ERROR_MESSAGE = "Only admin can modify these settings: <<Block>>, <<Set Admin>>!";
     private final static String USER_CHANGE_OR_DELETE_ERROR_MESSAGE = "Only admin or owner of the account can delete or change their account!";
+    private final static String UPDATE_SUPER_USER_PERMISSION_ERROR_MESSAGE = "Super user permissions cannot be changed!";
     private final static String SUPER_USER_DELETION_ERROR_MESSAGE = "Super user cannot be deleted!";
     private static final String EMAIL_PREFIX = "email=";
     private static final String USERNAME_PREFIX = "username=";
@@ -53,6 +56,16 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
+    public User updatePermissions(Permission permission, User authenticatedUser) {
+        if (permission.getUserId() == 1) throw new UnauthorizedOperationException(UPDATE_SUPER_USER_PERMISSION_ERROR_MESSAGE);
+        User user = userRepository.getById(permission.getUserId());
+        checkAdminPermissions(authenticatedUser);
+        Permission updatedPermission = userRepository.updatePermissions(permission);
+        user.setPermission(updatedPermission);
+        return user;
+    }
+
+    @Override
     public void delete(Long id, User user) {
         if (id == 1) throw new UnauthorizedOperationException(SUPER_USER_DELETION_ERROR_MESSAGE);
         User userToDelete = userRepository.getById(id);
@@ -84,6 +97,12 @@ public class UserServicesImpl implements UserServices {
         if (users[1].getPermission().isAdmin()) return;
         if (!users[0].getUsername().equals(users[1].getUsername())) {
             throw new UnauthorizedOperationException(USER_CHANGE_OR_DELETE_ERROR_MESSAGE);
+        }
+    }
+
+    private static void checkAdminPermissions(User user) {
+        if (!user.getPermission().isAdmin()) {
+            throw new UnauthorizedOperationException(UPDATE_ADMIN_PERMISSION_ERROR_MESSAGE);
         }
     }
 }

@@ -73,42 +73,4 @@ public class CommentRepositoryListImpl implements CommentRepository {
         Comment commentToDelete = getById(id);
         comments.remove(commentToDelete);
     }
-
-    @Override
-    public List<Comment> getCommentsByUserId(Long userId, Map<String, String> parameters) {
-        userRepository.getById(userId);
-        return comments.stream()
-                .filter(comment -> Objects.equals(comment.getCreatedBy().getId(), userId))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Comment getCommentByUserId(Long userId, Long commentId) {
-        userRepository.getById(userId);
-        getById(commentId);
-        return comments.stream()
-                .filter(comment -> Objects.equals(comment.getCreatedBy().getId(), userId))
-                .filter(comment -> Objects.equals(comment.getId(), commentId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have comment with id %d!", userId, commentId)));
-    }
-
-    @Override
-    public List<Comment> getCommentsByPostId(Long postId, Map<String, String> parameters) {
-        postRepository.getById(postId);
-        return comments.stream()
-                .filter(comment -> Objects.equals(comment.getPostedOn().getId(), postId))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Comment getCommentByPostId(Long postId, Long commentId) {
-        postRepository.getById(postId);
-        getById(commentId);
-        return comments.stream()
-                .filter(comment -> Objects.equals(comment.getPostedOn().getId(), postId))
-                .filter(comment -> Objects.equals(comment.getId(), commentId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Post with id %d does not have comment with id %d!", postId, commentId)));
-    }
 }

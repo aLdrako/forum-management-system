@@ -78,7 +78,7 @@ public class UserRepositoryImpl implements UserRepository {
             Permission permission = new Permission();
             session.beginTransaction();
             session.persist(user);
-            permission.setUser_id(user.getId());
+            permission.setUserId(user.getId());
             session.persist(permission);
             session.getTransaction().commit();
             user.setPermission(permission);
@@ -93,6 +93,16 @@ public class UserRepositoryImpl implements UserRepository {
             session.merge(user);
             session.getTransaction().commit();
             return user;
+        }
+    }
+
+    @Override
+    public Permission updatePermissions(Permission permission) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.merge(permission);
+            session.getTransaction().commit();
+            return permission;
         }
     }
 

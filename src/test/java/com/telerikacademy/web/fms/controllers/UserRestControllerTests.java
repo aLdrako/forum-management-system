@@ -10,7 +10,6 @@ import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.PermissionDTO;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
 import com.telerikacademy.web.fms.services.ModelMapper;
-import com.telerikacademy.web.fms.services.contracts.PermissionServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -33,9 +32,6 @@ import static org.mockito.Mockito.*;
 public class UserRestControllerTests {
     @MockBean
     UserServices mockUserServices;
-
-    @MockBean
-    PermissionServices mockPermissionServices;
 
     @MockBean
     ModelMapper mockModelMapper;
@@ -220,7 +216,7 @@ public class UserRestControllerTests {
 
         when(mockModelMapper.dtoToObject(anyLong(), (PermissionDTO) any())).thenReturn(permission);
 
-        when(mockPermissionServices.update(permission, mockAdminUser)).thenReturn(null);
+        when(mockUserServices.updatePermissions(permission, mockAdminUser)).thenReturn(null);
 
         // Act, Arrange
         String body = toJson(new PermissionDTO());
@@ -239,7 +235,7 @@ public class UserRestControllerTests {
 
         when(mockModelMapper.dtoToObject(anyLong(), (PermissionDTO) any())).thenReturn(permission);
 
-        doThrow(UnauthorizedOperationException.class).when(mockPermissionServices).update(permission, mockUser);
+        doThrow(UnauthorizedOperationException.class).when(mockUserServices).updatePermissions(permission, mockUser);
 
         // Act, Arrange
         String body = toJson(new PermissionDTO());
