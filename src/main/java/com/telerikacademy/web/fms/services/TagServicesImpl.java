@@ -23,10 +23,7 @@ public class TagServicesImpl implements TagServices {
 
     @Override
     public Tag createTag(String tagName) {
-        if (tagName.isEmpty() || tagName.isBlank()) {
-            return null;
-        }
-        Tag tag = new Tag(tagName.trim().split("[,]+", 2)[0].toLowerCase());
+        Tag tag = new Tag(tagName.split("[,]+", 2)[0].toLowerCase());
         try {
             return tagRepository.getTagByName(tag.getName());
         } catch (EntityNotFoundException e) {

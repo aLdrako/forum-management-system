@@ -3,6 +3,7 @@ package com.telerikacademy.web.fms.models.dto;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PostDTO {
     @NotEmpty
@@ -12,10 +13,12 @@ public class PostDTO {
     @Size(min = 32, max = 8192, message = "Content should be between 32 and 8192 symbols")
     private String content;
 
-    private List<@Size(min = 5, max = 16, message = "Tags must not be between 5 and 16 symbols") String> tags;
+    private List<String> tags;
 
-    public List<String> getTags() {
-        return tags;
+    public List<@Size(min = 5, max = 32,
+            message = "Tags must not be between 5 and 32 symbols")String> getTags() {
+        return tags.stream().map(tag -> tag.trim().replaceAll("\\s", ""))
+                .collect(Collectors.toList());
     }
 
     public void setTags(List<String> tags) {
