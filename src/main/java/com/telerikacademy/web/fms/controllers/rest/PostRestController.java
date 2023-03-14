@@ -4,12 +4,14 @@ import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
+import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.dto.PostDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
 import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -21,19 +23,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.getCommentDTOComparator;
-
 @RestController
 @RequestMapping("/api")
 public class PostRestController {
-    private static final String POST_NO_COMMENT_WITH_ID = "Post with id %d does not have comment with id %d!";
     private final PostServices postServices;
+    private final CommentServices commentServices;
     private final ModelMapper postMapper;
     private final AuthenticationHelper authenticationHelper;
 
-    public PostRestController(PostServices postServices, ModelMapper postMapper,
+    public PostRestController(PostServices postServices, CommentServices commentServices, ModelMapper postMapper,
                               AuthenticationHelper authenticationHelper) {
         this.postServices = postServices;
+        this.commentServices = commentServices;
         this.postMapper = postMapper;
         this.authenticationHelper = authenticationHelper;
     }
@@ -112,23 +113,19 @@ public class PostRestController {
     }
 
     @GetMapping("posts/{postId}/comments")
-    public List<CommentOutputDTO> getPostComments(@PathVariable Long postId, @RequestParam Map<String, String> parameters) {
+    public List<CommentOutputDTO> getCommentsByPostId(@PathVariable Long postId, @RequestParam Map<String, String> parameters) {
         try {
-            return postServices.getById(postId).getComments().stream()
-                    .map(postMapper::objectToDto)
-                    .sorted(getCommentDTOComparator(parameters)).toList();
+            return commentServices.getCommentsByPostId(postId, parameters).stream().map(postMapper::objectToDto).toList();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("posts/{postId}/comments/{commentId}")
-    public CommentOutputDTO getPostComment(@PathVariable Long postId, @PathVariable Long commentId) {
+    public CommentOutputDTO getCommentByPostId(@PathVariable Long postId, @PathVariable Long commentId) {
         try {
-            return postServices.getById(postId).getComments().stream()
-                    .filter(comment -> comment.getId().equals(commentId))
-                    .map(postMapper::objectToDto).findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException(String.format(POST_NO_COMMENT_WITH_ID, postId, commentId)));
+            Comment comment = commentServices.getCommentByPostId(postId, commentId);
+            return postMapper.objectToDto(comment);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

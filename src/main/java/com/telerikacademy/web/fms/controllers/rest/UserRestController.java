@@ -5,6 +5,7 @@ import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
+import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
@@ -13,6 +14,7 @@ import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.dto.PermissionDTO;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
+import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.validation.Valid;
@@ -30,16 +32,17 @@ import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.*;
 @RequestMapping("/api/users")
 public class UserRestController {
     private static final String USER_NO_COMMENT_WITH_ID = "User with id %d does not have comment with id %d!";
-    private static final String USER_NO_POST_WITH_ID = "User with id %d does not have post with id %d!";
     private final ModelMapper modelMapper;
-    private final PostServices postServices;
     private final UserServices userServices;
+    private final PostServices postServices;
+    private final CommentServices commentServices;
     private final AuthenticationHelper authenticationHelper;
 
-    public UserRestController(ModelMapper modelMapper, PostServices postServices, UserServices userServices, AuthenticationHelper authenticationHelper) {
+    public UserRestController(ModelMapper modelMapper, UserServices userServices, PostServices postServices, CommentServices commentServices, AuthenticationHelper authenticationHelper) {
         this.modelMapper = modelMapper;
-        this.postServices = postServices;
         this.userServices = userServices;
+        this.postServices = postServices;
+        this.commentServices = commentServices;
         this.authenticationHelper = authenticationHelper;
     }
 
@@ -139,24 +142,20 @@ public class UserRestController {
         }
     }
 
-    @GetMapping("/{id}/comments")
-    public List<CommentOutputDTO> getUserComments(@PathVariable Long id, @RequestParam Map<String, String> parameters) {
+    @GetMapping("/{userId}/comments")
+    public List<CommentOutputDTO> getCommentsByUserId(@PathVariable Long userId, @RequestParam Map<String, String> parameters) {
         try {
-            return userServices.getById(id).getComments().stream()
-                    .map(modelMapper::objectToDto)
-                    .sorted(getCommentDTOComparator(parameters)).toList();
+            return commentServices.getCommentsByUserId(userId, parameters).stream().map(modelMapper::objectToDto).toList();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("/{userId}/comments/{commentId}")
-    public CommentOutputDTO getUserComment(@PathVariable Long userId, @PathVariable Long commentId) {
+    public CommentOutputDTO getCommentByUserId(@PathVariable Long userId, @PathVariable Long commentId) {
         try {
-            return userServices.getById(userId).getComments().stream()
-                    .filter(comment -> Objects.equals(comment.getId(), commentId))
-                    .map(modelMapper::objectToDto).findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NO_COMMENT_WITH_ID, userId, commentId)));
+            Comment comment = commentServices.getCommentByUserId(userId, commentId);
+            return modelMapper.objectToDto(comment);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
