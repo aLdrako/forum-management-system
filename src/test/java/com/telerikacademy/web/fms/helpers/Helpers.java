@@ -84,7 +84,7 @@ public class Helpers {
     }
 
     public static Tag createMockTag() {
-        return new Tag("MockTagName");
+        return new Tag("mocktagname");
     }
 
 }
