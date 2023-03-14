@@ -3,6 +3,7 @@ package com.telerikacademy.web.fms.services;
 import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
+import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -168,6 +169,47 @@ public class UserServicesImplTests {
         Assertions.assertThrows(
                 DuplicateEntityException.class,
                 () -> userServices.update(mockUser, mockUser)
+        );
+    }
+
+    @Test
+    public void updatePermissions_Should_CallRepository_When_UserIsAdmin() {
+        // Arrange
+        User mockAdminUser = createMockAdmin();
+        Permission permission = new Permission(2L);
+        when(mockUserRepository.getById(anyLong())).thenReturn(mockAdminUser);
+
+        // Act
+        userServices.updatePermissions(permission, mockAdminUser);
+
+        // Assert
+        verify(mockUserRepository).updatePermissions(permission);
+    }
+
+    @Test
+    public void updatePermissions_Should_ThrowException_When_UpdatingSuperUserPermission() {
+        // Arrange
+        User mockAdminUser = createMockAdmin();
+        Permission permission = new Permission(1L);
+
+        // Act, Assert
+        Assertions.assertThrows(
+                UnauthorizedOperationException.class,
+                () -> userServices.updatePermissions(permission, mockAdminUser));
+    }
+
+    @Test
+    public void updatePermissions_Should_ThrowException_When_UserIsNotAdmin() {
+        // Arrange
+        User mockUser = createMockUser();
+        Permission permission = new Permission(2L);
+
+        when(mockUserRepository.getById(anyLong())).thenReturn(mockUser);
+
+        // Act, Assert
+        Assertions.assertThrows(
+                UnauthorizedOperationException.class,
+                () -> userServices.updatePermissions(permission, mockUser)
         );
     }
 

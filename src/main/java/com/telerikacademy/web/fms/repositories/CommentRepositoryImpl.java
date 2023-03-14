@@ -135,7 +135,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     private static List<Comment> getComments(Map<String, String> parameters, Session session, CriteriaBuilder builder, CriteriaQuery<Comment> criteriaQuery, Root<Comment> commentRoot) {
-        Map<String, String> params = extractParams(parameters);
+        Map<String, String> params = extractSortOrder(parameters);
         Path<Object> commentFieldPath = commentRoot.get(params.get("sort"));
         Order order = params.get("order").equals("asc") ? builder.asc(commentFieldPath) : builder.desc(commentFieldPath);
         criteriaQuery.orderBy(order);

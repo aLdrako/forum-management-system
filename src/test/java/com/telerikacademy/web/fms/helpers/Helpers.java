@@ -2,7 +2,9 @@ package com.telerikacademy.web.fms.helpers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.Permission;
+import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
 
@@ -53,6 +55,24 @@ public class Helpers {
         userDTO.setPhoneNumber(null);
         userDTO.setPhoto(null);
         return userDTO;
+    }
+
+    public static Post createMockPost() {
+        Post mockPost = new Post();
+        mockPost.setId(1L);
+        mockPost.setContent("mockPostContent");
+        mockPost.setDateCreated(LocalDateTime.now());
+        return mockPost;
+    }
+
+    public static Comment createMockComment() {
+        Comment mockComment = new Comment();
+        mockComment.setId(1L);
+        mockComment.setCreatedBy(createMockUser());
+        mockComment.setContent("mockCommentContent");
+        mockComment.setPostedOn(createMockPost());
+        mockComment.setDateCreated(LocalDateTime.now());
+        return mockComment;
     }
 
     public static String toJson(final Object object) {
