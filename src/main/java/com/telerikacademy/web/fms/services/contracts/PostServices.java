@@ -9,8 +9,8 @@ import java.util.Optional;
 
 public interface PostServices {
     Post getById(Long id);
-    List<Post> getAll(Optional<Long> userId, Optional<String> title,
-                      Optional<String> sortBy, Optional<String> orderBy);
+    List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
+                      Optional<String> sort, Optional<String> order);
     Post create(Post post, User user);
     Post update(Post post, User user);
     void delete(Long id, User user);
@@ -21,5 +21,5 @@ public interface PostServices {
 
     Post updateTagsInPost(List<String> tags, Post post);
 
-    List<Post> search(Map<String, String> param);
+    List<Post> search(Optional<String> keyword);
 }

@@ -2,11 +2,10 @@ package com.telerikacademy.web.fms.repositories;
 
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.models.Post;
+import com.telerikacademy.web.fms.models.Tag;
+import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -36,27 +35,31 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> sortBy,
-                             Optional<String> orderBy) {
+    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
+                             Optional<String> sort, Optional<String> order) {
         try (Session session = sessionFactory.openSession()){
-            StringBuilder stringQuery = new StringBuilder("from Post");
+            StringBuilder stringQuery = new StringBuilder("from Post p left join p.likes as pl");
             Map<String, Object> queryParams = new HashMap<>();
             List<String> filter = new ArrayList<>();
 
             if (userId.isPresent()) {
-                filter.add(" userCreated.id = :userId ");
+                filter.add(" p.userCreated.id = :userId ");
                 queryParams.put("userId", userId.get());
             }
             if (title.isPresent()) {
-                filter.add(" title like :title ");
+                filter.add(" p.title like :title ");
                 queryParams.put("title", "%" + title.get() + "%");
+            }
+            if (content.isPresent()) {
+                filter.add(" p.content like :content ");
+                queryParams.put("content", "%" + content.get() + "%");
             }
             if (!filter.isEmpty()) {
                 stringQuery.append(" where ").append(String.join(" and ", filter));
             }
 
-            stringQuery.append(sortBy.map(this::generateSort).orElse(" order by id "));
-            stringQuery.append(orderBy.map(this::generateOrder).orElse(""));
+            stringQuery.append(sort.map(this::generateSort).orElse(" order by p.id "));
+            stringQuery.append(order.map(this::generateOrder).orElse(""));
 
             Query<Post> query = session.createQuery(stringQuery.toString(), Post.class);
             query.setProperties(queryParams);
@@ -64,21 +67,29 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
-    private String generateOrder(String orderBy) {
-        if (orderBy.equalsIgnoreCase("desc")) {
+    private String generateOrder(String order) {
+        if (order.equalsIgnoreCase("desc")) {
             return " desc ";
         }
         return "";
     }
 
-    private String generateSort(String sortBy) {
-        StringBuilder sb = new StringBuilder(" order by");
-        switch (sortBy.toLowerCase()) {
-            case "title" -> sb.append(" title ");
-            case "userid" -> sb.append(" userCreated.id ");
-            case "datecreated" -> sb.append(" dateCreated ");
+    private String generateSort(String sort) {
+        switch (sort.toLowerCase()) {
+            case "title" -> {
+                return "  order by p.title ";
+            }
+            case "userid" -> {
+                return "  order by p.userCreated.id ";
+            }
+            case "datecreated" -> {
+                return "  order by p.dateCreated ";
+            }
+            case "likes" -> {
+                return " group by p order by count(pl) ";
+            }
         }
-        return sb.toString();
+        return "";
     }
 
     @Override
@@ -113,28 +124,29 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getTopTenMostCommented() {
         try (Session session = sessionFactory.openSession()){
-            return session.createQuery("from Post p " +
-                            "                    left join p.comments as pc " +
-                            "                    group by p " +
-                            "                    order by count(pc) desc " +
-                            "                    limit 10", Post.class)
-                    .list();
+            return session.createQuery("""
+                                        from Post p
+                                        left join p.comments as pc
+                                        group by p
+                                        order by count(pc) desc
+                                        limit 10
+                                        """, Post.class).list();
         }
     }
 
     @Override
     public List<Post> getTopTenMostRecent() {
         try (Session session = sessionFactory.openSession()){
-            return session.createQuery("from Post p order by p.dateCreated desc limit 10", Post.class)
-                    .list();
+            return session.createQuery("from Post p order by p.dateCreated desc limit 10",
+                    Post.class).list();
         }
     }
 
     @Override
     public Post getPostByUserId(Long userId, Long postId) {
         try (Session session = sessionFactory.openSession()){
-            Query<Post> query = session.createQuery("from Post where id = :postId and userCreated.id = :userId",
-                    Post.class);
+            Query<Post> query = session.createQuery("from Post where id = :postId and " +
+                    "userCreated.id = :userId", Post.class);
             query.setParameter("postId", postId);
             query.setParameter("userId", userId);
             List<Post> result = query.list();
@@ -144,19 +156,25 @@ public class PostRepositoryImpl implements PostRepository {
             return result.get(0);
         }
     }
-
     @Override
-    public List<Post> search(Map.Entry<String, String> param) {
-        StringBuilder query = new StringBuilder("from Post p");
-        switch (param.getKey()) {
-            case "title" -> query.append(" where p.title like ?1");
-            case "user" -> query.append(" where p.userCreated.username = ?1");
-            case "tag" -> query.append(" left join p.tags t where t.name = ?1");
-        }
+    public List<Post> search(Optional<String> keyword) {
+        String query = keyword.orElse("");
         try (Session session = sessionFactory.openSession()){
-            Query<Post> query1 = session.createQuery(query.toString(), Post.class);
-            query1.setParameter(1, param.getValue());
-            return query1.list();
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Post> criteriaQuery = criteriaBuilder.createQuery(Post.class);
+            Root<Post> post = criteriaQuery.from(Post.class);
+            Join<Post, User> userJoin = post.join("userCreated");
+            Join<Post, Tag> tagJoin = post.join("tags", JoinType.LEFT);
+            Predicate tagPredicate = criteriaBuilder.equal(tagJoin.get("name"), query);
+            Predicate titlePredicate = criteriaBuilder.like(post.get("title"), "%" + query + "%");
+            Predicate contentPredicate = criteriaBuilder.like(post.get("content"), "%" + query + "%");
+            Predicate userPredicate = criteriaBuilder.like(userJoin.get("username"), "%" + query + "%");
+
+            Predicate finalPredicate = criteriaBuilder.or(tagPredicate, titlePredicate, contentPredicate,
+                    userPredicate
+            );
+            criteriaQuery.where(finalPredicate);
+            return session.createQuery(criteriaQuery).getResultList();
         }
     }
 }

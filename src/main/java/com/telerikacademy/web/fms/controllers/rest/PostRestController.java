@@ -41,9 +41,10 @@ public class PostRestController {
 
     @GetMapping("/posts")
     public List<PostOutputDTO> getAll(@RequestParam(required = false) Optional<String> title,
-                                      @RequestParam(required = false) Optional<String> sortBy,
-                                      @RequestParam(required = false) Optional<String> orderBy) {
-        return postMapper.objectToDto(postServices.getAll(Optional.empty(), title, sortBy, orderBy));
+                                      @RequestParam(required = false) Optional<String> content,
+                                      @RequestParam(required = false) Optional<String> sort,
+                                      @RequestParam(required = false) Optional<String> order) {
+        return postMapper.objectToDto(postServices.getAll(Optional.empty(), title, content, sort, order));
     }
 
     @GetMapping("/posts/{id}")
@@ -132,7 +133,7 @@ public class PostRestController {
     }
 
     @GetMapping("/posts/search")
-    public List<PostOutputDTO> searchPosts(@RequestParam Map<String, String> param) {
-        return postMapper.objectToDto(postServices.search(param));
+    public List<PostOutputDTO> searchPosts(@RequestParam (required = false) Optional<String> q) {
+        return postMapper.objectToDto(postServices.search(q));
     }
 }

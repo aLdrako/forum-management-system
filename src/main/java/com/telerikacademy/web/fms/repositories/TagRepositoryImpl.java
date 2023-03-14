@@ -22,7 +22,11 @@ public class TagRepositoryImpl implements TagRepository {
     @Override
     public Tag getTagById(Long id) {
         try (Session session = sessionFactory.openSession()){
-            return session.get(Tag.class, id);
+            Tag tag = session.get(Tag.class, id);
+            if (tag == null) {
+                throw new EntityNotFoundException("Tag", id);
+            }
+            return tag;
         }
     }
 

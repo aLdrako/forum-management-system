@@ -12,7 +12,7 @@ public class PostDTO {
     @Size(min = 32, max = 8192, message = "Content should be between 32 and 8192 symbols")
     private String content;
 
-    private List<String> tags;
+    private List<@Size(min = 5, max = 16, message = "Tags must not be between 5 and 16 symbols") String> tags;
 
     public List<String> getTags() {
         return tags;

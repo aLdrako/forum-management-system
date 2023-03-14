@@ -35,8 +35,8 @@ public class PostRepositoryListImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> sortBy,
-                             Optional<String> orderBy) {
+    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content, Optional<String> sort,
+                             Optional<String> order) {
         return posts.stream()
                 .filter(post -> post.getTitle().toLowerCase().contains(title.get().toLowerCase()))
                 .collect(Collectors.toList());
@@ -87,11 +87,8 @@ public class PostRepositoryListImpl implements PostRepository {
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have post with id %d!", userId, postId)));
     }
-
     @Override
-    public List<Post> search(Map.Entry<String, String> param) {
+    public List<Post> search(Optional<String> keyword) {
         return null;
     }
-
-
 }

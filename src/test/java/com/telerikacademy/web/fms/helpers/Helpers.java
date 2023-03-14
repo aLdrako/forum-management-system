@@ -2,10 +2,7 @@ package com.telerikacademy.web.fms.helpers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.telerikacademy.web.fms.models.Comment;
-import com.telerikacademy.web.fms.models.Permission;
-import com.telerikacademy.web.fms.models.Post;
-import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.models.*;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
 
 import java.time.LocalDateTime;
@@ -62,6 +59,7 @@ public class Helpers {
         mockPost.setId(1L);
         mockPost.setContent("mockPostContent");
         mockPost.setDateCreated(LocalDateTime.now());
+        mockPost.setUserCreated(createMockUser());
         return mockPost;
     }
 
@@ -83,6 +81,10 @@ public class Helpers {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Tag createMockTag() {
+        return new Tag("MockTagName");
     }
 
 }

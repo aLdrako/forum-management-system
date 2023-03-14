@@ -36,10 +36,10 @@ public class PostRepositoryJDBCImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getAll(Optional<Long> userId, Optional<String> title,
-                             Optional<String> sortBy, Optional<String> orderBy) {
+    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
+                             Optional<String> sort, Optional<String> order) {
         String query = SQL_POSTS_LIKES_JOINED;
-        query += addToQuery(userId, title, sortBy, orderBy);
+        query += addToQuery(userId, title, sort, order);
 
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
@@ -313,7 +313,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> search(Map.Entry<String, String> param) {
+    public List<Post> search(Optional<String> keyword) {
         return null;
     }
 

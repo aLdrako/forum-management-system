@@ -123,11 +123,12 @@ public class UserRestController {
     @GetMapping("/{userId}/posts")
     public List<PostOutputDTO> getPostsByUserId(@PathVariable Long userId,
                                                 @RequestParam(required = false) Optional<String> title,
-                                                @RequestParam(required = false) Optional<String> sortBy,
-                                                @RequestParam(required = false) Optional<String> orderBy) {
+                                                @RequestParam(required = false) Optional<String> content,
+                                                @RequestParam(required = false) Optional<String> sort,
+                                                @RequestParam(required = false) Optional<String> order) {
         try {
             return modelMapper.objectToDto(postServices.getAll(userId.describeConstable(),
-                    title, sortBy, orderBy));
+                    title, content, sort, order));
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

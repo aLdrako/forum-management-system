@@ -31,10 +31,10 @@ public class PostServicesImpl implements PostServices {
     }
 
     @Override
-    public List<Post> getAll(Optional<Long> userId, Optional<String> title,
-                             Optional<String> sortBy, Optional<String> orderBy) {
-        userId.ifPresent(postRepository::getById);
-        return postRepository.getAll(userId, title, sortBy, orderBy);
+    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
+                             Optional<String> sort, Optional<String> order) {
+        userId.ifPresent(userRepository::getById);
+        return postRepository.getAll(userId, title, content, sort, order);
     }
 
     @Override
@@ -66,7 +66,6 @@ public class PostServicesImpl implements PostServices {
         postRepository.delete(post);
     }
 
-
     @Override
     public Post getPostByUserId(Long userId, Long postId) {
         userRepository.getById(userId);
@@ -93,9 +92,9 @@ public class PostServicesImpl implements PostServices {
             return post;
         }
         tags.stream().map(tagServices::createTag).forEach(tag -> {
-            if (post.getTags().contains(tag)) {
+            if (post.getTags().contains(tag) && tag != null) {
                 post.removeTag(tag);
-            } else {
+            } else if (tag != null){
                 post.addTag(tag);
             }
         });
@@ -104,8 +103,7 @@ public class PostServicesImpl implements PostServices {
     }
 
     @Override
-    public List<Post> search(Map<String, String> param) {
-        if (param.size() == 0) param.put("*", "*");
-        return postRepository.search(param.entrySet().iterator().next());
+    public List<Post> search(Optional<String> keyword) {
+        return postRepository.search(keyword);
     }
 }
