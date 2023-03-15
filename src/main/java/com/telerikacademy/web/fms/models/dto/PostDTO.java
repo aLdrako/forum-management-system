@@ -16,7 +16,7 @@ public class PostDTO {
     private List<String> tags;
 
     public List<@Pattern(regexp = "^[A-Za-z0-9]{5,32}$",
-            message ="Tags must not be between 5 and 32 characters and no special symbols!")String> getTags() {
+            message ="Tags must be between 5 and 32 characters and no special symbols!")String> getTags() {
         return tags;
     }
 
