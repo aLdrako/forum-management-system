@@ -92,9 +92,9 @@ public class PostServicesImpl implements PostServices {
             return post;
         }
         tags.stream().map(tagServices::createTag).forEach(tag -> {
-            if (post.getTags().contains(tag) && tag != null) {
+            if (post.getTags().contains(tag)) {
                 post.removeTag(tag);
-            } else if (tag != null){
+            } else {
                 post.addTag(tag);
             }
         });

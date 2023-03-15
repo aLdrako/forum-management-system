@@ -23,7 +23,7 @@ public class TagServicesImpl implements TagServices {
 
     @Override
     public Tag createTag(String tagName) {
-        Tag tag = new Tag(tagName.split("[,]+", 2)[0].toLowerCase());
+        Tag tag = new Tag(tagName.toLowerCase());
         try {
             return tagRepository.getTagByName(tag.getName());
         } catch (EntityNotFoundException e) {

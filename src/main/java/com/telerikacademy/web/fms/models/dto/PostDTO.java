@@ -7,18 +7,17 @@ import java.util.stream.Collectors;
 
 public class PostDTO {
     @NotEmpty
-    @Size(min = 16, max = 64, message = "Title should be between 16 and 64 symbols")
+    @Size(min = 16, max = 64, message = "Title should be between 16 and 64 symbols!")
     private String title;
     @NotEmpty
-    @Size(min = 32, max = 8192, message = "Content should be between 32 and 8192 symbols")
+    @Size(min = 32, max = 8192, message = "Content should be between 32 and 8192 symbols!")
     private String content;
 
     private List<String> tags;
 
-    public List<@Size(min = 5, max = 32,
-            message = "Tags must not be between 5 and 32 symbols")String> getTags() {
-        return tags.stream().map(tag -> tag.trim().replaceAll("\\s", ""))
-                .collect(Collectors.toList());
+    public List<@Pattern(regexp = "^[A-Za-z0-9]{5,32}$",
+            message ="Tags must not be between 5 and 32 characters and no special symbols!")String> getTags() {
+        return tags;
     }
 
     public void setTags(List<String> tags) {

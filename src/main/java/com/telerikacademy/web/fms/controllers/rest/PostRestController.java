@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/posts")
 public class PostRestController {
     private final PostServices postServices;
     private final CommentServices commentServices;
@@ -39,7 +39,7 @@ public class PostRestController {
         this.authenticationHelper = authenticationHelper;
     }
 
-    @GetMapping("/posts")
+    @GetMapping
     public List<PostOutputDTO> getAll(@RequestParam(required = false) Optional<String> title,
                                       @RequestParam(required = false) Optional<String> content,
                                       @RequestParam(required = false) Optional<String> sort,
@@ -47,7 +47,7 @@ public class PostRestController {
         return postMapper.objectToDto(postServices.getAll(Optional.empty(), title, content, sort, order));
     }
 
-    @GetMapping("/posts/{id}")
+    @GetMapping("/{id}")
     public PostOutputDTO getById(@PathVariable Long id) {
         try {
            Post post = postServices.getById(id);
@@ -57,7 +57,7 @@ public class PostRestController {
         }
     }
 
-    @PostMapping("/posts")
+    @PostMapping
     public PostOutputDTO create(@Valid @RequestBody PostDTO postDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
@@ -72,7 +72,7 @@ public class PostRestController {
         }
     }
 
-    @PutMapping("/posts/{id}")
+    @PutMapping("/{id}")
     public PostOutputDTO update(@PathVariable Long id, @Valid @RequestBody PostDTO postDTO,
                        @RequestHeader HttpHeaders headers) {
         try {
@@ -88,7 +88,7 @@ public class PostRestController {
         }
     }
 
-    @PostMapping("/posts/{id}/like")
+    @PostMapping("/{id}/like")
     public void changePostLikes(@PathVariable Long id,
                                 @RequestHeader HttpHeaders headers) {
         try {
@@ -101,7 +101,7 @@ public class PostRestController {
         }
     }
 
-    @DeleteMapping("/posts/{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
@@ -113,7 +113,7 @@ public class PostRestController {
         }
     }
 
-    @GetMapping("posts/{postId}/comments")
+    @GetMapping("/{postId}/comments")
     public List<CommentOutputDTO> getCommentsByPostId(@PathVariable Long postId, @RequestParam Map<String, String> parameters) {
         try {
             return commentServices.getCommentsByPostId(postId, parameters).stream().map(postMapper::objectToDto).toList();
@@ -122,7 +122,7 @@ public class PostRestController {
         }
     }
 
-    @GetMapping("posts/{postId}/comments/{commentId}")
+    @GetMapping("/{postId}/comments/{commentId}")
     public CommentOutputDTO getCommentByPostId(@PathVariable Long postId, @PathVariable Long commentId) {
         try {
             Comment comment = commentServices.getCommentByPostId(postId, commentId);
@@ -132,7 +132,7 @@ public class PostRestController {
         }
     }
 
-    @GetMapping("/posts/search")
+    @GetMapping("/search")
     public List<PostOutputDTO> searchPosts(@RequestParam (required = false) Optional<String> q) {
         return postMapper.objectToDto(postServices.search(q));
     }
