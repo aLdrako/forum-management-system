@@ -13,13 +13,42 @@
 </head>
 <body>
 <div class="container mx-auto my-5">
-    <h1 th:text="#{users.title}">Users</h1>
+    <h1 th:text="#{users.title.all}">Users</h1>
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page" ><a class="btn btn-outline-secondary btn-sm" href="/" th:text="#{navigation.home}">Home</a></li>
         </ol>
     </nav>
+
+    <table class="table" th:te>
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col" class="d-sm-none d-md-table-cell">Email</th>
+            <th scope="col">Username</th>
+            <th scope="col" class="d-sm-none d-md-table-cell">Phone</th>
+<!--            <th scope="col">Photo</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if=${users.isEmpty()}>
+            <td colspan="7" class="text-center" th:text="#{users.title.empty}">No Users</td>
+        </tr>
+        <tr th:each="user : ${users}">
+            <th scope="row" th:text="${user.id}">1</th>
+            <td th:text="${user.firstName}">John</td>
+            <td th:text="${user.lastName}">Doe</td>
+            <td class="d-sm-none d-md-table-cell" th:text="${user.email}">johndoe@mail.com</td>
+            <td th:text="${user.username}">johndoe</td>
+            <td class="d-sm-none d-md-table-cell" th:if="${user.phoneNumber}" th:text="${user.phoneNumber.orElse('No Phone')}">123-456-7890</td>
+<!--            <td th:text=""><img th:if="${user.photo}" class="img-fluid rounded" width="50px" alt="" src="/" th:alt="${user.firstName}"></td>-->
+        </tr>
+        </tbody>
+    </table>
+
 
 </div>
 
