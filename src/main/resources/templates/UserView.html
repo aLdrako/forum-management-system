@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Bootstrap Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico" th:href="@{/images/favicon.ico}">
+  <link href="../static/style.css" th:href="@{/style.css}"  rel="stylesheet">
+  <title>Forum Management System</title>
+</head>
+<body>
+<div class="container mx-auto my-5">
+  <h1 th:text="${user.username.toUpperCase()}">User</h1>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page" ><a class="btn btn-outline-primary btn-sm" href="/" th:text="#{navigation.home}">Home</a></li>
+      <li class="breadcrumb-item"><a class="btn btn-outline-primary btn-sm" href="/users" th:text="#{navigation.users}">Users</a></li>
+    </ol>
+  </nav>
+
+  <div style="max-width: 30rem;" th:class="${user.getPermission().isAdmin()} ? 'card mb-3 text-white bg-success' : 'card mb-3 text-dark bg-light' + (${user.getPermission().isBlocked()} ? 'card mb-3 text-white bg-danger' : 'card mb-3 text-dark bg-light')">
+    <div class="row g-0">
+      <div class="col-md-4 px-2 d-flex align-items-center justify-content-center">
+        <img th:if="${user.photo.isPresent()}" class="img-fluid rounded-start" alt="" th:alt="${user.firstName}" src="../static/images/no-profile-picture.jpg" th:src="${user.photo.orElse('No photo')}">
+        <img th:unless="${user.photo.isPresent()}" class="img-fluid rounded mx-auto align-self-center mx-2" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${user.firstName} + ' ' + (${user.getLastName()})">Full Name</h5>
+          <p class="card-text" th:text="${user.username}">Username</p>
+          <p class="card-text" th:text="${user.email}">Email</p>
+          <p class="card-text" th:text="${user.phoneNumber.orElse('No Phone')}">Phone</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- JavaScript Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
