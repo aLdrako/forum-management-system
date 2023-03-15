@@ -26,12 +26,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
-import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.*;
-
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
-    private static final String USER_NO_COMMENT_WITH_ID = "User with id %d does not have comment with id %d!";
     private final ModelMapper modelMapper;
     private final UserServices userServices;
     private final PostServices postServices;
