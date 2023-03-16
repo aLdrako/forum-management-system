@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<header th:replace="~{header :: header(context='not-found')}"></header>
+<header th:replace="~{fragments/header :: header(context='not-found')}"></header>
 
 <div class="container mx-auto my-5">
     <div class="alert alert-danger" role="alert" th:text="${error}">

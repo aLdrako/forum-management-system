@@ -13,8 +13,7 @@
     <title>Forum Management System</title>
 </head>
 <body>
-
-<header th:replace="~{header :: header(context='home')}"></header>
+<header th:replace="~{fragments/header :: header(context='index')}"></header>
 
 <div class="container mx-auto my-5">
     <h1 th:text="#{home.welcome}">Forum Management System</h1>
