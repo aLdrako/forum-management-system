@@ -143,7 +143,7 @@ public class UserRestControllerTests {
         mockUserDTO.setUsername(null);
 
         when(mockAuthenticationHelper.tryGetUser(any()))
-                .thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, null));
+                .thenThrow(new AuthorizationException(null));
 
         //Act, Assert
         String body = toJson(mockUserDTO);

@@ -9,7 +9,6 @@ import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
