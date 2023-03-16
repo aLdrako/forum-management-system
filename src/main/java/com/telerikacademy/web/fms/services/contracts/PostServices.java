@@ -12,14 +12,14 @@ public interface PostServices {
     List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
                       Optional<String> sort, Optional<String> order);
     Post create(Post post, User user);
-    Post update(Post post, User user);
+    void update(Post post, User user);
     void delete(Long id, User user);
 
     Post getPostByUserId(Long userId, Long postId);
 
     void changePostLikes(Long id, User user);
 
-    Post updateTagsInPost(List<String> tags, Post post);
+    void updateTagsInPost(List<String> tags, Post post);
 
     List<Post> search(Optional<String> keyword);
 }

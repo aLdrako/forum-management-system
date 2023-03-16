@@ -51,6 +51,7 @@ public class Post {
     public Post() {
         likes = new HashSet<>();
         tags = new HashSet<>();
+        comments = new HashSet<>();
     }
 
     public Post(Long id, String title, String content, User userCreated) {
@@ -60,12 +61,14 @@ public class Post {
         this.userCreated = userCreated;
         likes = new HashSet<>();
         tags = new HashSet<>();
+        comments = new HashSet<>();
     }
     public Post(Long id, String title, String content, User userCreated, LocalDateTime dateCreated) {
         this(id, title, content, userCreated);
         this.dateCreated = dateCreated;
         likes = new HashSet<>();
         tags = new HashSet<>();
+        comments = new HashSet<>();
     }
 
     public Set<Comment> getComments() {

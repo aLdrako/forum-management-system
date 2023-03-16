@@ -44,9 +44,9 @@ public class PostServicesImpl implements PostServices {
     }
 
     @Override
-    public Post update(Post post, User user) {
+    public void update(Post post, User user) {
         checkAuthorizedPermissions(post, user);
-        return postRepository.update(post);
+        postRepository.update(post);
     }
 
     private void checkAuthorizedPermissions(Post post, User user) {
@@ -87,9 +87,9 @@ public class PostServicesImpl implements PostServices {
     }
 
     @Override
-    public Post updateTagsInPost(List<String> tags, Post post) {
+    public void updateTagsInPost(List<String> tags, Post post) {
         if (tags == null) {
-            return post;
+            return;
         }
         tags.stream().map(tagServices::createTag).forEach(tag -> {
             if (post.getTags().contains(tag)) {
@@ -99,7 +99,6 @@ public class PostServicesImpl implements PostServices {
             }
         });
         postRepository.update(post);
-        return post;
     }
 
     @Override

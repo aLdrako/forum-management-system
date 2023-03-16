@@ -3,10 +3,16 @@ package com.telerikacademy.web.fms.helpers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.telerikacademy.web.fms.models.*;
+import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
+import com.telerikacademy.web.fms.models.dto.PostDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
 
 public class Helpers {
 
@@ -64,6 +70,23 @@ public class Helpers {
         mockPost.setUserCreated(createMockUser());
         return mockPost;
     }
+    public static PostOutputDTO createMockPostOutputDto() {
+        return new PostOutputDTO(
+                "mockPostTitle",
+                "mockPostContent",
+                "mockUsername",
+                0,
+                List.of("mocktag"),
+                formatToString(LocalDateTime.now()));
+    }
+
+    public static PostDTO createPostDto() {
+        PostDTO postDTO = new PostDTO();
+        postDTO.setTitle("**mockPostTitle**");
+        postDTO.setContent("*********mockPostContent********");
+        postDTO.setTags(List.of("mocktag"));
+        return postDTO;
+    }
 
     public static Comment createMockComment() {
         Comment mockComment = new Comment();
@@ -73,6 +96,14 @@ public class Helpers {
         mockComment.setPostedOn(createMockPost());
         mockComment.setDateCreated(LocalDateTime.now());
         return mockComment;
+    }
+    public static CommentOutputDTO createMockCommentOutputDTO() {
+        CommentOutputDTO commentOutputDTO = new CommentOutputDTO();
+        commentOutputDTO.setContent("mockCommentContent");
+        commentOutputDTO.setCreatedBy("mockUsername");
+        commentOutputDTO.setDateCreated(formatToString(LocalDateTime.now()));
+        commentOutputDTO.setPostedOn("mockPostTitle");
+        return commentOutputDTO;
     }
 
     public static String toJson(final Object object) {

@@ -242,19 +242,6 @@ public class PostServicesImplTests {
     }
 
     @Test
-    public void update_Should_ReturnPost() {
-        // Arrange
-        Post post = createMockPost();
-        User userCreated = post.getUserCreated();
-
-        Mockito.when(mockPostRepository.update(post))
-                .thenReturn(post);
-
-        // Act, Assert
-        Assertions.assertEquals(post, services.update(post, userCreated));
-    }
-
-    @Test
     public void update_Should_ThrowException_When_UserIsNotCreator() {
         // Arrange
         Post post = createMockPost();
@@ -283,12 +270,13 @@ public class PostServicesImplTests {
         // Arrange
         Post post = createMockPost();
         User userCreated = createMockAdmin();
+        // Act
+        services.update(post, userCreated);
 
-        Mockito.when(mockPostRepository.update(post))
-                .thenReturn(post);
+        // Assert
+        Mockito.verify(mockPostRepository, Mockito.times(1))
+                .update(post);
 
-        // Act, Assert
-        Assertions.assertEquals(post, services.update(post, userCreated));
     }
 
     @Test
@@ -375,9 +363,6 @@ public class PostServicesImplTests {
 
         Mockito.when(mockPostRepository.getById(post.getId()))
                 .thenReturn(post);
-
-        Mockito.when(mockPostRepository.update(post))
-                .thenReturn(post);
         // Act
         services.changePostLikes(post.getId(), user);
         // Assert
@@ -392,9 +377,6 @@ public class PostServicesImplTests {
         post.addLike(user);
 
         Mockito.when(mockPostRepository.getById(post.getId()))
-                .thenReturn(post);
-
-        Mockito.when(mockPostRepository.update(post))
                 .thenReturn(post);
         // Act
         services.changePostLikes(post.getId(), user);
@@ -411,8 +393,6 @@ public class PostServicesImplTests {
         Mockito.when(mockTagService.createTag(tag.getName()))
                 .thenReturn(tag);
 
-        Mockito.when(mockPostRepository.update(post))
-                .thenReturn(post);
         // Act
         services.updateTagsInPost(List.of(tag.getName()), post);
         // Assert
@@ -428,8 +408,6 @@ public class PostServicesImplTests {
         Mockito.when(mockTagService.createTag(tag.getName()))
                 .thenReturn(tag);
 
-        Mockito.when(mockPostRepository.update(post))
-                .thenReturn(post);
         // Act
         services.updateTagsInPost(List.of(tag.getName()), post);
         // Assert

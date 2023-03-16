@@ -12,10 +12,11 @@ public class PostOutputDTO {
     public PostOutputDTO() {
     }
 
-    public PostOutputDTO(String title, String content, int likes, List<String> tags, String dateCreated) {
+    public PostOutputDTO(String title, String content,String userCreated, int likes, List<String> tags, String dateCreated) {
         this.title = title;
         this.content = content;
         this.likes = likes;
+        this.userCreated = userCreated;
         this.tags = tags;
         this.dateCreated = dateCreated;
     }

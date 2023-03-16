@@ -88,7 +88,7 @@ public class PostRestController {
         }
     }
 
-    @PostMapping("/{id}/like")
+    @PutMapping("/{id}/like")
     public void changePostLikes(@PathVariable Long id,
                                 @RequestHeader HttpHeaders headers) {
         try {

@@ -154,7 +154,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         }
     }
     @Override
-    public Post update(Post post) {
+    public void update(Post post) {
         getById(post.getId());
         String query = """
                 update posts set
@@ -170,7 +170,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
             statement.setLong(3, post.getId());
 
             statement.executeUpdate();
-            return getById(post.getId());
+            Post post1 = getById(post.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
