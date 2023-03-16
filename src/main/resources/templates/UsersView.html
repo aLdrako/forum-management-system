@@ -14,36 +14,14 @@
 </head>
 <body>
 
-<header class="p-3 text-bg-dark">
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="#" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                <img class="rounded" src="../static/images/FMS_logo.png" height="42" th:src="@{/images/FMS_logo.png}" alt="FMS">
-            </a>
-
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/" class="nav-link px-2 text-white" th:text="#{navigation.home}">Home</a></li>
-                <li><a href="#" class="nav-link px-2 text-secondary" th:text="#{navigation.users}">Users</a></li>
-            </ul>
-
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
-            </form>
-
-            <div class="text-end">
-                <a href="/login"><button type="button" class="btn btn-outline-light me-2" th:text="#{navigation.login}">Login</button></a>
-                <a href="/register"><button type="button" class="btn btn-warning" th:text="#{navigation.register}">Sign-up</button></a>
-            </div>
-        </div>
-    </div>
-</header>
+<header th:replace="~{header :: header(context='users')}"></header>
 
 <div class="container mx-auto my-5">
 
     <table class="table table-bordered table-striped table-hover mt-5">
         <thead>
         <tr>
-            <th scope="col">ID</th>
+            <th scope="col" class="text-center">ID</th>
             <th scope="col">First</th>
             <th scope="col">Last</th>
             <th scope="col" class="d-sm-none d-md-table-cell">Email</th>
@@ -53,16 +31,16 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:if=${users.isEmpty()}>
+        <tr th:if="${users.isEmpty()}">
             <td colspan="7" class="text-center" th:text="#{users.title.empty}">No Users</td>
         </tr>
-        <tr th:each="user : ${users}" th:classappend="${user.getPermission().isAdmin()} ? 'table-success' : '' + (${user.getPermission().isBlocked()} ? 'table-danger' : '')">
-            <th scope="row"><a href="#" th:href="@{/users/{id}(id=${user.getId()})}" th:text="${user.id}">1</a></th>
-            <td th:text="${user.firstName}">John</td>
-            <td th:text="${user.lastName}">Doe</td>
-            <td class="d-sm-none d-md-table-cell" th:text="${user.email}">johndoe@mail.com</td>
-            <td th:text="${user.username}">johndoe</td>
-            <td class="d-sm-none d-md-table-cell" th:if="${user.phoneNumber}" th:text="${user.phoneNumber.orElse('No Phone')}">123-456-7890</td>
+        <tr th:each="user : ${users}" th:class="${user.getPermission().isAdmin()} ? 'table-success' : '' + (${user.getPermission().isBlocked()} ? 'table-danger' : '')">
+            <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/users/{id}(id=${user.id})}" th:text="${user.id}">1</a></th>
+            <td class="align-middle" th:text="${user.firstName}">John</td>
+            <td class="align-middle" th:text="${user.lastName}">Doe</td>
+            <td class="d-sm-none d-md-table-cell align-middle" th:text="${user.email}">johndoe@mail.com</td>
+            <td class="align-middle" th:text="${user.username}">johndoe</td>
+            <td class="d-sm-none d-md-table-cell align-middle" th:if="${user.phoneNumber}" th:text="${user.phoneNumber.orElse('No Phone')}">123-456-7890</td>
             <td class="text-center">
                 <img th:if="${user.photo.isPresent()}" class="img-fluid rounded" width="50px" alt="" src="../static/images/no-profile-picture.jpg" th:alt="${user.firstName}">
                 <img th:unless="${user.photo.isPresent()}" class="img-fluid rounded" width="50px" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">

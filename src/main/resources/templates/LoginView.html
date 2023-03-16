@@ -10,40 +10,19 @@
 
     <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico" th:href="@{/images/favicon.ico}">
     <link href="../static/styles/style.css" th:href="@{/styles/style.css}" rel="stylesheet">
-    <title>Forum Management System</title>
+    <title th:text="#{navigation.login}">Forum Management System</title>
 </head>
 <body class="login-view">
 
-<header class="p-3 text-bg-dark">
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a href="#" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                <img class="rounded" src="../static/images/FMS_logo.png" height="42" th:src="@{/images/FMS_logo.png}" alt="FMS">
-            </a>
-
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/" class="nav-link px-2 text-white" th:text="#{navigation.home}">Home</a></li>
-                <li><a href="#" class="nav-link px-2 text-secondary" th:text="#{navigation.login}">Login</a></li>
-            </ul>
-
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
-            </form>
-
-            <div class="text-end">
-                <a href="/register"><button type="button" class="btn btn-warning" th:text="#{navigation.register}">Sign-up</button></a>
-            </div>
-        </div>
-    </div>
-</header>
+<header th:replace="~{header :: header(context='login')}"></header>
 
 <main class="form-signin">
     <form>
         <h1 class="h3 mb-3 fw-normal">Please login</h1>
 
         <div class="form-floating">
-            <input type="text" class="form-control" id="floatingInput" placeholder="Username">
-            <label for="floatingInput">Username</label>
+            <input type="text" class="form-control" id="floatingUsername" placeholder="Username">
+            <label for="floatingUsername">Username</label>
         </div>
         <div class="form-floating">
             <input type="password" class="form-control" id="floatingPassword" placeholder="Password">

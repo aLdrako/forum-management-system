@@ -4,7 +4,7 @@ body {
 }
 
 /*LOGIN VIEW*/
-.login-view {
+.login-view, .register-view {
     height: 100%;
     align-items: center;
 }
@@ -24,16 +24,20 @@ body {
     z-index: 2;
 }
 
-.form-signin input[type="text"] {
-    margin-bottom: -1px;
+.form-signin div.form-floating:first-of-type > input {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+    margin-bottom: -1px;
 }
 
-.form-signin input[type="password"] {
-    margin-bottom: 10px;
-    border-top-left-radius: 0;
+.form-signin div.form-floating:last-of-type > input {
     border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    margin-bottom: 10px;
+}
+
+.form-signin div.form-floating:not(:first-of-type):not(:last-of-type) > input {
+    border-radius: 0;
 }
 
 .form-signin input[type="submit"] {

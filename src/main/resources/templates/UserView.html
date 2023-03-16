@@ -14,65 +14,40 @@
 </head>
 <body>
 
-<header class="p-3 text-bg-dark">
-  <div class="container">
-    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-      <a href="#" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-        <img class="rounded" src="../static/images/FMS_logo.png" height="42" th:src="@{/images/FMS_logo.png}" alt="FMS">
-      </a>
+<header th:replace="~{header :: header(context='user-profile')}"></header>
 
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="/" class="nav-link px-2 text-white" th:text="#{navigation.home}">Home</a></li>
-        <li><a href="/users" class="nav-link px-2 text-white" th:text="#{navigation.users}">Users</a></li>
-      </ul>
-
-      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-        <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
-      </form>
-
-      <div class="text-end">
-        <a href="/login"><button type="button" class="btn btn-outline-light me-2" th:text="#{navigation.login}">Login</button></a>
-        <a href="/register"><button type="button" class="btn btn-warning" th:text="#{navigation.register}">Sign-up</button></a>
-      </div>
-    </div>
-  </div>
-</header>
-
-<div class="container mx-auto my-5">
-
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-6 col-md-8">
-        <div class="card">
-          <div th:class="${user.getPermission().isAdmin()} ? 'card-header text-center text-white bg-success' : 'card-header text-center text-dark bg-light' + (${user.getPermission().isBlocked()} ? 'card-header text-center text-white bg-danger' : 'card-header text-center text-dark bg-light')">
-            <h4 th:text="${user.username.toUpperCase()}">User Profile</h4>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card">
+        <div th:class="${user.getPermission().isAdmin()} ? 'card-header text-center text-white bg-success' : 'card-header text-center text-dark bg-light' + (${user.getPermission().isBlocked()} ? 'card-header text-center text-white bg-danger' : 'card-header text-center text-dark bg-light')">
+          <h4 th:text="${user.username.toUpperCase()}">User Profile</h4>
+        </div>
+        <div class="card-body d-flex align-items-center">
+          <div class="col-md-5 text-center me-5">
+            <img th:if="${user.photo.isPresent()}" class="rounded-circle" height="150px" alt="" th:alt="${user.firstName}" src="../static/images/no-profile-picture.jpg" th:src="${user.photo.orElse('No photo')}">
+            <img th:unless="${user.photo.isPresent()}" class="rounded-circle" height="150px" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
           </div>
-          <div class="card-body d-flex align-items-center">
-            <div class="col-md-5 text-center me-5">
-              <img th:if="${user.photo.isPresent()}" class="rounded-circle" height="150px" alt="" th:alt="${user.firstName}" src="../static/images/no-profile-picture.jpg" th:src="${user.photo.orElse('No photo')}">
-              <img th:unless="${user.photo.isPresent()}" class="rounded-circle" height="150px" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
+          <div class="col-lg-10 col-md-8 col-sm-10">
+            <div class="form-group d-flex align-items-center mb-3">
+              <i class="fas fa-user me-2"></i>
+              <span th:text="${user.firstName} + ' ' + (${user.getLastName()})">Full Name</span>
             </div>
-            <div class="col-lg-10 col-md-8 col-sm-10">
-              <div class="form-group d-flex align-items-center mb-3">
-                <i class="fas fa-user me-2"></i>
-                <span th:text="${user.firstName} + ' ' + (${user.getLastName()})">Full Name</span>
-              </div>
-              <div class="form-group d-flex align-items-center mb-3">
-                <i class="fas fa-envelope me-2"></i>
-                <span th:text="${user.email}">Email Address</span>
-              </div>
-              <div class="form-group d-flex align-items-center">
-                <i class="fas fa-phone me-2"></i>
-                <span th:text="${user.phoneNumber.orElse('No Phone')}">Phone Number</span>
-              </div>
+            <div class="form-group d-flex align-items-center mb-3">
+              <i class="fas fa-envelope me-2"></i>
+              <span th:text="${user.email}">Email Address</span>
+            </div>
+            <div class="form-group d-flex align-items-center">
+              <i class="fas fa-phone me-2"></i>
+              <span th:text="${user.phoneNumber.orElse('No Phone')}">Phone Number</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 </div>
+
 <!-- Font Awesome icons -->
 <script src="https://kit.fontawesome.com/5b664d6bcd.js" crossorigin="anonymous"></script>
 <!-- JavaScript Bootstrap Bundle with Popper -->

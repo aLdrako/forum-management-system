@@ -57,7 +57,7 @@ create or replace table posts
     id           bigint auto_increment
         primary key,
     title        varchar(100)                         not null,
-    content      text                                 null,
+    content      varchar(8192)                        null,
     user_id      bigint                               not null,
     date_created datetime default current_timestamp() not null,
     constraint posts_users_fk
@@ -70,7 +70,7 @@ create or replace table comments
         primary key,
     post_id      bigint                               not null,
     user_id      bigint                               not null,
-    content      text                                 null,
+    content      varchar(1024)                        null,
     date_created datetime default current_timestamp() not null,
     constraint comments_posts_fk
         foreign key (post_id) references posts (id),
