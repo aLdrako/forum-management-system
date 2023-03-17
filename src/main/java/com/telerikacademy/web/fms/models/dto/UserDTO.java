@@ -1,35 +1,39 @@
 package com.telerikacademy.web.fms.models.dto;
 
+import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
+import com.telerikacademy.web.fms.models.validations.LoginValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import jakarta.validation.constraints.*;
 
 import java.util.Optional;
 
 public class UserDTO {
-    @NotEmpty(message = "First name can't be empty")
+    @NotEmpty(message = "First name can't be empty", groups = CreateValidationGroup.class)
     @Size(min = 4, max = 32, message = "First name should be between 4 and 32 symbols",
-            groups = UpdateValidationGroup.class)
+            groups = {UpdateValidationGroup.class, CreateValidationGroup.class})
     private String firstName;
-    @NotEmpty(message = "Last name can't be empty")
+    @NotEmpty(message = "Last name can't be empty", groups = CreateValidationGroup.class)
     @Size(min = 4, max = 32, message = "Last name should be between 4 and 32 symbols",
-            groups = UpdateValidationGroup.class)
+            groups = {UpdateValidationGroup.class, CreateValidationGroup.class})
     private String lastName;
-    @NotEmpty(message = "Email can't be empty")
+    @NotEmpty(message = "Email can't be empty", groups = CreateValidationGroup.class)
     @Email(message = "Email has invalid format",
-            groups = UpdateValidationGroup.class)
+            groups = {UpdateValidationGroup.class, CreateValidationGroup.class})
     private String email;
-    @NotEmpty(message = "Username can't be empty")
-    @Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols")
+    @NotEmpty(message = "Username can't be empty", groups = {CreateValidationGroup.class, LoginValidationGroup.class})
+    @Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols",
+            groups = {UpdateValidationGroup.class, CreateValidationGroup.class, LoginValidationGroup.class})
     @Null(message = "Username can't be changed",
             groups = UpdateValidationGroup.class)
     private String username;
-    @NotEmpty (message = "Password can't be empty")
+    @NotEmpty (message = "Password can't be empty", groups = CreateValidationGroup.class)
     @Size(min = 6, max = 20, message = "Password should be between 6 and 20 symbols",
-            groups = UpdateValidationGroup.class)
+            groups = {UpdateValidationGroup.class, CreateValidationGroup.class, LoginValidationGroup.class})
     private String password;
-    @Size(min = 7, max = 16, message = "Phone number should be between 7 and 16 symbols",
-            groups = UpdateValidationGroup.class)
+//    @Size(min = 7, max = 16, message = "Phone number should be between 7 and 16 symbols",
+//            groups = UpdateValidationGroup.class)
     private String phoneNumber;
+
     private byte[] photo;
 
     public String getFirstName() {
@@ -72,8 +76,12 @@ public class UserDTO {
         this.password = password;
     }
 
-    public Optional<String> getPhoneNumber() {
-        return Optional.ofNullable(phoneNumber);
+//    public Optional<String> getPhoneNumber() {
+//        return Optional.ofNullable(phoneNumber);
+//    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {

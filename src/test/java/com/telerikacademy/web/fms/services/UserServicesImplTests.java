@@ -1,6 +1,6 @@
 package com.telerikacademy.web.fms.services;
 
-import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
+import com.telerikacademy.web.fms.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.models.Permission;
@@ -93,7 +93,7 @@ public class UserServicesImplTests {
                 .thenReturn(List.of(mockUser));
 
         // Act, Assert
-        Assertions.assertThrows(DuplicateEntityException.class, () -> userServices.create(mockDifferentUser));
+        Assertions.assertThrows(EntityDuplicateException.class, () -> userServices.create(mockDifferentUser));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class UserServicesImplTests {
                 .thenReturn(List.of(mockUser));
 
         // Act, Assert
-        Assertions.assertThrows(DuplicateEntityException.class, () -> userServices.create(mockUser));
+        Assertions.assertThrows(EntityDuplicateException.class, () -> userServices.create(mockUser));
     }
 
     @Test
@@ -167,7 +167,7 @@ public class UserServicesImplTests {
 
         // Act, Assert
         Assertions.assertThrows(
-                DuplicateEntityException.class,
+                EntityDuplicateException.class,
                 () -> userServices.update(mockUser, mockUser)
         );
     }

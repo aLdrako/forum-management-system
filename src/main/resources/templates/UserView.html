@@ -1,19 +1,12 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <!-- Bootstrap Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-
-  <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico" th:href="@{/images/favicon.ico}">
-  <link href="../static/styles/style.css" th:href="@{/styles/style.css}" rel="stylesheet">
-  <title>User Profile</title>
+    <title>User Profile</title>
+    <th:block th:replace="~{fragments/head.html :: head}"></th:block>
 </head>
-<body>
 
+<body>
 <header th:replace="~{fragments/header :: header(context='user-profile')}"></header>
 
 <div class="container mt-5">
@@ -39,7 +32,8 @@
             </div>
             <div class="form-group d-flex align-items-center">
               <i class="fas fa-phone me-2"></i>
-              <span th:text="${user.phoneNumber.orElse('No Phone')}">Phone Number</span>
+              <span th:if="${user.phoneNumber}" th:text="${user.phoneNumber}">Phone Number</span>
+              <span th:unless="${user.phoneNumber}">No Phone</span>
             </div>
           </div>
         </div>

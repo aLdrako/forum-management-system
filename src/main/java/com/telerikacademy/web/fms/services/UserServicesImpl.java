@@ -1,6 +1,6 @@
 package com.telerikacademy.web.fms.services;
 
-import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
+import com.telerikacademy.web.fms.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.models.Permission;
@@ -80,7 +80,7 @@ public class UserServicesImpl implements UserServices {
         } catch (EntityNotFoundException e) {
             duplicateEmail = false;
         }
-        if (duplicateEmail) throw new DuplicateEntityException("User", "email", user.getEmail());
+        if (duplicateEmail) throw new EntityDuplicateException("User", "email", user.getEmail());
     }
 
     private void checkForDuplicateUsername(User user) {
@@ -90,7 +90,7 @@ public class UserServicesImpl implements UserServices {
         } catch (EntityNotFoundException e) {
             duplicateUsername = false;
         }
-        if (duplicateUsername) throw new DuplicateEntityException("User", "username", user.getUsername());
+        if (duplicateUsername) throw new EntityDuplicateException("User", "username", user.getUsername());
     }
 
     private static void checkAuthorizedPermissions(User... users) {

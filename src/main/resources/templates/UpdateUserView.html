@@ -2,15 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title th:text="#{navigation.register}">Forum Management System</title>
+    <title>Update profile</title>
     <th:block th:replace="~{fragments/head.html :: head}"></th:block>
 </head>
 
 <body class="register-view">
-<header th:replace="~{fragments/header :: header(context='register')}"></header>
+<header th:replace="~{fragments/header :: header(context='update-user')}"></header>
 
 <main class="form-signin">
-    <form th:replace="~{/fragments/user-form :: user-form(context='register')}"></form>
+    <form th:replace="~{/fragments/user-form :: user-form(context='update-user')}"></form>
 </main>
 
 <!-- JavaScript Bootstrap Bundle with Popper -->

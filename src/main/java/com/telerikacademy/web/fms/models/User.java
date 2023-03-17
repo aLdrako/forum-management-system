@@ -98,8 +98,13 @@ public class User {
         this.password = password;
     }
 
-    public Optional<String> getPhoneNumber() {
-        return Optional.ofNullable(phoneNumber);
+//    public Optional<String> getPhoneNumber() {
+//        return Optional.ofNullable(phoneNumber);
+//    }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {

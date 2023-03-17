@@ -1,7 +1,7 @@
 package com.telerikacademy.web.fms.controllers;
 
 import com.telerikacademy.web.fms.exceptions.AuthorizationException;
-import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
+import com.telerikacademy.web.fms.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
@@ -96,7 +96,7 @@ public class UserRestControllerTests {
         UserDTO mockUserDTO = createMockUserDTO();
 
         when(mockModelMapper.dtoToObject((UserDTO) any())).thenReturn(mockUser);
-        doThrow(DuplicateEntityException.class)
+        doThrow(EntityDuplicateException.class)
                 .when(mockUserServices).create(mockUser);
 
         // Act, Assert
@@ -176,7 +176,7 @@ public class UserRestControllerTests {
         when(mockAuthenticationHelper.tryGetUser(any())).thenReturn(mockUser);
         when(mockModelMapper.dtoToObject(anyLong(), (UserDTO) any())).thenReturn(mockUser);
 
-        doThrow(DuplicateEntityException.class)
+        doThrow(EntityDuplicateException.class)
                 .when(mockUserServices).update(mockUser, mockUser);
 
         // Act, Arrange

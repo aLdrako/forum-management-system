@@ -1,9 +1,9 @@
-<header class="p-3 text-bg-dark">
+<header th:fragment="header" class="p-3 text-bg-dark">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-      <img class="rounded me-2" src="../../static/images/FMS_logo.png" height="40px" alt="FMS" th:src="@{/images/FMS_logo.png}">
+      <img class="rounded me-2 mb-lg-0 mb-2" src="../../static/images/FMS_logo.png" height="40px" alt="FMS" th:src="@{/images/FMS_logo.png}">
 
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-lg-0 mb-md-2">
         <li><a class="btn btn-outline-light me-2" href="#" th:href="@{/}" th:classappend="${context == 'home' ? 'btn-light text-dark' : ''}" th:text="#{navigation.home}">Home</a></li>
         <li><a class="btn btn-outline-light me-2" href="/users" th:href="@{/users}" th:if="${context != 'not-found'}" th:classappend="${context == 'users' ? 'btn-light text-dark' : ''}" th:text="#{navigation.users}">Users</a></li>
       </ul>
@@ -13,8 +13,8 @@
       </form>
 
       <div class="text-end">
-        <a class="btn btn-outline-light me-2" href="/login" th:if="${context != 'not-found' && context != 'login'}" th:href="@{/login}" th:text="#{navigation.login}">Login</a>
-        <a class="btn btn-warning" href="/register" th:if="${context != 'not-found' && context != 'register'}" th:href="@{/register}" th:text="#{navigation.register}">Registration</a>
+        <a class="btn btn-outline-light me-2" href="/auth/login" th:if="${context != 'not-found' && context != 'login'}" th:href="@{/auth/login}" th:text="#{navigation.login}">Login</a>
+        <a class="btn btn-primary" href="/users/register" th:if="${context != 'not-found' && context != 'register'}" th:href="@{/users/register}" th:text="#{navigation.register}">Registration</a>
       </div>
     </div>
   </div>

@@ -1,0 +1,35 @@
+<form th:fragment="user-form" role="form" action="#" th:action="@{__${request.requestURI}__}" th:object="${user}" novalidate method="post">
+    <h1 class="h3 mb-3 fw-normal" th:text="${context == 'register'} ? 'Please register' : 'Update profile'">Please register</h1>
+
+    <div class="form-floating">
+        <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="firstName" th:errorclass="is-invalid" th:field="*{firstName}" />
+        <label class="form-label" for="floatingFirstName">First Name</label>
+        <div id="validationFirstName" class="invalid-feedback" th:errors="*{firstName}">Error placeholder</div>
+    </div>
+    <div class="form-floating">
+        <input type="text" class="form-control" id="floatingLastName" placeholder="Last Name" name="lastName" th:errorclass="is-invalid" th:field="*{lastName}">
+        <label for="floatingLastName">Last Name</label>
+        <div id="validationLastName" class="invalid-feedback" th:errors="*{lastName}">Error placeholder</div>
+    </div>
+    <div class="form-floating" th:if="${context == 'register'}">
+        <input type="text" class="form-control" id="floatingUsername" placeholder="Username" name="username" th:errorclass="is-invalid" th:field="*{username}">
+        <label for="floatingUsername">Username</label>
+        <div id="validationUsername" class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error placeholder</div>
+    </div>
+    <div class="form-floating">
+        <input type="email" class="form-control" id="floatingEmail" placeholder="Email" name="email" th:errorclass="is-invalid" th:field="*{email}">
+        <label for="floatingEmail">Email</label>
+        <div id="validationEmail" class="invalid-feedback" th:errors="*{email}">Error placeholder</div>
+    </div>
+    <div class="form-floating" th:if="${context == 'update-user'}">
+        <input type="tel" class="form-control" id="floatingPhone" placeholder="Phone" name="phone" th:errorclass="is-invalid" th:field="*{phoneNumber}">
+        <label for="floatingPhone">Phone</label>
+        <div id="validationPhone" class="invalid-feedback" th:errors="*{phoneNumber}">Error placeholder</div>
+    </div>
+    <div class="form-floating">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" th:errorclass="is-invalid" th:field="*{password}">
+        <label for="floatingPassword">Password</label>
+        <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>
+    </div>
+    <button class="w-100 btn btn-lg btn-primary" type="submit" th:text="${context == 'register'} ? 'Register' : 'Update profile'">Register</button>
+</form>
