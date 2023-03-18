@@ -1,4 +1,4 @@
-<form th:fragment="user-form" role="form" action="#" th:action="@{#request.requestURI}" th:object="${user}" novalidate method="post">
+<form th:fragment="user-form" role="form" action="#" th:action="${requestURI}" th:object="${user}" novalidate method="post">
     <h1 class="h3 mb-3 fw-normal" th:if="${context == 'login'}" th:text="#{user-form.login}">Login</h1>
     <h1 class="h3 mb-3 fw-normal" th:if="${context == 'register'}" th:text="#{user-form.register}">Register</h1>
     <h1 class="h3 mb-3 fw-normal" th:if="${context == 'user-update'}" th:text="#{user-form.update}">Update</h1>

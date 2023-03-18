@@ -95,7 +95,7 @@ INSERT INTO `permissions` (`user_id`, `is_deleted`, `is_blocked`, `is_admin`) VA
                                                                                   (11, 0, 1, 0),
                                                                                   (12, 0, 1, 1),
                                                                                   (13, 1, 0, 0),
-                                                                                  (14, 0, 0, 1),
+                                                                                  (14, 0, 0, 0),
                                                                                   (15, 1, 1, 1);
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 
@@ -221,9 +221,9 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `username`, `pass
     (9, 'Orion', 'Wahner', 'owahnert@tinyurl.com', 'owahnert', 'qXO84K7', '2023-02-04 00:00:00'),
     (10, 'Reed', 'Flynn', 'rflynn12@php.net', 'rflynn12', 'GyDuVGTRVpq', '2023-02-05 00:00:00'),
     (11, 'Simple', 'Simple', 'simple@mail.com', 'simple', 'simple', '2023-02-10 00:00:00'),
-    (12, 'Test', 'Test', 'test@gmail.com', 'test', 'test', '2023-02-10 00:00:00'),
+    (12, 'Admin', 'Blocked', 'admblocked@gmail.com', 'admblocked', 'admblocked', '2023-02-10 00:00:00'),
     (13, 'Deleted', 'Deleted', 'deleted@mail.com', 'deleted', 'deleted', '2023-02-20 00:00:00'),
-    (14, 'Tester1', 'Tester1', 'tester1@mail.com', 'tester1', 'tester1', '2023-02-20 00:00:00'),
+    (14, 'Tester', 'Tester', 'tester@mail.com', 'tester', 'tester', '2023-02-20 00:00:00'),
     (15, 'All', 'Set', 'allset@mail.com', 'allset', 'setpass', '2023-02-20 00:00:00');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 

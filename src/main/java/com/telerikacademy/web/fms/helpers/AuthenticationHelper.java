@@ -4,6 +4,7 @@ import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -50,6 +51,16 @@ public class AuthenticationHelper {
         } catch (EntityNotFoundException e) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
         }
+    }
+
+    public User tryGetCurrentUser(HttpSession session) {
+        String currentUsername = (String) session.getAttribute("currentUser");
+
+        if (currentUsername == null) {
+            throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+        }
+
+        return userServices.search(USERNAME_PREFIX + currentUsername).get(0);
     }
 
     public String[] validateHeaderValues(String headerValue) {

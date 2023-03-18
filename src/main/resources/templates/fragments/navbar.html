@@ -4,8 +4,8 @@
       <img class="rounded me-2 mb-lg-0 mb-2" src="../../static/images/FMS_logo.png" height="40px" alt="FMS" th:src="@{/images/FMS_logo.png}">
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-lg-0 mb-md-2">
-        <li><a class="btn btn-outline-light me-2" href="#" th:href="@{/}" th:classappend="${context == 'home' ? 'btn-light text-dark' : ''}" th:text="#{navigation.home}">Home</a></li>
-        <li><a class="btn btn-outline-light me-2" href="/users" th:href="@{/users}" th:if="${context != 'not-found'}" th:classappend="${context == 'users' ? 'btn-light text-dark' : ''}" th:text="#{navigation.users}">Users</a></li>
+        <li><a class="btn btn-outline-light me-2" href="#" th:href="@{/}" th:classappend="${context == 'home' ? 'btn-light text-dark' : ''}" th:text="#{navbar.home}">Home</a></li>
+        <li><a class="btn btn-outline-light me-2" href="/users" th:href="@{/users}" th:if="${context != 'not-found'}" th:classappend="${context == 'users' ? 'btn-light text-dark' : ''}" th:text="#{navbar.users}">Users</a></li>
       </ul>
 
       <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
@@ -13,10 +13,10 @@
       </form>
 
       <div class="text-end">
-        <a class="btn btn-outline-light me-2" href="/auth/login" th:if="${context != 'not-found' && context != 'login' && !session.isAuthenticated}" th:href="@{/auth/login}" th:text="#{navigation.login}">Login</a>
-        <a class="btn btn-primary" href="/auth/register" th:if="${context != 'not-found' && context != 'register' && !session.isAuthenticated}" th:href="@{/auth/register}" th:text="#{navigation.register}">Registration</a>
-        <a class="btn btn-success me-2" href="/users" th:if="${session.isAuthenticated}" th:href="@{/users/{id}(id=${session.userId})}" th:text="#{navigation.user-profile}">Profile</a>
-        <a class="btn btn-danger" href="/auth/logout" th:if="${session.isAuthenticated}" th:href="@{/auth/logout}" th:text="#{navigation.logout}">Logout</a>
+        <a class="btn btn-outline-light me-2" href="/auth/login" th:if="${context != 'not-found' && context != 'login' && !session.isAuthenticated}" th:href="@{/auth/login}" th:text="#{navbar.login}">Login</a>
+        <a class="btn btn-primary" href="/auth/register" th:if="${context != 'not-found' && context != 'register' && !session.isAuthenticated}" th:href="@{/auth/register}" th:text="#{navbar.register}">Registration</a>
+        <a class="btn btn-success me-2" href="/users" th:if="${session.isAuthenticated}" th:href="@{/users/{id}(id=${session.userId})}" th:text="#{navbar.user-profile}">Profile</a>
+        <a class="btn btn-danger" href="/auth/logout" th:if="${session.isAuthenticated}" th:href="@{/auth/logout}" th:text="#{navbar.logout}">Logout</a>
       </div>
     </div>
   </div>

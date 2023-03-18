@@ -61,7 +61,6 @@ public class AuthenticationMvcController {
 
     @PostMapping("/register")
     public String handleRegister(@Validated(RegisterValidationGroup.class) @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult) {
-
         if (bindingResult.hasErrors()) return "RegisterView";
 
         try {
