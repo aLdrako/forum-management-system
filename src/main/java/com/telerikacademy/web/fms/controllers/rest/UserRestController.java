@@ -8,7 +8,7 @@ import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
 import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
-import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
+import com.telerikacademy.web.fms.models.validations.RegisterValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.models.Permission;
@@ -68,7 +68,7 @@ public class UserRestController {
     }
 
     @PostMapping
-    public User create(@Validated(CreateValidationGroup.class) @RequestBody UserDTO userDTO) {
+    public User create(@Validated(RegisterValidationGroup.class) @RequestBody UserDTO userDTO) {
         try {
             User user = modelMapper.dtoToObject(userDTO);
             return userServices.create(user);

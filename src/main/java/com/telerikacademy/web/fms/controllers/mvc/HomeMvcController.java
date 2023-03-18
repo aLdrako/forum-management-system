@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
-public class HomeMvcController {
+public class HomeMvcController extends BaseController {
 
     @GetMapping
     public String showHomePage() {

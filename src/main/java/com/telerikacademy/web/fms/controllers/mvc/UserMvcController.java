@@ -4,7 +4,6 @@ import com.telerikacademy.web.fms.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
-import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
-public class UserMvcController {
+public class UserMvcController extends BaseController {
 
     private final UserServices userServices;
 
@@ -46,33 +45,8 @@ public class UserMvcController {
         }
     }
 
-    @GetMapping("/register")
-    public String showCreateUserPage(Model model, HttpServletRequest request) {
-        model.addAttribute("user", new UserDTO());
-        model.addAttribute("request", request);
-        return "RegisterView";
-    }
-
-    @PostMapping("/register")
-    public String createUser(@Validated(CreateValidationGroup.class) @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, Model model, HttpServletRequest request) {
-
-        model.addAttribute("request", request);
-        if (bindingResult.hasErrors()) return "RegisterView";
-
-        try {
-            User user = modelMapper.dtoToObject(userDTO);
-            userServices.create(user);
-            return "redirect:/users/" + user.getId();
-        } catch (EntityDuplicateException e) {
-            bindingResult.rejectValue("username", "username.exists", e.getMessage());
-            bindingResult.rejectValue("email", "email.exists", e.getMessage());
-            return "RegisterView";
-        }
-    }
-
     @GetMapping("{id}/update")
-    public String showUpdateUserPage(@PathVariable Long id, Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);
+    public String showUpdateUserPage(@PathVariable Long id, Model model) {
         try {
             User user = userServices.getById(id);
             UserDTO userDTO = modelMapper.objectToDto(user);
@@ -90,7 +64,6 @@ public class UserMvcController {
     @PostMapping("{id}/update")
     public String updateUser(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, Model model, HttpServletRequest request) {
 
-        model.addAttribute("request", request);
         if (bindingResult.hasErrors()) return "UpdateUserView";
 
         try {
