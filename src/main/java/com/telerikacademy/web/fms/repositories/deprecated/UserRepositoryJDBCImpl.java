@@ -235,7 +235,8 @@ public class UserRepositoryJDBCImpl implements UserRepository {
     }
 
     private static void phoneStatement(PreparedStatement statementPhone, User user) throws SQLException {
-        statementPhone.setString(1, user.getPhoneNumber().orElse(null));
+//        statementPhone.setString(1, user.getPhoneNumber().orElse(null));
+        statementPhone.setString(1, user.getPhoneNumber());
         statementPhone.setLong(2, user.getId());
     }
 

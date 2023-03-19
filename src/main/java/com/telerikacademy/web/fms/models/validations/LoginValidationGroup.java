@@ -1,4 +1,4 @@
 package com.telerikacademy.web.fms.models.validations;
 
-public interface UpdateValidationGroup {
+public interface LoginValidationGroup {
 }

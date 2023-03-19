@@ -1,13 +1,14 @@
 package com.telerikacademy.web.fms.controllers.rest;
 
 import com.telerikacademy.web.fms.exceptions.AuthorizationException;
-import com.telerikacademy.web.fms.exceptions.DuplicateEntityException;
+import com.telerikacademy.web.fms.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
 import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
+import com.telerikacademy.web.fms.models.validations.RegisterValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.models.Permission;
@@ -17,7 +18,6 @@ import com.telerikacademy.web.fms.models.dto.UserDTO;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -68,11 +68,11 @@ public class UserRestController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody UserDTO userDTO) {
+    public User create(@Validated(RegisterValidationGroup.class) @RequestBody UserDTO userDTO) {
         try {
             User user = modelMapper.dtoToObject(userDTO);
             return userServices.create(user);
-        } catch (DuplicateEntityException e) {
+        } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
@@ -85,7 +85,7 @@ public class UserRestController {
             return userServices.update(user, authenticatedUser);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (DuplicateEntityException e) {
+        } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

@@ -1,0 +1,23 @@
+<header th:fragment="header" class="p-3 text-bg-dark">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <img class="rounded me-2 mb-lg-0 mb-2" src="../../static/images/FMS_logo.png" height="40px" alt="FMS" th:src="@{/images/FMS_logo.png}">
+
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-lg-0 mb-md-2">
+        <li><a class="btn btn-outline-light me-2" href="#" th:href="@{/}" th:classappend="${context == 'home' ? 'btn-light text-dark' : ''}" th:text="#{navbar.home}">Home</a></li>
+        <li><a class="btn btn-outline-light me-2" href="/users" th:href="@{/users}" th:if="${context != 'not-found'}" th:classappend="${context == 'users' ? 'btn-light text-dark' : ''}" th:text="#{navbar.users}">Users</a></li>
+      </ul>
+
+      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+        <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+      </form>
+
+      <div class="text-end">
+        <a class="btn btn-outline-light me-2" href="/auth/login" th:if="${context != 'not-found' && context != 'login' && !session.isAuthenticated}" th:href="@{/auth/login}" th:text="#{navbar.login}">Login</a>
+        <a class="btn btn-primary" href="/auth/register" th:if="${context != 'not-found' && context != 'register' && !session.isAuthenticated}" th:href="@{/auth/register}" th:text="#{navbar.register}">Registration</a>
+        <a class="btn btn-primary me-2" href="/users" th:if="${session.isAuthenticated}" th:href="@{/users/{id}(id=${session.userId})}"><i class="fas fa-user" th:title="#{navbar.user-profile}"></i></a>
+        <a class="btn btn-danger" href="/auth/logout" th:if="${session.isAuthenticated}" th:href="@{/auth/logout}"><i class="fa-solid fa-right-from-bracket" th:title="#{navbar.logout}"></i></a>
+      </div>
+    </div>
+  </div>
+</header>

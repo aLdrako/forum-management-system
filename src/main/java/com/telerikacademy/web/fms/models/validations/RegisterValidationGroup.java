@@ -1,5 +1,4 @@
 package com.telerikacademy.web.fms.models.validations;
 
-public interface CreateValidationGroup {
-
+public interface RegisterValidationGroup {
 }

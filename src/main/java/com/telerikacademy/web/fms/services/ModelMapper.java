@@ -32,7 +32,7 @@ public class ModelMapper {
         if (userDTO.getEmail() != null) user.setEmail(userDTO.getEmail());
         if (userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());
         if (userDTO.getPassword() != null) user.setPassword(userDTO.getPassword());
-        if (userDTO.getPhoneNumber().isPresent()) user.setPhoneNumber(userDTO.getPhoneNumber().get());
+        if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
         if (userDTO.getPhoto().isPresent()) user.setPhoto(userDTO.getPhoto().get());
         return user;
     }
@@ -44,7 +44,7 @@ public class ModelMapper {
         user.setEmail(userDTO.getEmail());
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
-        user.setPhoneNumber(userDTO.getPhoneNumber().orElse(null));
+        if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setPhoto(userDTO.getPhoto().orElse(null));
         return user;
     }
@@ -116,6 +116,17 @@ public class ModelMapper {
         postOutputDTO.setDateCreated(formatToString(post.getDateCreated()));
 
         return postOutputDTO;
+    }
+
+    public UserDTO objectToDto(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setPassword(user.getPassword());
+        userDTO.setPhoneNumber(user.getPhoneNumber());
+        userDTO.setPhoto(user.getPhoto().orElse(null));
+        return userDTO;
     }
     public PostDTO toDto(Post post) {
         PostDTO postDTO = new PostDTO();

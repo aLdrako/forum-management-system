@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{page.title.user-update}">Forum Management System</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="user-update-view">
+<header th:replace="~{fragments/navbar :: header(context='user-update')}"></header>
+
+<main class="form-signin">
+    <form th:replace="~{/fragments/user-form :: user-form(context='user-update')}"></form>
+</main>
+
+<script th:replace="~{fragments/scripts :: fontawesome}"></script>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>
