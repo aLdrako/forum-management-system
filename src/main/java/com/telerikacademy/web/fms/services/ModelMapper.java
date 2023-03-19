@@ -117,4 +117,11 @@ public class ModelMapper {
 
         return postOutputDTO;
     }
+    public PostDTO toDto(Post post) {
+        PostDTO postDTO = new PostDTO();
+        postDTO.setTitle(post.getTitle());
+        postDTO.setContent(post.getContent());
+        postDTO.setTags(post.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
+        return postDTO;
+    }
 }

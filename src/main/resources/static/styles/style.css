@@ -43,3 +43,25 @@ body {
 .form-signin input[type="submit"] {
     margin-top: 10px;
 }
+
+.table {
+    display: table;
+}
+.header {
+    display: table-header-group;
+    font-weight: bold;
+    text-align: center;
+}
+.cell {
+    display: table-cell;
+    width: 25%;
+    text-align: left;
+}
+.row {
+    display: table-row;
+}
+.error {
+    color: red;
+}
+
+

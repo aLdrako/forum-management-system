@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Post</title>
+    <link href="../static/styles/style.css" th:href="@{/styles/style.css}" rel="stylesheet">
+</head>
+<body>
+<ul>
+    <li><h3><a href="/" th:text="#{navigation.home}">Home</a></h3></li>
+    <li><h3><a href="#" th:href="@{/users}" th:text="#{navigation.users}">All Users</a> </h3></li>
+</ul>
+<h1>Create Post</h1>
+<form th:fragment="post-form" action="#" th:action="@{/posts/new}" th:object="${post}" method="post">
+    <label th:text="#{post.label.title}">Title</label>
+    <br/>
+    <input th:field="*{title}"/>
+    <label class="error" th:errors="*{title}">Title error placeholder</label>
+    <br/><br/>
+
+    <label th:text="#{post.label.content}">Content</label>
+    <br/>
+    <input th:field="*{content}"/>
+    <label class="error" th:errors="*{content}">Content error placeholder</label>
+    <br/><br/>
+    <input type="submit" value="Save"/>
+</form>
+
+</body>
+</html>
