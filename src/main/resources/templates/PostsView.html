@@ -7,29 +7,29 @@
 </head>
 <body>
 <ul>
-    <li><h3><a href="/" th:text="#{navigation.home}">Home</a></h3></li>
-    <li><h3><a href="#" th:href="@{/users}" th:text="#{navigation.users}">All Users</a> </h3></li>
+    <li><h3><a href="/" th:text="#{navbar.home}">Home</a></h3></li>
+    <li><h3><a href="#" th:href="@{/users}" th:text="#{navbar.users}">All Users</a> </h3></li>
 </ul>
 <h1>Browse All Posts</h1>
-<div class="table">
-    <div class="header">
-        <div class="cell" th:text="#{post.label.id}">Id</div>
-        <div class="cell" th:text="#{post.label.title}">Title</div>
-        <div class="cell" th:text="#{post.label.content}">Content</div>
-        <div class="cell" th:text="#{post.label.creator}">Creator</div>
-        <div class="cell" th:text="#{post.label.likes}">Likes</div>
+<div class="posts-table">
+    <div class="posts-header">
+        <div class="posts-cell" th:text="#{post.label.id}">Id</div>
+        <div class="posts-cell" th:text="#{post.label.title}">Title</div>
+        <div class="posts-cell" th:text="#{post.label.content}">Content</div>
+        <div class="posts-cell" th:text="#{post.label.creator}">Creator</div>
+        <div class="posts-cell" th:text="#{post.label.likes}">Likes</div>
     </div>
-    <div class="row" th:each="post : ${posts}">
-        <div class="cell">
+    <div class="posts-row" th:each="post : ${posts}">
+        <div class="posts-cell">
             <a href="#" th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getId()}">1</a>
         </div>
-        <div class="cell" th:text="${post.getTitle()}">This is a title</div>
-        <div class="cell" th:text="${post.getContent()}">This is the content</div>
-        <div class="cell">
+        <div class="posts-cell" th:text="${post.getTitle()}">This is a title</div>
+        <div class="posts-cell" th:text="${post.getContent()}">This is the content</div>
+        <div class="posts-cell">
             <a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
                th:text="${post.getUserCreated().getUsername()}">pesho123</a>
         </div>
-        <div class="cell" th:text="${post.getLikes().size()}">45</div>
+        <div class="posts-cell" th:text="${post.getLikes().size()}">45</div>
     </div>
 </div>
 

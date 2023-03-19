@@ -91,23 +91,23 @@ body {
 }
 
 
-.table {
+.posts-table {
     display: table;
 }
-.header {
+.posts-header {
     display: table-header-group;
     font-weight: bold;
     text-align: center;
 }
-.cell {
+.posts-cell {
     display: table-cell;
     width: 25%;
     text-align: left;
 }
-.row {
+.posts-row {
     display: table-row;
 }
-.error {
+.posts-error {
     color: red;
 }
 

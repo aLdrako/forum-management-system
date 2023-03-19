@@ -7,21 +7,21 @@
 </head>
 <body>
 <ul>
-    <li><h3><a href="/" th:text="#{navigation.home}">Home</a></h3></li>
-    <li><h3><a href="#" th:href="@{/users}" th:text="#{navigation.users}">All Users</a> </h3></li>
+    <li><h3><a href="/" th:text="#{navbar.home}">Home</a></h3></li>
+    <li><h3><a href="#" th:href="@{/users}" th:text="#{navbar.users}">All Users</a> </h3></li>
 </ul>
 <h1>Update Post</h1>
 <form action="#" th:href="@{/posts/{id}/update(id=${postId})}" th:object="${post}" method="post">
     <label th:text="#{post.label.title}">Title</label>
     <br/>
     <input th:field="*{title}"/>
-    <label class="error" th:errors="*{title}">Title error placeholder</label>
+    <label class="posts-error" th:errors="*{title}">Title error placeholder</label>
     <br/><br/>
 
     <label th:text="#{post.label.content}">Content</label>
     <br/>
     <input th:field="*{content}"/>
-    <label class="error" th:errors="*{content}">Content error placeholder</label>
+    <label class="posts-error" th:errors="*{content}">Content error placeholder</label>
     <br/><br/>
     <input type="submit" value="Save"/>
 </form>
