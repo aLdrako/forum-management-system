@@ -30,8 +30,8 @@ public class UserDTO {
     @Size(min = 5, max = 20, message = "Password should be between 5 and 20 symbols",
             groups = {UpdateValidationGroup.class, RegisterValidationGroup.class, LoginValidationGroup.class})
     private String password;
-//    @Size(min = 7, max = 16, message = "Phone number should be between 7 and 16 symbols",
-//            groups = UpdateValidationGroup.class)
+    @Size(min = 7, max = 16, message = "Phone number should be between 7 and 16 symbols",
+            groups = UpdateValidationGroup.class)
     private String phoneNumber;
 
     private byte[] photo;

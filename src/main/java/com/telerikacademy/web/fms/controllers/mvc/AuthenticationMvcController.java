@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/auth")
-public class AuthenticationMvcController {
+public class AuthenticationMvcController extends BaseController {
     private final UserServices userServices;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
@@ -44,8 +44,10 @@ public class AuthenticationMvcController {
 
         try {
             User user = authenticationHelper.verifyAuthentication(userDTO.getUsername(), userDTO.getPassword());
-            session.setAttribute("currentUser", userDTO.getUsername());
             session.setAttribute("userId", user.getId());
+            session.setAttribute("currentUser", userDTO.getUsername());
+            session.setAttribute("isAdmin", user.getPermission().isAdmin());
+            session.setAttribute("isBlocked", user.getPermission().isBlocked());
             return "redirect:/";
         } catch (AuthorizationException e) {
             bindingResult.rejectValue("username", "auth_error", e.getMessage());
@@ -79,9 +81,7 @@ public class AuthenticationMvcController {
 
     @GetMapping("/logout")
     public String handleLogout(HttpSession session) {
-        session.removeAttribute("userId");
-        session.removeAttribute("currentUser");
-        session.removeAttribute("isAuthenticated");
-        return "redirect:/";
+        session.invalidate();
+        return "redirect:/auth/login";
     }
 }

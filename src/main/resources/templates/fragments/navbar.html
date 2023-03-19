@@ -15,8 +15,8 @@
       <div class="text-end">
         <a class="btn btn-outline-light me-2" href="/auth/login" th:if="${context != 'not-found' && context != 'login' && !session.isAuthenticated}" th:href="@{/auth/login}" th:text="#{navbar.login}">Login</a>
         <a class="btn btn-primary" href="/auth/register" th:if="${context != 'not-found' && context != 'register' && !session.isAuthenticated}" th:href="@{/auth/register}" th:text="#{navbar.register}">Registration</a>
-        <a class="btn btn-success me-2" href="/users" th:if="${session.isAuthenticated}" th:href="@{/users/{id}(id=${session.userId})}" th:text="#{navbar.user-profile}">Profile</a>
-        <a class="btn btn-danger" href="/auth/logout" th:if="${session.isAuthenticated}" th:href="@{/auth/logout}" th:text="#{navbar.logout}">Logout</a>
+        <a class="btn btn-primary me-2" href="/users" th:if="${session.isAuthenticated}" th:href="@{/users/{id}(id=${session.userId})}"><i class="fas fa-user" th:title="#{navbar.user-profile}"></i></a>
+        <a class="btn btn-danger" href="/auth/logout" th:if="${session.isAuthenticated}" th:href="@{/auth/logout}"><i class="fa-solid fa-right-from-bracket" th:title="#{navbar.logout}"></i></a>
       </div>
     </div>
   </div>

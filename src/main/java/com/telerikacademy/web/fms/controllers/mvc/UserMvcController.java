@@ -38,7 +38,7 @@ public class UserMvcController extends BaseController {
     }
 
     @GetMapping("/{id}")
-    public String showUser(@PathVariable Long id, Model model) {
+    public String showUser(@PathVariable Long id, Model model, HttpSession session) {
         try {
             User user = userServices.getById(id);
             model.addAttribute("user", user);
@@ -60,10 +60,9 @@ public class UserMvcController extends BaseController {
         try {
             User user = userServices.getById(id);
             UserDTO userDTO = modelMapper.objectToDto(user);
-            model.addAttribute("userId", id);
             model.addAttribute("user", userDTO);
-            model.addAttribute("phone", userDTO.getPhoneNumber());
-            return "UpdateUserView";
+            session.setAttribute("updatedUserIsAdmin", user.getPermission().isAdmin());
+            return "UserUpdateView";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
@@ -79,7 +78,7 @@ public class UserMvcController extends BaseController {
             return "redirect:/auth/login";
         }
 
-        if (bindingResult.hasErrors()) return "UpdateUserView";
+        if (bindingResult.hasErrors()) return "UserUpdateView";
 
         try {
             User user = modelMapper.dtoToObject(id, userDTO);
@@ -89,9 +88,8 @@ public class UserMvcController extends BaseController {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
         } catch (EntityDuplicateException e) {
-            bindingResult.rejectValue("username", "username_exists", e.getMessage());
             bindingResult.rejectValue("email", "email_exists", e.getMessage());
-            return "UpdateUserView";
+            return "UserUpdateView";
         } catch (UnauthorizedOperationException e) {
             model.addAttribute("error", e.getMessage());
             return "AccessDeniedView";
@@ -109,6 +107,7 @@ public class UserMvcController extends BaseController {
 
         try {
             userServices.delete(id, currentUser);
+            session.invalidate();
             return "redirect:/";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());

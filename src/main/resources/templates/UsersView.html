@@ -28,13 +28,13 @@
             <td colspan="7" class="text-center">No Users</td>
         </tr>
         <tr th:each="user : ${users}" th:class="${user.getPermission().isAdmin()} ? 'table-success' : '' + (${user.getPermission().isBlocked()} ? 'table-danger' : '')">
-            <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/users/{id}(id=${user.id})}" th:text="${user.id}">1</a></th>
+            <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/users/{id}(id=${user.id})}"><i class="fas fa-id-card"></i></a></th>
             <td class="align-middle" th:text="${user.firstName}">John</td>
             <td class="align-middle" th:text="${user.lastName}">Doe</td>
             <td class="d-sm-none d-md-table-cell align-middle" th:text="${user.email}">johndoe@mail.com</td>
             <td class="align-middle" th:text="${user.username}">johndoe</td>
-            <td class="d-sm-none d-md-table-cell align-middle" th:if="${user.phoneNumber}" th:text="${user.phoneNumber}">123-456-7890</td>
-            <td class="d-sm-none d-md-table-cell align-middle" th:unless="${user.phoneNumber}">No Phone</td>
+            <td class="d-sm-none d-md-table-cell align-middle" th:if="${user.phoneNumber != null && user.phoneNumber != ''}" th:text="${user.phoneNumber}">123-456-7890</td>
+            <td class="d-sm-none d-md-table-cell align-middle" th:if="${user.phoneNumber == null or user.phoneNumber == ''}">No Phone</td>
             <td class="text-center">
                 <img th:if="${user.photo}" class="img-fluid rounded" width="50px" alt="" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}" th:alt="${user.firstName}">
                 <img th:unless="${user.photo}" class="img-fluid rounded" width="50px" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
@@ -45,6 +45,7 @@
 
 </div>
 
+<script th:replace="~{fragments/scripts :: fontawesome}"></script>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
 </html>

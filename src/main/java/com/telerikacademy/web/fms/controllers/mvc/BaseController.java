@@ -11,8 +11,6 @@ public class BaseController {
     @ModelAttribute
     public void isAuthenticated(HttpSession session, HttpServletRequest request, Model model) {
         boolean isAuthenticated = session.getAttribute("currentUser") != null;
-        Long userId = (Long) session.getAttribute("userId");
-        session.setAttribute("userId", userId);
         session.setAttribute("isAuthenticated" , isAuthenticated);
         model.addAttribute("requestURI", request.getRequestURI());
     }

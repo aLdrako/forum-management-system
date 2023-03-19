@@ -6,15 +6,16 @@
     <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
-<body>
-<header th:replace="~{fragments/navbar :: header(context='not-found')}"></header>
+<body class="error-page">
 
-<div class="container mx-auto my-5">
-    <div class="alert alert-danger" role="alert" th:text="${error}">
-        Error placeholder
+    <div>
+        <span class='error-num'>4</span>
+        <div class='eye'></div>
+        <span class='error-num'>4</span>
+        <p class='alert alert-dark' th:text="${error}">Page Not Found</p>
+        <a href='/' class="btn btn-light text-dark">Go back</a>
     </div>
-</div>
 
-<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+<script th:replace="~{fragments/scripts :: error-page}"></script>
 </body>
 </html>

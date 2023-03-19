@@ -23,12 +23,12 @@
         <label for="floatingUsername">Username</label>
         <div id="validationUsername" class="invalid-feedback" th:errors="*{username}">Error placeholder</div>
     </div>
-    <div class="form-floating" th:if="${context == 'user-update'}">
+    <div class="form-floating" th:if="${context == 'user-update' && session.isAdmin && session.updatedUserIsAdmin}">
         <input type="tel" class="form-control" id="floatingPhone" placeholder="Phone" name="phone" th:errorclass="is-invalid" th:field="*{phoneNumber}">
         <label for="floatingPhone">Phone</label>
         <div id="validationPhone" class="invalid-feedback" th:errors="*{phoneNumber}">Error placeholder</div>
     </div>
-    <div class="form-floating" th:if="${context == 'register' || context == 'login' || context == 'user-update'}">
+    <div class="form-floating" th:if="${context == 'register' || context == 'login'}">
         <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" th:errorclass="is-invalid" th:field="*{password}">
         <label for="floatingPassword">Password</label>
         <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>

@@ -33,7 +33,6 @@ public class ModelMapper {
         if (userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());
         if (userDTO.getPassword() != null) user.setPassword(userDTO.getPassword());
         if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
-//        if (userDTO.getPhoneNumber().isPresent()) user.setPhoneNumber(userDTO.getPhoneNumber().get());
         if (userDTO.getPhoto().isPresent()) user.setPhoto(userDTO.getPhoto().get());
         return user;
     }
@@ -46,7 +45,6 @@ public class ModelMapper {
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
         if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
-//        user.setPhoneNumber(userDTO.getPhoneNumber().orElse(null));
         user.setPhoto(userDTO.getPhoto().orElse(null));
         return user;
     }
@@ -127,7 +125,6 @@ public class ModelMapper {
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
         userDTO.setPhoneNumber(user.getPhoneNumber());
-//        userDTO.setPhoneNumber(user.getPhoneNumber().orElse(null));
         userDTO.setPhoto(user.getPhoto().orElse(null));
         return userDTO;
     }

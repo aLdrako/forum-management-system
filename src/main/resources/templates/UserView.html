@@ -18,7 +18,7 @@
         </div>
         <div class="card-body d-flex align-items-center">
           <div class="col-md-5 text-center me-5">
-            <img th:if="${user.photo.isPresent()}" class="rounded-circle" height="150px" alt="" th:alt="${user.firstName}" src="../static/images/no-profile-picture.jpg" th:src="${user.photo.orElse('No photo')}">
+            <img th:if="${user.photo.isPresent()}" class="rounded-circle" height="150px" alt="" th:alt="${user.username}" src="../static/images/no-profile-picture.jpg" th:src="${user.photo.orElse('No photo')}">
             <img th:unless="${user.photo.isPresent()}" class="rounded-circle" height="150px" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
           </div>
           <div class="col-lg-10 col-md-8 col-sm-10">
@@ -37,15 +37,16 @@
             </div>
           </div>
         </div>
-        <div th:if="${session.isAuthenticated}" class="card-footer text-center text-dark bg-light">
-          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update'}">Update</a>
-          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger">Delete</a>
+        <div th:if="${session.isAuthenticated && (session.isAdmin || requestURI.endsWith(session.userId))}" class="card-footer text-center text-dark bg-light">
+          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update/photo'}"><i class="fas fa-camera" title="Upload photo"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update/password'}"><i class="fas fa-unlock" title="Update password"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update'}"><i class="fas fa-sliders" title="Update settings"></i></a>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="fas fa-user-slash" title="Delete account"></i></a>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 
 <!-- Delete Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="deleteModalLabel" aria-hidden="true">
