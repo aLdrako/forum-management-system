@@ -1,0 +1,18 @@
+<form th:fragment="post-form" role="form" action="#" th:action="${requestURI}" th:object="${post}" novalidate method="post">
+    <h1 th:if="${context == 'create'}" th:text="#{post-form.create}">Create Post</h1>
+    <h1 th:if="${context == 'update'}" th:text="#{post-form.update}">Update Post</h1>
+
+    <div th:if="${context == 'create' || context == 'update'}">
+        <label th:text="#{post.label.title}">Title</label>
+        <br/>
+        <input type="text" th:field="*{title}"/>
+        <label class="error" th:errors="*{title}">Title error placeholder</label>
+        <br/><br/>
+        <label th:text="#{post.label.content}">Content</label>
+        <br/>
+        <input type="text" th:field="*{content}"/>
+        <label class="error" th:errors="*{content}">Content error placeholder</label>
+        <br/><br/>
+        <input type="submit" value="Save"/>
+    </div>
+</form>

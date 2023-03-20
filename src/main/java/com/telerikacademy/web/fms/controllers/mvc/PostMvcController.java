@@ -41,7 +41,7 @@ public class PostMvcController {
     }
     @PostMapping("/new")
     public String createPost(@Valid @ModelAttribute("post") PostDTO postDTO,
-                             BindingResult bindingResult, Model model, HttpServletRequest request) {
+                             BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "PostCreateView";
         }
@@ -50,7 +50,6 @@ public class PostMvcController {
             Post post = modelMapper.dtoToObject(postDTO);
             post.setUserCreated(user);
             postServices.create(post, user);
-            model.addAttribute("requestURI", request);
             return "redirect:/posts";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
@@ -59,13 +58,12 @@ public class PostMvcController {
     }
 
     @GetMapping("/{id}/update")
-    public String showUpdatePostPage(@PathVariable Long id, Model model, HttpServletRequest request) {
+    public String showUpdatePostPage(@PathVariable Long id, Model model) {
         try {
             Post post = postServices.getById(id);
             PostDTO postDTO = modelMapper.toDto(post);
             model.addAttribute("postId", id);
             model.addAttribute("post", postDTO);
-            model.addAttribute("requestURI", request);
             return "PostUpdateView";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
@@ -73,16 +71,15 @@ public class PostMvcController {
         }
     }
     @PostMapping("{id}/update")
-    public String updatePost(@PathVariable Long id, @Valid @ModelAttribute("post") PostDTO postDTO,
-                             BindingResult bindingResult, Model model, HttpServletRequest request) {
+    public String updatePost(@PathVariable Long id, @Valid @ModelAttribute PostDTO post,
+                             BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "PostUpdateView";
         }
         try {
             User user = userServices.getById(1L);
-            Post post = modelMapper.dtoToObject(id, postDTO);
-            postServices.update(post, user);
-        //    model.addAttribute("requestURI", request);
+            Post newPost = modelMapper.dtoToObject(id, post);
+            postServices.update(newPost, user);
             return "redirect:/posts";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());

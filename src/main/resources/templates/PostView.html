@@ -7,8 +7,8 @@
 </head>
 <body>
 <ul>
-    <li><h3><a href="/" th:text="#{navigation.home}">Home</a></h3></li>
-    <li><h3><a href="#" th:href="@{/users}" th:text="#{navigation.users}">All Users</a> </h3></li>
+    <li><h3><a href="/" th:text="#{navbar.home}">Home</a></h3></li>
+    <li><h3><a href="#" th:href="@{/users}" th:text="#{navbar.users}">All Users</a> </h3></li>
     <li><h3><a href="#" th:href="@{/posts}" th:text="#{navigation.posts}">All Posts</a></h3></li>
 </ul>
 <h2 th:text="${post.getTitle()}">Post Title</h2>
