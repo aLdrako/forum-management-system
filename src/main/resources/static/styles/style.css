@@ -6,7 +6,7 @@ body {
 /*LOGIN / REGISTER / UPDATE PROFILE VIEW*/
 .login-view, .register-view, .user-update-view {
     height: 100%;
-    align-items: center;
+    /*align-items: center;*/
 }
 
 .form-signin {

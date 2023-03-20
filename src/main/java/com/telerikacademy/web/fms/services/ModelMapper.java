@@ -31,7 +31,7 @@ public class ModelMapper {
         if (userDTO.getLastName() != null) user.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) user.setEmail(userDTO.getEmail());
         if (userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());
-        if (userDTO.getPassword() != null) user.setPassword(userDTO.getPassword());
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) user.setPassword(userDTO.getPassword());
         if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
         if (userDTO.getPhoto().isPresent()) user.setPhoto(userDTO.getPhoto().get());
         return user;

@@ -6,14 +6,14 @@
     <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
-<body>
+<body class="main-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='home')}"></header>
 
 <div class="container mx-auto my-5">
     <h1>Welcome to Forum Management System</h1>
 </div>
 
-<script th:replace="~{fragments/scripts :: fontawesome}"></script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
 </html>

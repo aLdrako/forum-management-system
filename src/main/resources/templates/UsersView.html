@@ -6,7 +6,7 @@
     <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
-<body>
+<body class="users-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='users')}"></header>
 
 <div class="container mx-auto my-5">
@@ -28,7 +28,7 @@
             <td colspan="7" class="text-center">No Users</td>
         </tr>
         <tr th:each="user : ${users}" th:class="${user.getPermission().isAdmin()} ? 'table-success' : '' + (${user.getPermission().isBlocked()} ? 'table-danger' : '')">
-            <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/users/{id}(id=${user.id})}"><i class="fas fa-id-card"></i></a></th>
+            <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/users/{id}(id=${user.id})}"><i class="bi bi-person-vcard" style="font-size: 2rem;"></i></a></th>
             <td class="align-middle" th:text="${user.firstName}">John</td>
             <td class="align-middle" th:text="${user.lastName}">Doe</td>
             <td class="d-sm-none d-md-table-cell align-middle" th:text="${user.email}">johndoe@mail.com</td>
@@ -45,7 +45,7 @@
 
 </div>
 
-<script th:replace="~{fragments/scripts :: fontawesome}"></script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
 </html>

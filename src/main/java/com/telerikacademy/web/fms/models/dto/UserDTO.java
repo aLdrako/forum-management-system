@@ -1,5 +1,6 @@
 package com.telerikacademy.web.fms.models.dto;
 
+import com.telerikacademy.web.fms.models.validations.PasswordConstraint;
 import com.telerikacademy.web.fms.models.validations.RegisterValidationGroup;
 import com.telerikacademy.web.fms.models.validations.LoginValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
@@ -27,8 +28,7 @@ public class UserDTO {
             groups = UpdateValidationGroup.class)
     private String username;
     @NotEmpty (message = "Password can't be empty", groups = {RegisterValidationGroup.class, LoginValidationGroup.class})
-    @Size(min = 5, max = 20, message = "Password should be between 5 and 20 symbols",
-            groups = {UpdateValidationGroup.class, RegisterValidationGroup.class, LoginValidationGroup.class})
+    @PasswordConstraint(min = 5, max = 20, groups = {UpdateValidationGroup.class, RegisterValidationGroup.class, LoginValidationGroup.class})
     private String password;
     @Size(min = 7, max = 16, message = "Phone number should be between 7 and 16 symbols",
             groups = UpdateValidationGroup.class)
@@ -75,10 +75,6 @@ public class UserDTO {
     public void setPassword(String password) {
         this.password = password;
     }
-
-//    public Optional<String> getPhoneNumber() {
-//        return Optional.ofNullable(phoneNumber);
-//    }
 
     public String getPhoneNumber() {
         return phoneNumber;

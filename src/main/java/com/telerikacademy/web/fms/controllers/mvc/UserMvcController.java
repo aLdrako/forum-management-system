@@ -107,7 +107,7 @@ public class UserMvcController extends BaseController {
 
         try {
             userServices.delete(id, currentUser);
-            session.invalidate();
+//            session.invalidate();
             return "redirect:/";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());

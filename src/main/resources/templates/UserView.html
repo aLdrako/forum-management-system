@@ -6,14 +6,14 @@
     <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
-<body>
+<body class="user-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='user-profile')}"></header>
 
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-lg-6">
       <div class="card">
-        <div th:class="${user.getPermission().isAdmin()} ? 'card-header text-center text-white bg-success' : 'card-header text-center text-dark bg-light' + (${user.getPermission().isBlocked()} ? 'card-header text-center text-white bg-danger' : 'card-header text-center text-dark bg-light')">
+        <div class="card-header text-center" th:classappend="${user.getPermission().isAdmin()} ? 'text-white bg-success' : 'text-dark bg-light' + (${user.getPermission().isBlocked()} ? 'text-white bg-danger' : 'text-dark bg-light')">
           <h4 th:text="${user.username.toUpperCase()}">User Profile</h4>
         </div>
         <div class="card-body d-flex align-items-center">
@@ -23,25 +23,24 @@
           </div>
           <div class="col-lg-10 col-md-8 col-sm-10">
             <div class="form-group d-flex align-items-center mb-3">
-              <i class="fas fa-user me-2"></i>
+              <i class="bi bi-person-fill me-2"></i>
               <span th:text="${user.firstName} + ' ' + (${user.getLastName()})">Full Name</span>
             </div>
             <div class="form-group d-flex align-items-center mb-3">
-              <i class="fas fa-envelope me-2"></i>
+              <i class="bi bi-envelope-fill me-2"></i>
               <span th:text="${user.email}">Email Address</span>
             </div>
             <div class="form-group d-flex align-items-center">
-              <i class="fas fa-phone me-2"></i>
+              <i class="bi bi-telephone-fill me-2"></i>
               <span th:if="${user.phoneNumber}" th:text="${user.phoneNumber}">Phone Number</span>
               <span th:unless="${user.phoneNumber}">No Phone</span>
             </div>
           </div>
         </div>
         <div th:if="${session.isAuthenticated && (session.isAdmin || requestURI.endsWith(session.userId))}" class="card-footer text-center text-dark bg-light">
-          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update/photo'}"><i class="fas fa-camera" title="Upload photo"></i></a>
-          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update/password'}"><i class="fas fa-unlock" title="Update password"></i></a>
-          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update'}"><i class="fas fa-sliders" title="Update settings"></i></a>
-          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="fas fa-user-slash" title="Delete account"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update/photo'}"><i class="bi bi-camera-fill" title="Upload photo"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-sliders" title="Update settings"></i></a>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="bi bi-person-x-fill" title="Delete account"></i></a>
         </div>
       </div>
     </div>
@@ -67,7 +66,7 @@
   </div>
 </div>
 
-<script th:replace="~{fragments/scripts :: fontawesome}"></script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
 </html>

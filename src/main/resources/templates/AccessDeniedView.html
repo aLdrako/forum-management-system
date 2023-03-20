@@ -6,13 +6,14 @@
   <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
-<body>
+<body class="access-denied d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='access-denied')}"></header>
 
 <div class="container mx-auto my-5">
   <div class="alert alert-danger" role="alert" th:text="${error}">Error placeholder</div>
 </div>
 
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
 </html>
