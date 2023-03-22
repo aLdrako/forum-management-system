@@ -15,8 +15,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+
+import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.dateTimeFormatter;
 
 @Controller
 @RequestMapping("/posts")
@@ -34,6 +37,12 @@ public class PostMvcController {
     public List<User> populateUsers() {
         return userServices.getAll();
     }
+
+    @ModelAttribute("formatter")
+    public DateTimeFormatter formatter() {
+        return dateTimeFormatter;
+    }
+
     @GetMapping("/new")
     public String showNewPostPage(Model model) {
         model.addAttribute("post", new PostDTO());
@@ -50,7 +59,7 @@ public class PostMvcController {
             Post post = modelMapper.dtoToObject(postDTO);
             post.setUserCreated(user);
             postServices.create(post, user);
-            return "redirect:/posts";
+            return "redirect:/posts/" + post.getId();
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
@@ -87,11 +96,22 @@ public class PostMvcController {
         }
     }
     @GetMapping("/{id}/delete")
-    public String deleteBeer(@PathVariable Long id, Model model) {
+    public String deletePost(@PathVariable Long id, Model model) {
         try {
             User user = userServices.getById(1L);
             postServices.delete(id, user);
             return "redirect:/posts";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        }
+    }
+    @GetMapping("/{id}/like")
+    public String changeLikes(@PathVariable Long id, Model model) {
+        try {
+            User user = userServices.getById(1L);
+            postServices.changePostLikes(id, user);
+            return "redirect:/posts/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
@@ -108,7 +128,7 @@ public class PostMvcController {
         try {
             Post post = postServices.getById(id);
             model.addAttribute("post", post);
-            return "PostView";
+            return "PostViewNew";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";

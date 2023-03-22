@@ -45,6 +45,7 @@ public class AuthenticationMvcController extends BaseController {
         try {
             User user = authenticationHelper.verifyAuthentication(userDTO.getUsername(), userDTO.getPassword());
             session.setAttribute("userId", user.getId());
+            session.setAttribute("user", user);
             session.setAttribute("currentUser", userDTO.getUsername());
             session.setAttribute("isAdmin", user.getPermission().isAdmin());
             session.setAttribute("isBlocked", user.getPermission().isBlocked());

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:HH="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title th:text="#{page.title.user-profile}">Forum Management System</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <link href="../static/styles/style.css" th:href="@{/styles/style.css}" rel="stylesheet">
+</head>
+
+<body class="user-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='post-details')}"></header>
+<div class="container mt-5">
+    <article class="blog-post">
+        <h2 class="blog-post-title" th:text="${post.getTitle()}">Sample post title</h2>
+        <p class="blog-post-meta">
+            <span th:text="${post.getDateCreated().format(formatter)} + ' by '">Date Created</span>
+            <span><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
+                     th:text="${post.getUserCreated().getUsername()}">Mark</a></span>
+        </p>
+        <p th:text="${post.getContent()}">This blog post shows a few different types of content.</p>
+        <section>
+            <a class="btn" th:classappend="${session.isAuthenticated && post.getLikes().contains(session.user)} ? 'btn-danger bi bi-heart' : 'btn-light bi bi-heart'"
+               th:href="@{/posts/{id}/like(id=${post.getId()})}">
+
+            </a>
+            <a class="btn btn-primary" th:if="${session.isAuthenticated}"><i class="bi bi-reply-fill" th:title="#{navbar.reply}"></i></a>
+        </section>
+        <hr>
+    </article>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>

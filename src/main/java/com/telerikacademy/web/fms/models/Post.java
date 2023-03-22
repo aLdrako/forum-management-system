@@ -3,7 +3,6 @@ package com.telerikacademy.web.fms.models;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.*;
