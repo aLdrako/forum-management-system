@@ -84,6 +84,9 @@ public class Post {
     public void addTag(Tag tag) {
         tags.add(tag);
     }
+    public void clearTags() {
+        tags.clear();
+    }
     public void removeTag(Tag tag) {
         tags.remove(tag);
     }

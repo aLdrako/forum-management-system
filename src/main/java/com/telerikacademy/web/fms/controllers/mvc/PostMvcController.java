@@ -1,6 +1,9 @@
 package com.telerikacademy.web.fms.controllers.mvc;
 
+import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
+import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.PostDTO;
@@ -8,11 +11,13 @@ import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
@@ -27,11 +32,14 @@ public class PostMvcController {
     private final PostServices postServices;
     private final UserServices userServices;
     private final ModelMapper modelMapper;
+    private final AuthenticationHelper authenticationHelper;
 
-    public PostMvcController(PostServices postServices, UserServices userServices, ModelMapper modelMapper) {
+    public PostMvcController(PostServices postServices, UserServices userServices, ModelMapper modelMapper,
+                             AuthenticationHelper authenticationHelper) {
         this.postServices = postServices;
         this.userServices = userServices;
         this.modelMapper = modelMapper;
+        this.authenticationHelper = authenticationHelper;
     }
     @ModelAttribute("users")
     public List<User> populateUsers() {
@@ -44,18 +52,28 @@ public class PostMvcController {
     }
 
     @GetMapping("/new")
-    public String showNewPostPage(Model model) {
+    public String showNewPostPage(Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
         model.addAttribute("post", new PostDTO());
         return "PostCreateView";
     }
     @PostMapping("/new")
     public String createPost(@Valid @ModelAttribute("post") PostDTO postDTO,
-                             BindingResult bindingResult, Model model) {
+                             BindingResult bindingResult, Model model, HttpSession session) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
         if (bindingResult.hasErrors()) {
             return "PostCreateView";
         }
         try {
-            User user = userServices.getById(1L);
             Post post = modelMapper.dtoToObject(postDTO);
             post.setUserCreated(user);
             postServices.create(post, user);
@@ -67,7 +85,12 @@ public class PostMvcController {
     }
 
     @GetMapping("/{id}/update")
-    public String showUpdatePostPage(@PathVariable Long id, Model model) {
+    public String showUpdatePostPage(@PathVariable Long id, Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
         try {
             Post post = postServices.getById(id);
             PostDTO postDTO = modelMapper.toDto(post);
@@ -80,58 +103,91 @@ public class PostMvcController {
         }
     }
     @PostMapping("{id}/update")
-    public String updatePost(@PathVariable Long id, @Valid @ModelAttribute PostDTO post,
-                             BindingResult bindingResult, Model model) {
+    public String updatePost(@PathVariable Long id, @Valid @ModelAttribute("post") PostDTO postDto,
+                             BindingResult bindingResult, Model model, HttpSession session) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
         if (bindingResult.hasErrors()) {
             return "PostUpdateView";
         }
         try {
-            User user = userServices.getById(1L);
-            Post newPost = modelMapper.dtoToObject(id, post);
+            Post newPost = modelMapper.dtoToObject(id, postDto);
             postServices.update(newPost, user);
+            postServices.updateTagsInPost(postDto.getTags(), newPost);
             return "redirect:/posts";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
         }
     }
     @GetMapping("/{id}/delete")
-    public String deletePost(@PathVariable Long id, Model model) {
+    public String deletePost(@PathVariable Long id, Model model, HttpSession session) {
+        User user;
         try {
-            User user = userServices.getById(1L);
+            user = authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+        try {
             postServices.delete(id, user);
             return "redirect:/posts";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
         }
     }
     @GetMapping("/{id}/like")
-    public String changeLikes(@PathVariable Long id, Model model) {
+    public String changeLikes(@PathVariable Long id, Model model, HttpSession session) {
+        User user;
         try {
-            User user = userServices.getById(1L);
+            user = authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+        try {
             postServices.changePostLikes(id, user);
             return "redirect:/posts/" + id;
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
         }
     }
     @GetMapping
-    public String showAllPosts(Model model) {
+    public String showAllPosts(Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
         model.addAttribute("posts", postServices.getAll(Optional.empty(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty()));
         return "PostsView";
     }
     @GetMapping("/{id}")
-    public String showSinglePost(@PathVariable Long id, Model model) {
+    public String showSinglePost(@PathVariable Long id, Model model, HttpSession session) {
         try {
+            authenticationHelper.tryGetCurrentUser(session);
             Post post = postServices.getById(id);
             model.addAttribute("post", post);
             return "PostViewNew";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
         }
     }
 }

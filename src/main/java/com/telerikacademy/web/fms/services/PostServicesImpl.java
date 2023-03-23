@@ -88,16 +88,8 @@ public class PostServicesImpl implements PostServices {
 
     @Override
     public void updateTagsInPost(List<String> tags, Post post) {
-        if (tags == null) {
-            return;
-        }
-        tags.stream().map(tagServices::createTag).forEach(tag -> {
-            if (post.getTags().contains(tag)) {
-                post.removeTag(tag);
-            } else {
-                post.addTag(tag);
-            }
-        });
+        post.clearTags();
+        tags.stream().map(tagServices::createTag).forEach(post::addTag);
         postRepository.update(post);
     }
 
