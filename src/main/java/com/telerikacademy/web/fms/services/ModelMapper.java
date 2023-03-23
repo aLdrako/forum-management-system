@@ -33,7 +33,7 @@ public class ModelMapper {
         if (userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());
         if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) user.setPassword(userDTO.getPassword());
         if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
-        if (userDTO.getPhoto().isPresent()) user.setPhoto(userDTO.getPhoto().get());
+        if (userDTO.getPhoto() != null) user.setPhoto(userDTO.getPhoto());
         return user;
     }
 
@@ -45,7 +45,7 @@ public class ModelMapper {
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
         if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setPhoto(userDTO.getPhoto().orElse(null));
+        if (userDTO.getPhoto() != null) user.setPhoto(userDTO.getPhoto());
         return user;
     }
 
@@ -125,9 +125,17 @@ public class ModelMapper {
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
         userDTO.setPhoneNumber(user.getPhoneNumber());
-        userDTO.setPhoto(user.getPhoto().orElse(null));
+        userDTO.setPhoto(user.getPhoto());
         return userDTO;
     }
+
+    public CommentDTO toDto(Comment comment) {
+        CommentDTO commentDTO = new CommentDTO();
+        commentDTO.setContent(comment.getContent());
+        commentDTO.setPostId(comment.getPostedOn().getId());
+        return commentDTO;
+    }
+
     public PostDTO toDto(Post post) {
         PostDTO postDTO = new PostDTO();
         postDTO.setTitle(post.getTitle());

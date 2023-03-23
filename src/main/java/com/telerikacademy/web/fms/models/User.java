@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -35,7 +36,7 @@ public class User {
     private String phoneNumber;
     @Lob
     @Column(name = "photo", table = "photos")
-    private byte[] photo;
+    private String photo;
     @OneToOne
     @JoinColumn(name = "id", referencedColumnName = "user_id")
     private Permission permission;
@@ -106,11 +107,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Optional<byte[]> getPhoto() {
-        return Optional.ofNullable(photo);
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 

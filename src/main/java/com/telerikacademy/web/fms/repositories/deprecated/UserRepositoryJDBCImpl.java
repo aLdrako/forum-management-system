@@ -230,12 +230,11 @@ public class UserRepositoryJDBCImpl implements UserRepository {
     }
 
     private static void photoStatement(PreparedStatement statementPhoto, User user) throws SQLException {
-        statementPhoto.setBytes(1, user.getPhoto().orElse(null));
+        statementPhoto.setString(1, user.getPhoto());
         statementPhoto.setLong(2, user.getId());
     }
 
     private static void phoneStatement(PreparedStatement statementPhone, User user) throws SQLException {
-//        statementPhone.setString(1, user.getPhoneNumber().orElse(null));
         statementPhone.setString(1, user.getPhoneNumber());
         statementPhone.setLong(2, user.getId());
     }
@@ -252,7 +251,7 @@ public class UserRepositoryJDBCImpl implements UserRepository {
             user.setPassword(usersData.getString("password"));
             user.setJoiningDate(usersData.getTimestamp("join_date").toLocalDateTime());
             user.setPhoneNumber(usersData.getString("phone_number"));
-            user.setPhoto(usersData.getBytes("photo"));
+            user.setPhoto(usersData.getString("photo"));
             user.setPermission(getPermissionById(usersData.getLong("id")));
             users.add(user);
         }

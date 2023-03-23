@@ -1,0 +1,11 @@
+<form th:fragment="comment-form" role="form" action="#" th:action="${requestURI}" th:object="${comment}" method="post">
+    <div class="input-group mb-3">
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="floatingComment" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></textarea>
+            <label for="floatingComment">Comment</label>
+            <div id="validationComment" class="invalid-feedback" th:errors="*{content}">Error placeholder</div>
+            <input hidden th:field="*{postId}">
+        </div>
+            <button class="btn btn-success input-group-text" type="submit" name="action" value="save" style="width: 100px">Save</button>
+    </div>
+</form>

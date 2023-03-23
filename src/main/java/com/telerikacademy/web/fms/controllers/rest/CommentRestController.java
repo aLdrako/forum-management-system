@@ -8,7 +8,7 @@ import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.CommentDTO;
 import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
-import com.telerikacademy.web.fms.models.validations.RegisterValidationGroup;
+import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
@@ -49,7 +49,7 @@ public class CommentRestController {
     }
 
     @PostMapping
-    public CommentOutputDTO create(@Validated(RegisterValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
+    public CommentOutputDTO create(@Validated(CreateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Comment comment = modelMapper.dtoToObject(commentDTO);

@@ -4,20 +4,22 @@ import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
+import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.models.dto.CommentDTO;
 import com.telerikacademy.web.fms.models.dto.PostDTO;
+import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
+import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
@@ -31,13 +33,15 @@ import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.dateTimeFo
 public class PostMvcController {
     private final PostServices postServices;
     private final UserServices userServices;
+    private final CommentServices commentServices;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
 
-    public PostMvcController(PostServices postServices, UserServices userServices, ModelMapper modelMapper,
+    public PostMvcController(PostServices postServices, UserServices userServices, CommentServices commentServices, ModelMapper modelMapper,
                              AuthenticationHelper authenticationHelper) {
         this.postServices = postServices;
         this.userServices = userServices;
+        this.commentServices = commentServices;
         this.modelMapper = modelMapper;
         this.authenticationHelper = authenticationHelper;
     }
@@ -188,6 +192,42 @@ public class PostMvcController {
             return "NotFoundView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
+        }
+    }
+
+    @GetMapping("{id}/reply")
+    public String showCommentCreatePage(@PathVariable Long id, Model model) {
+        model.addAttribute("comment" , new CommentDTO());
+        return "CommentCreateView";
+    }
+
+    @PostMapping("{id}/reply")
+    public String createComment(@PathVariable Long id, @Validated(CreateValidationGroup.class) @ModelAttribute("comment") CommentDTO commentDTO,
+                                BindingResult bindingResult,
+                                Model model,
+                                HttpSession session) {
+        User currentUser = null;
+        try {
+            currentUser = authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+
+        if (bindingResult.hasErrors()) return "CommentCreateView";
+
+        try {
+            commentDTO.setPostId(id);
+            Comment comment = modelMapper.dtoToObject(commentDTO);
+            comment.setCreatedBy(currentUser);
+            comment.setPostedOn(postServices.getById(id));
+            commentServices.create(comment, currentUser);
+            return "redirect:/comments/" + comment.getId();
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
         }
     }
 }

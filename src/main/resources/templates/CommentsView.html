@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{page.title.comments}">Forum Management System</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="comments-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='comments')}"></header>
+
+<div class="container mx-auto my-5">
+
+  <table class="table table-bordered table-striped table-hover mt-5">
+    <thead>
+    <tr>
+      <th scope="col" class="text-center">ID</th>
+      <th scope="col" class="col-8">Content</th>
+      <th scope="col">Created By</th>
+      <th scope="col">Post ID</th>
+      <th scope="col" class="d-sm-none d-md-table-cell">Date Created</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${comments.isEmpty()}">
+      <td colspan="7" class="text-center">No Comments</td>
+    </tr>
+    <tr th:each="comment : ${comments}">
+      <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/comments/{id}(id=${comment.id})}"><i class="bi bi-chat-left-text" style="font-size: 2rem;"></i></a></th>
+      <td class="align-middle" th:text="${comment.content}">Some text (design!)</td>
+      <td class="align-middle"><a href="#" th:href="@{/users/{id}(id=${comment.createdBy.id})}" th:text="${comment.createdBy.username}">Username (design!)</a></td>
+      <td class="align-middle"><a href="#" th:href="@{/posts/{id}(id=${comment.postedOn.id})}" th:text="${comment.postedOn.id}">1 (design!)</a></td>
+      <td class="d-sm-none d-md-table-cell align-middle" th:text="${comment.dateCreated}">Created (design!)</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>

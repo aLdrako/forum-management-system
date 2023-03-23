@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{page.title.comment-update}">Forum Management System</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="comment-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='comment-update')}"></header>
+
+<div class="container mt-5">
+  <article class="blog-post">
+    <form th:replace="~{/fragments/comment-form :: comment-form(context='comment-update')}"></form>
+  </article>
+</div>
+
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>

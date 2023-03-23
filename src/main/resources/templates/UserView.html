@@ -18,8 +18,8 @@
         </div>
         <div class="card-body d-flex align-items-center">
           <div class="col-md-5 text-center me-5">
-            <img th:if="${user.photo.isPresent()}" class="rounded-circle" height="150px" alt="" th:alt="${user.username}" src="../static/images/no-profile-picture.jpg" th:src="${user.photo.orElse('No photo')}">
-            <img th:unless="${user.photo.isPresent()}" class="rounded-circle" height="150px" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
+            <img th:if="${user.photo}" class="rounded-circle" height="150px" alt="" th:alt="${user.username}" src="../static/images/no-profile-picture.jpg" th:src="${user.photo}">
+            <img th:unless="${user.photo}" class="rounded-circle" height="150px" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
           </div>
           <div class="col-lg-10 col-md-8 col-sm-10">
             <div class="form-group d-flex align-items-center mb-3">
