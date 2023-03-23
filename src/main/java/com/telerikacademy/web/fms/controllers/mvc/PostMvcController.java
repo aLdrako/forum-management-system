@@ -219,7 +219,6 @@ public class PostMvcController {
             commentDTO.setPostId(id);
             Comment comment = modelMapper.dtoToObject(commentDTO);
             comment.setCreatedBy(currentUser);
-            comment.setPostedOn(postServices.getById(id));
             commentServices.create(comment, currentUser);
             return "redirect:/comments/" + comment.getId();
         } catch (EntityNotFoundException e) {
