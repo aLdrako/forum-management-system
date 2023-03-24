@@ -30,7 +30,7 @@ import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.dateTimeFo
 
 @Controller
 @RequestMapping("/posts")
-public class PostMvcController {
+public class PostMvcController extends BaseMvcController {
     private final PostServices postServices;
     private final UserServices userServices;
     private final CommentServices commentServices;

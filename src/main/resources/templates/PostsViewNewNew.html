@@ -7,18 +7,19 @@
 
 <body class="users-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='posts')}"></header>
-<h2 class="container mx-auto my-5 blog-post-title"
-    th:if="${posts.isEmpty()}" th:text="#{navigation.posts.empty}">No Posts</h2>
-<div class="container mx-auto my-5" th:unless="${posts.isEmpty()}">
+<div class="container mx-auto my-5">
     <table class="table mt-5">
         <thead>
-            <tr>
+            <tr th:if="${!posts.isEmpty()}">
                 <th scope="col">Posts</th>
                 <th scope="col">Replies</th>
                 <th scope="col">Likes</th>
             </tr>
         </thead>
         <tbody>
+        <tr th:if="${posts.isEmpty()}">
+            <td colspan="7" class="text-center" th:text="#{navigation.posts.empty}">No Comments</td>
+        </tr>
         <tr th:each="post : ${posts}">
             <td>
                 <span class="post-title">
