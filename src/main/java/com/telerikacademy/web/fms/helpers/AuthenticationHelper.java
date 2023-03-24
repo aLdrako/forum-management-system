@@ -17,6 +17,7 @@ public class AuthenticationHelper {
     private static final String USERNAME_PREFIX = "username=";
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication!";
+    private static final String INVALID_AUTHORIZATION_ERROR = "Unauthorized operation";
     private final UserServices userServices;
 
     public AuthenticationHelper(UserServices userServices) {
@@ -61,6 +62,18 @@ public class AuthenticationHelper {
         }
 
         return userServices.search(USERNAME_PREFIX + currentUsername).get(0);
+    }
+
+    public User tryGetCurrentAdmin(HttpSession session) {
+        String currentUsername = (String) session.getAttribute("currentUser");
+        if (currentUsername == null) {
+            throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+        }
+        User user = userServices.search(USERNAME_PREFIX + currentUsername).get(0);
+        if (!user.getPermission().isAdmin()) {
+            throw new UnsupportedOperationException(INVALID_AUTHORIZATION_ERROR);
+        }
+        return user;
     }
 
     public String[] validateHeaderValues(String headerValue) {

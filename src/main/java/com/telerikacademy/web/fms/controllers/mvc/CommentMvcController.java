@@ -10,8 +10,6 @@ import com.telerikacademy.web.fms.models.dto.CommentDTO;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
-import com.telerikacademy.web.fms.services.contracts.PostServices;
-import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,17 +31,28 @@ public class CommentMvcController extends BaseMvcController {
     }
 
     @GetMapping
-    public String showAllComments(Model model) {
-        model.addAttribute("comments", commentServices.getAll());
-        return "CommentsView";
+    public String showAllComments(Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetCurrentAdmin(session);
+            model.addAttribute("comments", commentServices.getAll());
+            return "CommentsView";
+        }  catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (UnsupportedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
     }
 
     @GetMapping("{id}")
     public String showComment(@PathVariable Long id, Model model, HttpSession session) {
         try {
+            authenticationHelper.tryGetCurrentUser(session);
             Comment comment = commentServices.getById(id);
             model.addAttribute("comment", comment);
             return "CommentView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
@@ -52,17 +61,15 @@ public class CommentMvcController extends BaseMvcController {
 
     @GetMapping("{id}/update")
     public String showUpdateCommentPage(@PathVariable Long id, Model model, HttpSession session) {
-        try {
-            authenticationHelper.tryGetCurrentUser(session);
-        } catch (AuthorizationException e) {
-            return "redirect:/auth/login";
-        }
 
         try {
+            authenticationHelper.tryGetCurrentUser(session);
             Comment comment = commentServices.getById(id);
             CommentDTO commentDTO = modelMapper.toDto(comment);
             model.addAttribute("comment", commentDTO);
             return "CommentUpdateView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
@@ -76,19 +83,16 @@ public class CommentMvcController extends BaseMvcController {
                                 BindingResult bindingResult,
                                 Model model,
                                 HttpSession session) {
-        User currentUser = null;
-        try {
-            currentUser = authenticationHelper.tryGetCurrentUser(session);
-        } catch (AuthorizationException e) {
-            return "redirect:/auth/login";
-        }
 
         if (bindingResult.hasErrors()) return "CommentUpdateView";
 
         try {
+            User currentUser = authenticationHelper.tryGetCurrentUser(session);
             Comment comment = modelMapper.dtoToObject(id, commentDTO);
             commentServices.update(comment, currentUser);
             return "redirect:/comments/" + comment.getId();
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
@@ -100,16 +104,13 @@ public class CommentMvcController extends BaseMvcController {
 
     @GetMapping("{id}/delete")
     public String deleteComment(@PathVariable Long id, Model model, HttpSession session) {
-        User currentUser = null;
-        try {
-            currentUser = authenticationHelper.tryGetCurrentUser(session);
-        } catch (AuthorizationException e) {
-            return "redirect:/auth/login";
-        }
 
         try {
+            User currentUser = authenticationHelper.tryGetCurrentUser(session);
             commentServices.delete(id, currentUser);
             return "redirect:/";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
