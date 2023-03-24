@@ -6,7 +6,7 @@ import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
 import com.telerikacademy.web.fms.models.validations.LoginValidationGroup;
-import com.telerikacademy.web.fms.models.validations.RegisterValidationGroup;
+import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpSession;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/auth")
-public class AuthenticationMvcController extends BaseController {
+public class AuthenticationMvcController extends BaseMvcController {
     private final UserServices userServices;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
@@ -63,7 +63,7 @@ public class AuthenticationMvcController extends BaseController {
     }
 
     @PostMapping("/register")
-    public String handleRegister(@Validated(RegisterValidationGroup.class) @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult) {
+    public String handleRegister(@Validated(CreateValidationGroup.class) @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return "RegisterView";
 
         try {

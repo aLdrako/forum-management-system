@@ -11,15 +11,20 @@ import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 @Controller
 @RequestMapping("/users")
-public class UserMvcController extends BaseController {
+public class UserMvcController extends BaseMvcController {
 
     private final UserServices userServices;
     private final ModelMapper modelMapper;
@@ -49,7 +54,10 @@ public class UserMvcController extends BaseController {
         }
     }
 
-    @GetMapping("{id}/update")
+    @GetMapping({
+            "{id}/update",
+            "{id}/update/photo"
+    })
     public String showUpdateUserPage(@PathVariable Long id, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentUser(session);
@@ -70,7 +78,41 @@ public class UserMvcController extends BaseController {
     }
 
     @PostMapping("{id}/update")
-    public String updateUser(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, Model model, HttpSession session) {
+    public String updateUser(@PathVariable Long id,
+                             @Validated(UpdateValidationGroup.class) @ModelAttribute("user") UserDTO userDTO,
+                             BindingResult bindingResult,
+                             Model model,
+                             HttpSession session) {
+        User currentUser = null;
+        try {
+            currentUser = authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
+
+        if (bindingResult.hasErrors()) return "UserUpdateView";
+
+        try {
+            User user = modelMapper.dtoToObject(id, userDTO);
+            userServices.update(user, currentUser);
+            return "redirect:/users/" + user.getId();
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "NotFoundView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("email", "email_exists", e.getMessage());
+            return "UserUpdateView";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
+    }
+
+    // TODO fix/implement
+    @PostMapping(path = "{id}/update/photo", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ExceptionHandler(Exception.class)
+    public String uploadUserPhoto(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @ModelAttribute("user") UserDTO userDTO,
+                                  BindingResult bindingResult, Model model, HttpSession session, @RequestPart(name = "floatingPhoto", required = false) MultipartFile floatingPhoto) throws IOException, SQLException {
         User currentUser = null;
         try {
             currentUser = authenticationHelper.tryGetCurrentUser(session);
@@ -107,7 +149,7 @@ public class UserMvcController extends BaseController {
 
         try {
             userServices.delete(id, currentUser);
-//            session.invalidate();
+            if (!currentUser.getPermission().isAdmin()) session.invalidate();
             return "redirect:/";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
