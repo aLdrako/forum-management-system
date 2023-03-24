@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -44,28 +45,43 @@ public class UserRepositoryImpl implements UserRepository {
             User user = session.get(User.class, id);
             Permission permission = session.get(Permission.class, id);
             if (user == null || permission.isDeleted()) throw new EntityNotFoundException("User", id);
+            Hibernate.initialize(user.getComments());
+            Hibernate.initialize(user.getPosts());
             return user;
         }
     }
 
+//    @Override
+//    public List<User> search(String parameter) {
+//        try (Session session = sessionFactory.openSession()) {
+//            String[] params = parameter.split("=");
+//            boolean hasParams = true;
+//            String searchParams = switch (params[0]) {
+//                case "email" -> "email = ?1";
+//                case "username" -> "username = ?1";
+//                case "firstName" -> "firstName = ?1";
+//                default -> { hasParams = false; yield ""; }
+//            };
+//            if (hasParams) {
+//                Query<User> query = session.createQuery("from User where " + searchParams, User.class);
+//                query.setParameter(1, params[1]);
+//                List<User> list = query.list();
+//                if (list.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
+//                return list;
+//            } else return new ArrayList<>();
+//        }
+//    }
+
     @Override
     public List<User> search(String parameter) {
         try (Session session = sessionFactory.openSession()) {
-            String[] params = parameter.split("=");
-            boolean hasParams = true;
-            String searchParams = switch (params[0]) {
-                case "email" -> "email = ?1";
-                case "username" -> "username = ?1";
-                case "firstName" -> "firstName = ?1";
-                default -> { hasParams = false; yield ""; }
-            };
-            if (hasParams) {
-                Query<User> query = session.createQuery("from User where " + searchParams, User.class);
-                query.setParameter(1, params[1]);
-                List<User> list = query.list();
-                if (list.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
-                return list;
-            } else return new ArrayList<>();
+            String[] params = parameter.split("=", -1);
+            String searchParams = "from User where email = ?1 OR username = ?1 OR firstName = ?1";
+            Query<User> query = session.createQuery(searchParams, User.class);
+            query.setParameter(1, !params[1].isBlank() ? params[1] : "*");
+            List<User> list = query.list();
+            if (list.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
+            return list;
         }
     }
 

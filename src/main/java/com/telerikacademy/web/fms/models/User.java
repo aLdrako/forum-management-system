@@ -44,6 +44,12 @@ public class User {
     @Generated(GenerationTime.ALWAYS)
     @Column(name = "join_date")
     private LocalDateTime joiningDate;
+    @JsonIgnore
+    @OneToMany(mappedBy = "userCreated")
+    private Set<Post> posts = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "createdBy")
+    private Set<Comment> comments = new HashSet<>();
 
     public User() {}
 
@@ -129,6 +135,22 @@ public class User {
 
     public void setPermission(Permission permission) {
         this.permission = permission;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override
