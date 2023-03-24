@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title th:text="#{navigation.posts}">Forum Management System</title>
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="users-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='posts')}"></header>
+
+<div class="container mx-auto my-5">
+  <table class="table table-bordered table-striped table-hover mt-5" id="myTable">
+    <thead>
+    <tr>
+      <th scope="col" class="text-center">#</th>
+      <th scope="col" onclick="sortTable(0)" >Title</th>
+      <th scope="col" class="text-center">Creator</th>
+      <th scope="col" onclick="sortTable(1)" class="text-center">Likes</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${posts.isEmpty()}">
+      <td colspan="7" class="text-center">No Posts</td>
+    </tr>
+    <tr th:each="post : ${posts}">
+      <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/posts/{id}(id=${post.id})}"><i class="bi bi-info-square" style="font-size: 2rem;"></i></a></th>
+      <td class="align-middle post-title" th:text="${post.title}">Title Post</td>
+      <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}" th:text="${post.getUserCreated().getUsername()}"></a></th>
+      <td class="text-center" th:text="${post.getLikes().size()}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+<script>
+  function sortTable(n) {
+    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    table = document.getElementById("myTable");
+    switching = true;
+    dir = "asc";
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        x = rows[i].getElementsByTagName("TD")[n];
+        y = rows[i + 1].getElementsByTagName("TD")[n];
+        if (dir == "asc") {
+          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            //if so, mark as a switch and break the loop:
+            shouldSwitch= true;
+            break;
+          }
+        } else if (dir == "desc") {
+          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        }
+      }
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        switchcount ++;
+      } else {
+        if (switchcount == 0 && dir == "asc") {
+          dir = "desc";
+          switching = true;
+        }
+      }
+    }
+  }
+</script>
+</body>
+</html>
