@@ -7,28 +7,47 @@
 
 <body class="users-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='posts')}"></header>
-
-
-
-<div th:each="post : ${posts}">
-    <div class="container mt-5">
-        <article class="blog-post">
-            <div>
-                <span class="post-title" th:text="${post.getTitle()}">Sample post title</span>
-                <i class="bi bi-chat-left-fill comment-icon-to-right"></i>
-            </div>
-            <p class="blog-post-meta">
-                <span th:text="${post.getDateCreated().format(formatter)} + ' by '">Date Created</span>
-                <span><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
-                         th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a></span>
-                <span><a th:if="${session.user == post.getUserCreated()}" href="#" th:href="@{/posts/{id}/update(id=${post.getId()})}"
-                         th:text="#{post-form.update}">Update</a></span>
-            </p>
-            <hr>
-        </article>
-    </div>
+<h2 class="container mx-auto my-5 blog-post-title"
+    th:if="${posts.isEmpty()}" th:text="#{navigation.posts.empty}">No Posts</h2>
+<div class="container mx-auto my-5" th:unless="${posts.isEmpty()}">
+    <table class="table mt-5">
+        <thead>
+            <tr>
+                <th scope="col">Posts</th>
+                <th scope="col">Replies</th>
+                <th scope="col">Likes</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${posts}">
+            <td>
+                <span class="post-title">
+                    <a class="text-decoration-none text-dark" href="#" th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}">Sample post title</a>
+                </span>
+                <p class="blog-post-meta">
+                    <span th:text="${post.getDateCreated().format(formatter)} + ' by '">Date Created</span>
+                    <span><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
+                             th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a></span>
+                    <span><a th:if="${session.user == post.getUserCreated()}" href="#" th:href="@{/posts/{id}/update(id=${post.getId()})}"
+                             th:text="#{post-form.update}">Update</a></span>
+                </p>
+            </td>
+            <td>
+                <p class="blog-post-meta">
+                    <span><i class="bi bi-chat-right-fill post-likes-comments">&nbsp</i></span>
+                    <span class="post-likes-comments" th:text="${post.getComments().size()}">Comments Count</span>
+                </p>
+            </td>
+            <td>
+                <p class="blog-post-meta">
+                    <span><i class="bi bi-heart-fill post-likes-comments">&nbsp</i></span>
+                    <span class="post-likes-comments" th:text="${post.getLikes().size()}">Likes</span>
+                </p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>

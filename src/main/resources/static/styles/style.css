@@ -92,7 +92,7 @@ body {
 
 
 .posts-table {
-    display: table;
+    position: center;
 }
 .posts-header {
     display: table-header-group;
@@ -132,6 +132,8 @@ body {
 }
 .post-title {
     font-style: italic;
-    font-size: 20pt;
+    font-size: 17pt;
 }
-.
+.post-likes-comments {
+    width: 2px;
+}
