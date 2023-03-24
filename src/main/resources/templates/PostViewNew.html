@@ -26,8 +26,8 @@
             <a class="btn" th:classappend="${session.isAuthenticated && post.getLikes().contains(session.user)} ? 'btn-danger bi bi-heart' : 'btn-light bi bi-heart'"
                th:href="@{/posts/{id}/like(id=${post.getId()})}">
             </a>
-            <a class="btn btn-primary" th:if="${session.isAuthenticated}">
-                <i class="bi bi-reply-fill" th:title="#{navbar.reply}"></i>
+            <a class="btn" th:classappend="${session.isAuthenticated} ? 'btn-primary bi bi-reply-fill'"
+               th:href="@{/posts/{id}/reply(id=${post.getId()})}">
             </a>
         </section>
         <hr>
