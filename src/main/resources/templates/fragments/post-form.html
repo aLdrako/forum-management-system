@@ -1,25 +1,25 @@
 <form th:fragment="post-form" action="#" th:action="${requestURI}" th:object="${post}" method="post">
-    <h1 th:if="${context == 'create'}" th:text="#{post-form.create}">Create Post</h1>
+    <h1 th:if="${context == 'create'}" th:text="#{navbar.post.create}">Create Post</h1>
     <h1 th:if="${context == 'update'}" th:text="#{post-form.update}">Update Post</h1>
 
     <div th:if="${context == 'create' || context == 'update'}">
         <label th:text="#{post.label.title}">Title</label>
         <br/>
-        <input type="text" th:field="*{title}"/>
+        <input class="input-post" type="text" th:field="*{title}"/>
         <label class="error" th:errors="*{title}">Title error placeholder</label>
         <br/><br/>
         <label th:text="#{post.label.content}">Content</label>
         <br/>
-        <input type="text" th:field="*{content}"/>
+        <textarea class="input-post" th:field="*{content}"></textarea>
         <label class="error" th:errors="*{content}">Content error placeholder</label>
         <br/><br/>
         <div th:if="${context == 'update'}">
             <label th:text="#{post.tags.label}">Tags</label>
             <br/>
-            <input type="text" th:field="*{tags}"/>
+            <input class="input-post" type="text" th:field="*{tags}"/>
             <label class="error" th:errors="*">Tags error placeholder</label>
         <br/><br/>
         </div>
-        <input type="submit" value="Save"/>
+        <input  type="submit" value="Save"/>
     </div>
 </form>

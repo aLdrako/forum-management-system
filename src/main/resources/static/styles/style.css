@@ -103,6 +103,7 @@ body {
     display: table-cell;
     width: 25%;
     text-align: left;
+    margin-right: 5px;
 }
 .posts-row {
     display: table-row;
@@ -116,6 +117,7 @@ body {
 }
 .blog-post {
     margin-bottom: 4rem;
+    word-wrap: break-word;
 }
 .blog-post-title {
     margin-bottom: .25rem;
@@ -125,3 +127,11 @@ body {
     margin-bottom: 1.25rem;
     color: #727272;
 }
+.input-post {
+    width: 70%;
+}
+.post-title {
+    font-style: italic;
+    font-size: 20pt;
+}
+.

@@ -174,7 +174,7 @@ public class PostMvcController {
         }
         model.addAttribute("posts", postServices.getAll(Optional.empty(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty()));
-        return "PostsView";
+        return "PostsViewNewNew";
     }
     @GetMapping("/{id}")
     public String showSinglePost(@PathVariable Long id, Model model, HttpSession session) {
