@@ -8,6 +8,7 @@ import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.CommentDTO;
+import com.telerikacademy.web.fms.models.dto.FilterPostsDto;
 import com.telerikacademy.web.fms.models.dto.PostDTO;
 import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
@@ -170,14 +171,22 @@ public class PostMvcController extends BaseMvcController {
         }
     }
     @GetMapping
-    public String showAllPosts(Model model, HttpSession session) {
+    public String showAllPosts(@ModelAttribute("filterPostOptions") FilterPostsDto filterDto, Model model,
+                               HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentUser(session);
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         }
-        model.addAttribute("posts", postServices.getAll(Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), Optional.empty()));
+        if (filterDto == null) {
+            filterDto = new FilterPostsDto();
+        }
+        model.addAttribute("posts", postServices.getAll(Optional.empty(),
+                filterDto.getTitle() == null ||  filterDto.getTitle().isEmpty() ? Optional.empty() : filterDto.getTitle().describeConstable(),
+                filterDto.getContent() == null || filterDto.getContent().isEmpty() ? Optional.empty() : filterDto.getContent().describeConstable(),
+                filterDto.getTag() == null || filterDto.getTag().isEmpty() ? Optional.empty() : filterDto.getTag().describeConstable(),
+                filterDto.getSort() == null || filterDto.getSort().isEmpty() ? Optional.empty() : filterDto.getSort().describeConstable(),
+                filterDto.getOrder() == null || filterDto.getOrder().isEmpty() ? Optional.empty() : filterDto.getOrder().describeConstable()));
         return "PostsViewNewNew";
     }
     @GetMapping("/{id}")

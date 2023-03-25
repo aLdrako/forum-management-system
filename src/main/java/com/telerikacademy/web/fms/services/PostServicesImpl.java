@@ -32,9 +32,10 @@ public class PostServicesImpl implements PostServices {
 
     @Override
     public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
+                             Optional<String> tag,
                              Optional<String> sort, Optional<String> order) {
         userId.ifPresent(userRepository::getById);
-        return postRepository.getAll(userId, title, content, sort, order);
+        return postRepository.getAll(userId, title, content, tag, sort, order);
     }
 
     @Override

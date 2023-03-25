@@ -42,9 +42,10 @@ public class PostRestController {
     @GetMapping
     public List<PostOutputDTO> getAll(@RequestParam(required = false) Optional<String> title,
                                       @RequestParam(required = false) Optional<String> content,
+                                      @RequestParam(required = false) Optional<String> tag,
                                       @RequestParam(required = false) Optional<String> sort,
                                       @RequestParam(required = false) Optional<String> order) {
-        return postMapper.objectToDto(postServices.getAll(Optional.empty(), title, content, sort, order));
+        return postMapper.objectToDto(postServices.getAll(Optional.empty(), title, content, tag, sort, order));
     }
 
     @GetMapping("/{id}")

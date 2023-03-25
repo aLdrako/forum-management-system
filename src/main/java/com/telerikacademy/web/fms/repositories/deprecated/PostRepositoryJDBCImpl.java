@@ -37,7 +37,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
 
     @Override
     public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
-                             Optional<String> sort, Optional<String> order) {
+                             Optional<String> tag, Optional<String> sort, Optional<String> order) {
         String query = SQL_POSTS_LIKES_JOINED;
         query += addToQuery(userId, title, sort, order);
 

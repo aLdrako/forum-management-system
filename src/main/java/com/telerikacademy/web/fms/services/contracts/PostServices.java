@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PostServices {
     Post getById(Long id);
-    List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
+    List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content, Optional<String> tag,
                       Optional<String> sort, Optional<String> order);
     Post create(Post post, User user);
     void update(Post post, User user);

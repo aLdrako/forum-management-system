@@ -7,7 +7,25 @@
 
 <body class="users-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='posts')}"></header>
+
 <div class="container mx-auto my-5">
+    <form action="#" th:action="@{/posts}" method="get" th:object="${filterPostOptions}">
+        <input type="text" placeholder="Post title" th:field="*{title}" />
+        <input type="text" placeholder="Post content" th:field="*{content}"/>
+        <input type="text" placeholder="Tag" th:field="*{tag}"/>
+        <select th:field="*{sort}">
+            <option value="">-</option>
+            <option value="title">Title</option>
+            <option value="likes">Likes</option>
+            <option value="datecreated">Date Created</option>
+        </select>
+        <select th:field="*{order}">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+        <br/><br/>
+        <input type="submit" value="Search"/>
+    </form>
     <table class="table mt-5">
         <thead>
             <tr th:if="${!posts.isEmpty()}">
@@ -29,8 +47,6 @@
                     <span th:text="${post.getDateCreated().format(formatter)} + ' by '">Date Created</span>
                     <span><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
                              th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a></span>
-                    <span><a th:if="${session.user == post.getUserCreated()}" href="#" th:href="@{/posts/{id}/update(id=${post.getId()})}"
-                             th:text="#{post-form.update}">Update</a></span>
                 </p>
             </td>
             <td>

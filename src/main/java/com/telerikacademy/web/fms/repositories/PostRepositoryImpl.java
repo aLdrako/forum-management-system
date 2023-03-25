@@ -36,9 +36,10 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
-                             Optional<String> sort, Optional<String> order) {
+                             Optional<String> tag, Optional<String> sort, Optional<String> order) {
         try (Session session = sessionFactory.openSession()){
             StringBuilder stringQuery = new StringBuilder("from Post p left join p.likes as pl");
+            stringQuery.append(" left join p.tags as pt");
             Map<String, Object> queryParams = new HashMap<>();
             List<String> filter = new ArrayList<>();
 
@@ -54,6 +55,11 @@ public class PostRepositoryImpl implements PostRepository {
                 filter.add(" p.content like :content ");
                 queryParams.put("content", "%" + content.get() + "%");
             }
+            if (tag.isPresent()) {
+                filter.add(" pt.name = :tagName ");
+                queryParams.put("tagName", tag.get());
+            }
+
             if (!filter.isEmpty()) {
                 stringQuery.append(" where ").append(String.join(" and ", filter));
             }
@@ -88,8 +94,10 @@ public class PostRepositoryImpl implements PostRepository {
             case "likes" -> {
                 return " group by p order by count(pl) ";
             }
+            default -> {
+                return " order by p.id ";
+            }
         }
-        return "";
     }
 
     @Override
