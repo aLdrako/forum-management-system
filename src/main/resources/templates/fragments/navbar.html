@@ -5,8 +5,8 @@
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-lg-0 mb-md-2">
         <li><a class="btn btn-outline-light me-2" href="/" th:href="@{/}" th:classappend="${context == 'home' ? 'btn-light text-dark' : ''}" th:text="#{navbar.home}">Home</a></li>
-        <li th:if="${session.isAuthenticated && session.isAdmin}"><a class="btn btn-outline-light me-2" href="/users" th:href="@{/users}" th:classappend="${context == 'users' ? 'btn-light text-dark' : ''}" th:text="#{navbar.users}">Users</a></li>
         <li th:if="${session.isAuthenticated}"><a class="btn btn-outline-light me-2" href="/posts" th:href="@{/posts}" th:classappend="${context == 'posts' ? 'btn-light text-dark' : ''}" th:text="#{navbar.posts}">Posts</a></li>
+        <li th:if="${session.isAuthenticated && session.isAdmin}"><a class="btn btn-outline-light me-2" href="/users" th:href="@{/users}" th:classappend="${context == 'users' ? 'btn-light text-dark' : ''}" th:text="#{navbar.users}">Users</a></li>
         <li th:if="${session.isAuthenticated && session.isAdmin}"><a class="btn btn-outline-light me-2" href="/comments" th:href="@{/comments}" th:classappend="${context == 'comments' ? 'btn-light text-dark' : ''}" th:text="#{navbar.comments}">Comments</a></li>
         <li><a class="btn btn-primary" href="/posts/new" th:href="@{/posts/new}" th:if="${context != 'not-found' && session.isAuthenticated}" th:classappend="${context == 'create post' ? 'btn-light text-dark' : ''}" th:text="#{navbar.post.create}">Create Post</a></li>
       </ul>
