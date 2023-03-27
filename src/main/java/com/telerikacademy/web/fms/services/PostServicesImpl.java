@@ -31,11 +31,9 @@ public class PostServicesImpl implements PostServices {
     }
 
     @Override
-    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
-                             Optional<String> tag,
-                             Optional<String> sort, Optional<String> order) {
-        userId.ifPresent(userRepository::getById);
-        return postRepository.getAll(userId, title, content, tag, sort, order);
+    public List<Post> getAll(Map<String, String> parameters) {
+        if (parameters.containsKey("userId")) userRepository.getById(Long.valueOf(parameters.get("userId")));
+        return postRepository.getAll(parameters);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.telerikacademy.web.fms.repositories;
 
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.Tag;
 import com.telerikacademy.web.fms.models.User;
@@ -9,10 +10,14 @@ import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.hibernate.query.sqm.tree.select.SqmSortSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+
+import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.extractFilterPredicate;
+import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.extractSortOrderPosts;
 
 @Repository
 public class PostRepositoryImpl implements PostRepository {
@@ -35,69 +40,43 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
-                             Optional<String> tag, Optional<String> sort, Optional<String> order) {
+    public List<Post> getAll(Map<String, String> parameters) {
         try (Session session = sessionFactory.openSession()){
-            StringBuilder stringQuery = new StringBuilder("from Post p left join p.likes as pl");
-            stringQuery.append(" left join p.tags as pt");
-            Map<String, Object> queryParams = new HashMap<>();
-            List<String> filter = new ArrayList<>();
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Post> criteriaQuery = criteriaBuilder.createQuery(Post.class);
+            Root<Post> post = criteriaQuery.from(Post.class);
+            Join<Post, User> userJoin = post.join("userCreated");
+            Join<Post, Tag> tagJoin = post.join("tags", JoinType.LEFT);
+            Join<Post, User> likesJoin = post.join("likes", JoinType.LEFT);
+            Map<String, String> sortOrderParams = extractSortOrderPosts(parameters);
+            criteriaQuery.select(post).where(extractFilterPredicate(parameters, criteriaBuilder, post,
+                    userJoin, tagJoin));
 
-            if (userId.isPresent()) {
-                filter.add(" p.userCreated.id = :userId ");
-                queryParams.put("userId", userId.get());
-            }
-            if (title.isPresent()) {
-                filter.add(" p.title like :title ");
-                queryParams.put("title", "%" + title.get() + "%");
-            }
-            if (content.isPresent()) {
-                filter.add(" p.content like :content ");
-                queryParams.put("content", "%" + content.get() + "%");
-            }
-            if (tag.isPresent()) {
-                filter.add(" pt.name = :tagName ");
-                queryParams.put("tagName", tag.get());
-            }
-
-            if (!filter.isEmpty()) {
-                stringQuery.append(" where ").append(String.join(" and ", filter));
-            }
-
-            stringQuery.append(sort.map(this::generateSort).orElse(" order by p.id "));
-            stringQuery.append(order.map(this::generateOrder).orElse(""));
-
-            Query<Post> query = session.createQuery(stringQuery.toString(), Post.class);
-            query.setProperties(queryParams);
-            return query.list();
+            criteriaQuery = extractOrder(sortOrderParams, criteriaBuilder, criteriaQuery, post, likesJoin,
+                    userJoin);
+            return session.createQuery(criteriaQuery).getResultList();
         }
     }
 
-    private String generateOrder(String order) {
-        if (order.equalsIgnoreCase("desc")) {
-            return " desc ";
-        }
-        return "";
-    }
-
-    private String generateSort(String sort) {
-        switch (sort.toLowerCase()) {
-            case "title" -> {
-                return "  order by p.title ";
-            }
+    private CriteriaQuery<Post> extractOrder(Map<String, String> sortOrderParams, CriteriaBuilder builder,
+                                             CriteriaQuery<Post> criteriaQuery, Root<Post> postRoot, Join<Post, User> likesJoin,
+                                             Join<Post, User> userJoin) {
+        Path<Object> postPath = null;
+        Order order = null;
+        switch (sortOrderParams.get("sort").toLowerCase()) {
+            case "likes" -> order = sortOrderParams.get("order").equalsIgnoreCase("desc") ?
+                    builder.desc(builder.count(likesJoin)) : builder.asc(builder.count(likesJoin));
             case "userid" -> {
-                return "  order by p.userCreated.id ";
-            }
-            case "datecreated" -> {
-                return "  order by p.dateCreated ";
-            }
-            case "likes" -> {
-                return " group by p order by count(pl) ";
+                postPath = userJoin.get("id");
+                order = sortOrderParams.get("order").equalsIgnoreCase("desc") ?
+                        builder.desc(postPath) : builder.asc(postPath);
             }
             default -> {
-                return " order by p.id ";
+                postPath = postRoot.get(sortOrderParams.get("sort"));
+                order = sortOrderParams.get("order").equalsIgnoreCase("desc") ? builder.desc(postPath) : builder.asc(postPath);
             }
         }
+        return criteriaQuery.orderBy(order).groupBy(postRoot);
     }
 
     @Override
@@ -144,7 +123,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getTopTenMostRecent() {
         try (Session session = sessionFactory.openSession()){
-            return session.createQuery("from Post p order by p.dateCreated desc limit 10",
+            return session.createQuery("from Post p order by p.datecreated desc limit 10",
                     Post.class).list();
         }
     }

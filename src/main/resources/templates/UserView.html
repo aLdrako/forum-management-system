@@ -74,7 +74,7 @@
             <tr th:each="post : ${posts}">
               <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/posts/{id}(id=${post.id})}"><i class="bi bi-postcard" style="font-size: 2rem;"></i></a></th>
               <td class="align-middle" th:text="${post.title}">Some text (design!)</td>
-              <td class="d-sm-none d-md-table-cell align-middle" th:text="${post.dateCreated}">Created (design!)</td>
+              <td class="d-sm-none d-md-table-cell align-middle" th:text="${post.datecreated}">Created (design!)</td>
             </tr>
             </tbody>
           </table>

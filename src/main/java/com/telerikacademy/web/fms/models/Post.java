@@ -7,6 +7,8 @@ import org.hibernate.annotations.GenerationTime;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
+
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -45,7 +47,7 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     @Generated(GenerationTime.ALWAYS)
     @Column(name = "date_created")
-    private LocalDateTime dateCreated;
+    private LocalDateTime datecreated;
 
     public Post() {
         likes = new HashSet<>();
@@ -62,9 +64,9 @@ public class Post {
         tags = new HashSet<>();
         comments = new HashSet<>();
     }
-    public Post(Long id, String title, String content, User userCreated, LocalDateTime dateCreated) {
+    public Post(Long id, String title, String content, User userCreated, LocalDateTime datecreated) {
         this(id, title, content, userCreated);
-        this.dateCreated = dateCreated;
+        this.datecreated = datecreated;
         likes = new HashSet<>();
         tags = new HashSet<>();
         comments = new HashSet<>();
@@ -144,12 +146,12 @@ public class Post {
         this.userCreated = userCreated;
     }
 
-    public LocalDateTime getDateCreated() {
-        return dateCreated;
+    public String getDatecreated() {
+        return formatToString(datecreated);
     }
 
-    public void setDateCreated(LocalDateTime dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setDatecreated(LocalDateTime dateCreated) {
+        this.datecreated = dateCreated;
     }
     @Override
     public boolean equals(Object o) {

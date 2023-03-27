@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.dateTimeFormatter;
@@ -178,15 +179,7 @@ public class PostMvcController extends BaseMvcController {
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         }
-        if (filterDto == null) {
-            filterDto = new FilterPostsDto();
-        }
-        model.addAttribute("posts", postServices.getAll(Optional.empty(),
-                filterDto.getTitle() == null ||  filterDto.getTitle().isEmpty() ? Optional.empty() : filterDto.getTitle().describeConstable(),
-                filterDto.getContent() == null || filterDto.getContent().isEmpty() ? Optional.empty() : filterDto.getContent().describeConstable(),
-                filterDto.getTag() == null || filterDto.getTag().isEmpty() ? Optional.empty() : filterDto.getTag().describeConstable(),
-                filterDto.getSort() == null || filterDto.getSort().isEmpty() ? Optional.empty() : filterDto.getSort().describeConstable(),
-                filterDto.getOrder() == null || filterDto.getOrder().isEmpty() ? Optional.empty() : filterDto.getOrder().describeConstable()));
+        model.addAttribute("posts", postServices.getAll(modelMapper.dtoToMap(filterDto)));
         return "PostsViewNewNew";
     }
     @GetMapping("/{id}")

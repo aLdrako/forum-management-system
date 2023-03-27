@@ -44,7 +44,7 @@
                     <a class="text-decoration-none text-dark" href="#" th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}">Sample post title</a>
                 </span>
                 <p class="blog-post-meta">
-                    <span th:text="${post.getDateCreated().format(formatter)} + ' by '">Date Created</span>
+                    <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
                     <span><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
                              th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a></span>
                 </p>

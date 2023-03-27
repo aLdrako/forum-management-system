@@ -65,7 +65,7 @@ public class Helpers {
         mockPost.setId(1L);
         mockPost.setTitle("mockPostTitle");
         mockPost.setContent("mockPostContent");
-        mockPost.setDateCreated(LocalDateTime.now());
+        mockPost.setDatecreated(LocalDateTime.now());
         mockPost.setUserCreated(createMockUser());
         return mockPost;
     }

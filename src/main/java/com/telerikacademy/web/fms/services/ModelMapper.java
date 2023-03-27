@@ -7,7 +7,10 @@ import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
@@ -113,7 +116,7 @@ public class ModelMapper {
                 post.getTags().stream().map(Tag::getName).collect(Collectors.toList())
         );
         postOutputDTO.setUserCreated(post.getUserCreated().getUsername());
-        postOutputDTO.setDateCreated(formatToString(post.getDateCreated()));
+        postOutputDTO.setDateCreated(post.getDatecreated());
 
         return postOutputDTO;
     }
@@ -143,4 +146,15 @@ public class ModelMapper {
         postDTO.setTags(post.getTags().stream().map(Tag::getName).collect(Collectors.toList()));
         return postDTO;
     }
+    public Map<String, String> dtoToMap(FilterPostsDto filterDto) {
+        Map<String, String> map = new HashMap<>();
+
+        Optional.ofNullable(filterDto.getTitle()).ifPresent(v -> map.put("title", filterDto.getTitle()));
+        Optional.ofNullable(filterDto.getContent()).ifPresent(v -> map.put("content", filterDto.getContent()));
+        Optional.ofNullable(filterDto.getTag()).ifPresent(v -> map.put("tag", filterDto.getTag()));
+        Optional.ofNullable(filterDto.getSort()).ifPresent(v -> map.put("sort", filterDto.getSort()));
+        Optional.ofNullable(filterDto.getOrder()).ifPresent(v -> map.put("order", filterDto.getOrder()));
+        return map;
+    }
+
 }

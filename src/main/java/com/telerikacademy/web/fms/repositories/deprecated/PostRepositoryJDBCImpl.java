@@ -36,18 +36,17 @@ public class PostRepositoryJDBCImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getAll(Optional<Long> userId, Optional<String> title, Optional<String> content,
-                             Optional<String> tag, Optional<String> sort, Optional<String> order) {
+    public List<Post> getAll(Map<String, String> parameters) {
         String query = SQL_POSTS_LIKES_JOINED;
-        query += addToQuery(userId, title, sort, order);
+        //query += addToQuery(userId, title, sort, order);
 
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query)
                 ){
             int parameterCounter = 1;
-            if (title.isPresent()) statement.setString(parameterCounter++, "%" + title.get() + "%");
-            if (userId.isPresent()) statement.setLong(parameterCounter++, userId.get());
+            //if (title.isPresent()) statement.setString(parameterCounter++, "%" + title.get() + "%");
+            //if (userId.isPresent()) statement.setLong(parameterCounter++, userId.get());
 
             try (ResultSet resultSet = statement.executeQuery()){
                 return getPosts(resultSet);

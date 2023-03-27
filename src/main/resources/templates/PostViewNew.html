@@ -13,7 +13,7 @@
     <article class="blog-post">
         <h2 class="blog-post-title" th:text="${post.getTitle()}">Sample post title</h2>
         <p class="blog-post-meta">
-            <span th:text="${post.getDateCreated().format(formatter)} + ' by '">Date Created</span>
+            <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
             <span><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
                      th:text="${post.getUserCreated().getUsername()}">&nbsp&nbsp</a></span>
             <span>
