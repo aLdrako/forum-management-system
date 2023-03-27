@@ -39,9 +39,10 @@
           </div>
         </div>
         <div th:if="${session.isAuthenticated && (session.isAdmin || requestURI.endsWith(session.userId))}" class="card-footer text-center text-dark bg-light">
-          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update/photo'}"><i class="bi bi-camera-fill" title="Upload photo"></i></a>
-          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-sliders" title="Update settings"></i></a>
-          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="bi bi-person-x-fill" title="Delete account"></i></a>
+          <a th:if="${session.isAdmin}" href="#" class="btn btn-success" th:href="@{${requestURI} + '/update/permissions'}"><i class="bi bi-toggles" title="Update permissions"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update/photo'}"><i class="bi bi-person-workspace" title="Upload photo"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-person-lines-fill" title="Update settings"></i></a>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="bi bi-person-fill-slash" title="Delete account"></i></a>
         </div>
       </div>
     </div>

@@ -1,4 +1,7 @@
-<form th:fragment="comment-form" role="form" action="#" th:action="${requestURI}" th:object="${comment}" method="post">
+<form role="form" action="#" method="post"
+      th:fragment="comment-form" th:action="${requestURI}" th:object="${comment}">
+    <h6 class="display-6" th:if="${context == 'comment-create'}" th:text="#{comment-form.create}">Create</h6>
+    <h6 class="display-6" th:if="${context == 'comment-update'}" th:text="#{comment-form.update}">Update</h6>
     <div class="input-group mb-3">
         <div class="form-floating">
             <textarea class="form-control" placeholder="Leave a comment here" id="floatingComment" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></textarea>
@@ -10,11 +13,13 @@
     </div>
 </form>
 
-<form th:fragment="comment-form-sort" action="/comments" th:action="${requestURI}" method="get">
+<form method="get" action="#"
+      th:fragment="comment-form-sort" th:action="${requestURI}"
+      th:with="postsPath=${requestURI.contains('/posts')}">
     <div class="input-group input-group-sm" th:if="${!comments.isEmpty()}">
         <select class="form-select" id="inputGroupSort" name="sort">
             <option value="content">Content</option>
-            <option th:if="${!requestURI.contains('/posts')}" value="postedOn">Post Title</option>
+            <option th:if="${!postsPath}" value="postedOn">Post Title</option>
             <option selected value="dateCreated">Date Created</option>
         </select>
         <select class="form-select" id="inputGroupOrder" name="order">

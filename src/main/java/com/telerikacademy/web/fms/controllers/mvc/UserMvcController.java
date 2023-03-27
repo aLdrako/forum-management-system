@@ -98,7 +98,8 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
 
     @GetMapping({
             "{id}/update",
-            "{id}/update/photo"
+            "{id}/update/photo",
+            "{id}/update/permissions"
     })
     public String showUpdateUserPage(@PathVariable Long id, Model model, HttpSession session) {
 
@@ -119,14 +120,16 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
 
     @PostMapping({
             "{id}/update",
-            "{id}/update/photo"
+            "{id}/update/photo",
+            "{id}/update/permissions"
     })
     public String updateUser(@PathVariable Long id,
                              @Validated(UpdateValidationGroup.class) @ModelAttribute("user") UserDTO userDTO,
                              BindingResult bindingResult,
                              Model model,
                              HttpSession session,
-                             @RequestParam(name = "photo", required = false) @Size(max = 65536, message = "File size exceeds the limit of 64KB") MultipartFile photo) throws IOException {
+                             HttpServletRequest request,
+                             @RequestParam(name = "photo", required = false) MultipartFile photo) throws IOException {
 
         if (photo != null && !photo.isEmpty()) {
             userDTO.setPhoto(Base64.getEncoder().encodeToString(photo.getBytes()));
@@ -140,7 +143,7 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
             User currentUser = authenticationHelper.tryGetCurrentUser(session);
             User user = modelMapper.dtoToObject(id, userDTO);
             userServices.update(user, currentUser);
-            if (currentUser.getPermission().isAdmin() && id != 1) {
+            if (request.getRequestURI().contains("permissions")) {
                 userServices.updatePermissions(user.getPermission(), currentUser);
             }
             return "redirect:/users/" + user.getId();
