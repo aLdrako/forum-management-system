@@ -11,7 +11,7 @@
 </form>
 
 <form th:fragment="comment-form-sort" action="/comments" th:action="${requestURI}" method="get">
-    <div class="input-group input-group-sm">
+    <div class="input-group input-group-sm" th:if="${!comments.isEmpty()}">
         <select class="form-select" id="inputGroupSort" name="sort">
             <option value="content">Content</option>
             <option value="postedOn">Post Title</option>
