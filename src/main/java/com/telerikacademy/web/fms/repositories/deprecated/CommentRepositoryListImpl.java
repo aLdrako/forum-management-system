@@ -35,7 +35,7 @@ public class CommentRepositoryListImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> getAll() {
+    public List<Comment> getAll(Map<String, String> parameters) {
         return new ArrayList<>(comments);
     }
 

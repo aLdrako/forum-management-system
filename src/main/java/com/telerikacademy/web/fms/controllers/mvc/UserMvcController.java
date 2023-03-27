@@ -5,10 +5,12 @@ import com.telerikacademy.web.fms.exceptions.EntityDuplicateException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
+import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
+import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +19,6 @@ import jakarta.validation.constraints.Size;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -34,11 +35,13 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserMvcController extends BaseMvcController implements HandlerExceptionResolver {
     private final UserServices userServices;
+    private final CommentServices commentServices;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
 
-    public UserMvcController(UserServices userServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper) {
+    public UserMvcController(UserServices userServices, CommentServices commentServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper) {
         this.userServices = userServices;
+        this.commentServices = commentServices;
         this.modelMapper = modelMapper;
         this.authenticationHelper = authenticationHelper;
     }
@@ -76,11 +79,12 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
     }
 
     @GetMapping("/{id}")
-    public String showUser(@PathVariable Long id, Model model, HttpSession session) {
+    public String showUser(@PathVariable Long id, @RequestParam(required=false) Map<String, String> parameters, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentUser(session);
             User user = userServices.getById(id);
-            model.addAttribute("comments", user.getComments());
+            List<Comment> commentsByUserId = commentServices.getCommentsByUserId(id, parameters);
+            model.addAttribute("comments", commentsByUserId);
             model.addAttribute("posts", user.getPosts());
             model.addAttribute("user", user);
             return "UserView";
@@ -92,7 +96,10 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
         }
     }
 
-    @GetMapping("{id}/update")
+    @GetMapping({
+            "{id}/update",
+            "{id}/update/photo"
+    })
     public String showUpdateUserPage(@PathVariable Long id, Model model, HttpSession session) {
 
         try {
@@ -110,14 +117,10 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
         }
     }
 
-//    @ExceptionHandler(MaxUploadSizeExceededException.class)
-//    public String handleMaxUploadSizeExceeded(MaxUploadSizeExceededException ex, Model model) {
-//        model.addAttribute("error", "Maximum file size exceeded. Please upload a file with size less than " + ex.getMaxUploadSize() + " bytes.");
-//        return "UserUpdateView";
-//    }
-
-
-    @PostMapping("{id}/update")
+    @PostMapping({
+            "{id}/update",
+            "{id}/update/photo"
+    })
     public String updateUser(@PathVariable Long id,
                              @Validated(UpdateValidationGroup.class) @ModelAttribute("user") UserDTO userDTO,
                              BindingResult bindingResult,
@@ -129,12 +132,15 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
             userDTO.setPhoto(Base64.getEncoder().encodeToString(photo.getBytes()));
         }
 
-        if (bindingResult.hasErrors() && photo == null) return "UserUpdateView";
+        if (bindingResult.hasErrors() && (photo == null || photo.isEmpty())) {
+            return "UserUpdateView";
+        }
 
         try {
             User currentUser = authenticationHelper.tryGetCurrentUser(session);
             User user = modelMapper.dtoToObject(id, userDTO);
             userServices.update(user, currentUser);
+            userServices.updatePermissions(user.getPermission(), currentUser);
             return "redirect:/users/" + user.getId();
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
@@ -173,7 +179,7 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
         ModelAndView modelAndView = new ModelAndView("AccessDeniedView");
         modelAndView.getModel().put("user", new UserDTO());
         if (ex instanceof MaxUploadSizeExceededException) {
-            modelAndView.getModel().put("error", "File size exceeds limit!");
+            modelAndView.getModel().put("error", "File size exceeds limit of 64KB!");
         }
         return modelAndView;
     }

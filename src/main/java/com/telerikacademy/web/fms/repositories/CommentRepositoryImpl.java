@@ -28,10 +28,17 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> getAll() {
+    public List<Comment> getAll(Map<String, String> parameters) {
         try (Session session = sessionFactory.openSession()) {
-            Query<Comment> query = session.createQuery("from Comment", Comment.class);
-            return query.list();
+            if (parameters.size() == 0) {
+                Query<Comment> query = session.createQuery("from Comment", Comment.class);
+                return query.list();
+            } else {
+                CriteriaBuilder builder = session.getCriteriaBuilder();
+                CriteriaQuery<Comment> criteriaQuery = builder.createQuery(Comment.class);
+                Root<Comment> root = criteriaQuery.from(Comment.class);
+                return getComments(parameters, session, builder, criteriaQuery, root);
+            }
         }
     }
 
@@ -137,7 +144,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     private static List<Comment> getComments(Map<String, String> parameters, Session session, CriteriaBuilder builder, CriteriaQuery<Comment> criteriaQuery, Root<Comment> commentRoot) {
         Map<String, String> params = extractSortOrder(parameters);
         Path<Object> commentFieldPath = commentRoot.get(params.get("sort"));
-        Order order = params.get("order").equals("asc") ? builder.asc(commentFieldPath) : builder.desc(commentFieldPath);
+        Order order = params.get("order").equalsIgnoreCase("desc") ? builder.desc(commentFieldPath) : builder.asc(commentFieldPath);
         criteriaQuery.orderBy(order);
         return session.createQuery(criteriaQuery).getResultList();
     }

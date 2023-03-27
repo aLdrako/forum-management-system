@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface CommentServices {
-    List<Comment> getAll();
+    List<Comment> getAll(Map<String, String> parameters);
     Comment getById(Long id);
     Comment create(Comment comment, User user);
     Comment update(Comment comment, User user);

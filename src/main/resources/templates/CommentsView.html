@@ -11,7 +11,9 @@
 
 <div class="container mx-auto my-5">
 
-  <table class="table table-bordered table-striped table-hover mt-5">
+  <form th:replace="~{/fragments/comment-form :: comment-form-sort}"></form>
+
+  <table class="table table-bordered table-striped table-hover mt-1">
     <thead>
     <tr>
       <th scope="col" class="text-center">ID</th>

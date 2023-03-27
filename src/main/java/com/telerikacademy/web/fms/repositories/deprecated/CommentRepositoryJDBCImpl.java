@@ -45,7 +45,7 @@ public class CommentRepositoryJDBCImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> getAll() {
+    public List<Comment> getAll(Map<String, String> parameters) {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();

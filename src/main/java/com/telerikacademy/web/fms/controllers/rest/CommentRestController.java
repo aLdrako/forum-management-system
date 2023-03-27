@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -34,8 +35,8 @@ public class CommentRestController {
     }
 
     @GetMapping
-    public List<CommentOutputDTO> getAll() {
-        return commentServices.getAll().stream().map(modelMapper::objectToDto).toList();
+    public List<CommentOutputDTO> getAll(@RequestParam Map<String, String> parameter) {
+        return commentServices.getAll(parameter).stream().map(modelMapper::objectToDto).toList();
     }
 
     @GetMapping("/{id}")

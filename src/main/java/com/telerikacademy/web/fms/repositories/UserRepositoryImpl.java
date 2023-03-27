@@ -51,27 +51,6 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-//    @Override
-//    public List<User> search(String parameter) {
-//        try (Session session = sessionFactory.openSession()) {
-//            String[] params = parameter.split("=");
-//            boolean hasParams = true;
-//            String searchParams = switch (params[0]) {
-//                case "email" -> "email = ?1";
-//                case "username" -> "username = ?1";
-//                case "firstName" -> "firstName = ?1";
-//                default -> { hasParams = false; yield ""; }
-//            };
-//            if (hasParams) {
-//                Query<User> query = session.createQuery("from User where " + searchParams, User.class);
-//                query.setParameter(1, params[1]);
-//                List<User> list = query.list();
-//                if (list.size() == 0) throw new EntityNotFoundException("User", params[0], params[1]);
-//                return list;
-//            } else return new ArrayList<>();
-//        }
-//    }
-
     @Override
     public List<User> search(String parameter) {
         try (Session session = sessionFactory.openSession()) {

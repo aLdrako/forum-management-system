@@ -9,3 +9,18 @@
             <button class="btn btn-success input-group-text" type="submit" name="action" value="save" style="width: 100px">Save</button>
     </div>
 </form>
+
+<form th:fragment="comment-form-sort" action="/comments" th:action="${requestURI}" method="get">
+    <div class="input-group input-group-sm">
+        <select class="form-select" id="inputGroupSort" name="sort">
+            <option value="content">Content</option>
+            <option value="postedOn">Post Title</option>
+            <option selected value="dateCreated">Date Created</option>
+        </select>
+        <select class="form-select" id="inputGroupOrder" name="order">
+            <option selected value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+        <button class="btn btn-primary" type="submit">Sort & Order</button>
+    </div>
+</form>

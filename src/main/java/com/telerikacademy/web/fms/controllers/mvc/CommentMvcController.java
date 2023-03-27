@@ -17,6 +17,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("/comments")
 public class CommentMvcController extends BaseMvcController {
@@ -31,12 +33,12 @@ public class CommentMvcController extends BaseMvcController {
     }
 
     @GetMapping
-    public String showAllComments(Model model, HttpSession session) {
+    public String showAllComments(@RequestParam(required=false) Map<String, String> parameters, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentAdmin(session);
-            model.addAttribute("comments", commentServices.getAll());
+            model.addAttribute("comments", commentServices.getAll(parameters));
             return "CommentsView";
-        }  catch (AuthorizationException e) {
+        } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         } catch (UnsupportedOperationException e) {
             model.addAttribute("error", e.getMessage());
@@ -61,7 +63,6 @@ public class CommentMvcController extends BaseMvcController {
 
     @GetMapping("{id}/update")
     public String showUpdateCommentPage(@PathVariable Long id, Model model, HttpSession session) {
-
         try {
             authenticationHelper.tryGetCurrentUser(session);
             Comment comment = commentServices.getById(id);
@@ -77,7 +78,6 @@ public class CommentMvcController extends BaseMvcController {
     }
 
     @PostMapping("{id}/update")
-    @ExceptionHandler(Exception.class)
     public String updateComment(@PathVariable Long id,
                                 @Validated(UpdateValidationGroup.class) @ModelAttribute("comment") CommentDTO commentDTO,
                                 BindingResult bindingResult,
@@ -104,7 +104,6 @@ public class CommentMvcController extends BaseMvcController {
 
     @GetMapping("{id}/delete")
     public String deleteComment(@PathVariable Long id, Model model, HttpSession session) {
-
         try {
             User currentUser = authenticationHelper.tryGetCurrentUser(session);
             commentServices.delete(id, currentUser);

@@ -37,6 +37,8 @@ public class ModelMapper {
         if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) user.setPassword(userDTO.getPassword());
         if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
         if (userDTO.getPhoto() != null) user.setPhoto(userDTO.getPhoto());
+        user.getPermission().setAdmin(userDTO.isAdmin());
+        user.getPermission().setBlocked(userDTO.isBlocked());
         return user;
     }
 
@@ -129,6 +131,8 @@ public class ModelMapper {
         userDTO.setPassword(user.getPassword());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setPhoto(user.getPhoto());
+        userDTO.setAdmin(user.getPermission().isAdmin());
+        userDTO.setBlocked(user.getPermission().isBlocked());
         return userDTO;
     }
 

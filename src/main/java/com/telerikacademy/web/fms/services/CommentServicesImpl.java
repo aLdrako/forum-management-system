@@ -29,8 +29,8 @@ public class CommentServicesImpl implements CommentServices {
     }
 
     @Override
-    public List<Comment> getAll() {
-        return commentRepository.getAll();
+    public List<Comment> getAll(Map<String, String> parameters) {
+        return commentRepository.getAll(parameters);
     }
 
     @Override
