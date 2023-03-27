@@ -140,7 +140,7 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
             User currentUser = authenticationHelper.tryGetCurrentUser(session);
             User user = modelMapper.dtoToObject(id, userDTO);
             userServices.update(user, currentUser);
-            if (currentUser.getPermission().isAdmin()) {
+            if (currentUser.getPermission().isAdmin() && id != 1) {
                 userServices.updatePermissions(user.getPermission(), currentUser);
             }
             return "redirect:/users/" + user.getId();
