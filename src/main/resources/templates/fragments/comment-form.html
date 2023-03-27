@@ -14,7 +14,7 @@
     <div class="input-group input-group-sm" th:if="${!comments.isEmpty()}">
         <select class="form-select" id="inputGroupSort" name="sort">
             <option value="content">Content</option>
-            <option value="postedOn">Post Title</option>
+            <option th:if="${!requestURI.contains('/posts')}" value="postedOn">Post Title</option>
             <option selected value="dateCreated">Date Created</option>
         </select>
         <select class="form-select" id="inputGroupOrder" name="order">
