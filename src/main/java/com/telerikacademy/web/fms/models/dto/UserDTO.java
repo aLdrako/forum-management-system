@@ -28,7 +28,6 @@ public class UserDTO {
     @Size(min = 7, max = 16, message = "Phone number should be between 7 and 16 symbols",
             groups = UpdateValidationGroup.class)
     private String phoneNumber;
-//    @PhotoConstraint(groups = UpdateValidationGroup.class)
     private String photo;
 
     public String getFirstName() {

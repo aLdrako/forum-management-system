@@ -36,7 +36,7 @@
             <td class="d-sm-none d-md-table-cell align-middle" th:if="${user.phoneNumber != null && user.phoneNumber != ''}" th:text="${user.phoneNumber}">123-456-7890</td>
             <td class="d-sm-none d-md-table-cell align-middle" th:if="${user.phoneNumber == null or user.phoneNumber == ''}">No Phone</td>
             <td class="text-center">
-                <img th:if="${user.photo}" class="img-fluid rounded" width="50px" alt="" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}" th:alt="${user.firstName}">
+                <img th:if="${user.photo}" class="img-fluid rounded" width="50px" alt="" src="../static/images/no-profile-picture.jpg" th:src="'data:image/jpeg;base64,' + ${user.photo}" th:alt="${user.username}">
                 <img th:unless="${user.photo}" class="img-fluid rounded" width="50px" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
             </td>
         </tr>
