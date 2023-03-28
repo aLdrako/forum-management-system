@@ -21,11 +21,15 @@
 
     <div class="row g-5">
         <div class="col-md-6">
-            <h6 class="display-6">Most Liked</h6>
+            <h6 class="display-6">Most Recent</h6>
             <hr class="pb-3">
-            <p>Ready to beyond the starter template? Check out these open source projects that you can quickly duplicate to a new GitHub repository.</p>
-            <div class="text-end">
-                <button class="btn btn-primary btn-sm">Continue reading</button>
+            <div class="card">
+                <div class="card-body" th:each="post : ${mostRecentPosts}">
+                    <h5 class="card-title"><a href="#" th:unless="${session.isAuthenticated}" th:href="@{/auth/login}" class="text-decoration-none" th:text="${post.getTitle()}">Post title</a></h5>
+                    <h5 class="card-title"><a href="#" th:if="${session.isAuthenticated}" th:href="@{/posts/{id}(id=${post.getId()})}" class="text-decoration-none" th:text="${post.getTitle()}">Post title</a></h5>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.getUserCreated().getUsername()}">Author</h6>
+                    <p class="card-text text-truncate" th:text="${post.getContent()}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
             </div>
         </div>
 
@@ -33,10 +37,11 @@
             <h6 class="display-6">Most Commented</h6>
             <hr class="pb-3">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="/" class="text-decoration-none">Post title</a></h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Author</h6>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <div class="card-body" th:each="post : ${mostCommentedPosts}">
+                    <h5 class="card-title"><a href="#" th:unless="${session.isAuthenticated}" th:href="@{/auth/login}" class="text-decoration-none" th:text="${post.getTitle()}">Post title</a></h5>
+                    <h5 class="card-title"><a href="#" th:if="${session.isAuthenticated}" th:href="@{/posts/{id}(id=${post.getId()})}" class="text-decoration-none" th:text="${post.getTitle()}">Post title</a></h5>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.getUserCreated().getUsername()}">Author</h6>
+                    <p class="card-text text-truncate" th:text="${post.getContent()}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                 </div>
             </div>
         </div>

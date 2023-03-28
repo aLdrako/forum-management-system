@@ -21,4 +21,9 @@ public interface PostServices {
     void updateTagsInPost(List<String> tags, Post post);
 
     List<Post> search(Optional<String> keyword);
+
+    List<Post> getMostCommented();
+
+    List<Post> getMostRecent();
+
 }

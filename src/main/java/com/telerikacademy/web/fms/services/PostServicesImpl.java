@@ -96,4 +96,14 @@ public class PostServicesImpl implements PostServices {
     public List<Post> search(Optional<String> keyword) {
         return postRepository.search(keyword);
     }
+
+    @Override
+    public List<Post> getMostCommented() {
+        return postRepository.getTopTenMostCommented();
+    }
+
+    @Override
+    public List<Post> getMostRecent() {
+        return postRepository.getTopTenMostRecent();
+    }
 }
