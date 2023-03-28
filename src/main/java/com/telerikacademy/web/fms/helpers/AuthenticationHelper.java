@@ -64,7 +64,7 @@ public class AuthenticationHelper {
         return userServices.search(USERNAME_PREFIX + currentUsername).get(0);
     }
 
-    public User tryGetCurrentAdmin(HttpSession session) {
+    public void tryGetCurrentAdmin(HttpSession session) {
         String currentUsername = (String) session.getAttribute("currentUser");
         if (currentUsername == null) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
@@ -73,7 +73,6 @@ public class AuthenticationHelper {
         if (!user.getPermission().isAdmin()) {
             throw new UnsupportedOperationException(INVALID_AUTHORIZATION_ERROR);
         }
-        return user;
     }
 
     public String[] validateHeaderValues(String headerValue) {

@@ -9,9 +9,10 @@
 <body class="users-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='users')}"></header>
 
-<div class="container mx-auto my-3">
+<div class="container mx-auto my-3"
+     th:with="postsPath=${requestURI.contains('/search')}">
 
-    <h6 class="display-6">All Users</h6>
+    <h6 class="display-6" th:text="${postsPath} ? 'Searching results for: ' + (${search}) : 'All Users'">All Users</h6>
 
     <table class="table table-bordered table-striped table-hover mt-1">
         <thead>
