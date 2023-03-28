@@ -1,40 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>All Posts</title>
+    <title th:text="#{navigation.posts}">Forum Management System</title>
     <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
-<body class="user-view d-flex flex-column min-vh-100">
-<header th:replace="~{fragments/navbar :: header(context='post-create')}"></header>
-<div th:if="${posts.isEmpty()}">
-    <h1 th:text="#{navigation.posts.empty}">No Posts</h1>
+
+<body class="users-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='posts')}"></header>
+<div class="container mx-auto my-5">
+    <form action="#" th:action="@{/posts}" method="get" th:object="${filterPostOptions}">
+        <input type="text" placeholder="Post title" th:field="*{title}" />
+        <input type="text" placeholder="Post content" th:field="*{content}"/>
+        <input type="text" placeholder="Tag" th:field="*{tag}"/>
+        <select th:field="*{sort}">
+            <option value="">-</option>
+            <option value="title">Title</option>
+            <option value="likes">Likes</option>
+            <option value="datecreated">Date Created</option>
+        </select>
+        <select th:field="*{order}">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+        <br/><br/>
+        <input type="submit" value="Filter"/>
+    </form>
+    <table th:replace="~{fragments/posts-view :: posts-view}"></table>
 </div>
-<div class="container mt-5" th:unless="${posts.isEmpty()}">
-    <h1>Browse All Posts</h1>
-    <div class="container mt-5 posts-table">
-        <div class="posts-header">
-            <div class="posts-cell" th:text="#{post.label.id}">Id</div>
-            <div class="posts-cell" th:text="#{post.label.title}">Title</div>
-            <div class="posts-cell" th:text="#{post.label.content}">Content</div>
-            <div class="posts-cell" th:text="#{post.label.creator}">Creator</div>
-            <div class="posts-cell" th:text="#{post.label.likes}">Likes</div>
-        </div>
-        <div class="posts-row" th:each="post : ${posts}">
-            <div class="posts-cell">
-                <a href="#" th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getId()}">1</a>
-            </div>
-            <div class="posts-cell" th:text="${post.getTitle()}">This is a title</div>
-            <div class="posts-cell" th:text="${post.getContent()}">This is the content</div>
-            <div class="posts-cell">
-                <a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
-                   th:text="${post.getUserCreated().getUsername()}">pesho123</a>
-            </div>
-            <div class="posts-cell" th:text="${post.getLikes().size()}">45</div>
-            <hr>
-        </div>
-    </div>
-</div>
+
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>

@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.telerikacademy.web.fms.helpers.Helpers.*;
@@ -76,17 +77,14 @@ public class PostServicesImplTests {
     @Test
     public void getAll_Should_CallRepository() {
         // Arrange
-        Mockito.when(mockPostRepository.getAll(Optional.empty(), Optional.empty(),
-                        Optional.empty(), Optional.empty(), Optional.empty()))
+        Mockito.when(mockPostRepository.getAll(Map.of()))
                 .thenReturn(null);
 
         // Act
-        services.getAll(Optional.empty(), Optional.empty(),
-                Optional.empty(), Optional.empty(), Optional.empty());
+        services.getAll(Map.of());
         // Assert
         Mockito.verify(mockPostRepository, times(1))
-                .getAll(Optional.empty(), Optional.empty(),
-                        Optional.empty(), Optional.empty(), Optional.empty());
+                .getAll(Map.of());
     }
 
     @Test

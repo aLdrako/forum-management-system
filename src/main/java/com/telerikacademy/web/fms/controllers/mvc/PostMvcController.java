@@ -23,13 +23,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.DecimalFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.dateTimeFormatter;
 
 @Controller
 @RequestMapping("/posts")
@@ -51,6 +47,23 @@ public class PostMvcController extends BaseMvcController {
     @ModelAttribute("users")
     public List<User> populateUsers() {
         return userServices.getAll();
+    }
+
+    @GetMapping ("/search")
+    public String search(@RequestParam(required = false) Optional<String> search,
+                         Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetCurrentUser(session);
+            List<Post> posts = postServices.search(search);
+            model.addAttribute("posts", posts);
+            model.addAttribute("search", search.orElse(""));
+            return "PostsResultSearch";
+        } catch (AuthorizationException e)  {
+            return "redirect:/auth/login";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
     }
 
     @GetMapping("/new")
@@ -167,6 +180,7 @@ public class PostMvcController extends BaseMvcController {
             return "AccessDeniedView";
         }
     }
+
     @GetMapping
     public String showAllPosts(@ModelAttribute("filterPostOptions") FilterPostsDto filterDto, Model model,
                                HttpSession session) {
@@ -176,7 +190,8 @@ public class PostMvcController extends BaseMvcController {
             return "redirect:/auth/login";
         }
         model.addAttribute("posts", postServices.getAll(modelMapper.dtoToMap(filterDto)));
-        return "PostsViewNewNew";
+
+        return "PostsView";
     }
     @GetMapping("/{id}")
     public String showSinglePost(@PathVariable Long id, @RequestParam(required=false) Map<String, String> parameters, Model model, HttpSession session) {
@@ -186,7 +201,7 @@ public class PostMvcController extends BaseMvcController {
             List<Comment> commentsByPostId = commentServices.getCommentsByPostId(id, parameters);
             model.addAttribute("comments", commentsByPostId);
             model.addAttribute("post", post);
-            return "PostViewNew";
+            return "PostView";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
