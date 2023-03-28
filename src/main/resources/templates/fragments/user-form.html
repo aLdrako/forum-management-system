@@ -11,7 +11,7 @@
     <h1 class="h3 mb-3 fw-normal" th:if="${ctxRegister}" th:text="#{user-form.register}">Register</h1>
     <h1 class="h3 mb-3 fw-normal" th:if="${ctxUpdate && !photoPath && !permissionsPath}" th:text="#{user-form.update}">Update</h1>
     <h1 class="h3 mb-3 fw-normal" th:if="${photoPath}" th:text="#{user-form.photo}">Photo</h1>
-    <h1 class="h3 mb-3 fw-normal" th:if="${permissionsPath}" th:text="#{user-form.permissions}">Photo</h1>
+    <h1 class="h3 mb-3 fw-normal" th:if="${permissionsPath}" th:text="#{user-form.permissions}">Permissions</h1>
 
     <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !photoPath && !permissionsPath}">
         <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="firstName" th:errorclass="is-invalid" th:field="*{firstName}" />
@@ -40,7 +40,7 @@
     </div>
     <div class="form-floating" th:if="${!photoPath && !permissionsPath}">
         <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" th:errorclass="is-invalid" th:field="*{password}">
-        <label for="floatingPassword" th:text="${context == 'user-update' ? 'Password (optional)' : 'Password'}">Password</label>
+        <label for="floatingPassword" th:text="${ctxUpdate ? 'Password (optional)' : 'Password'}">Password</label>
         <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>
     </div>
     <div class="mb-3" th:if="${photoPath}">

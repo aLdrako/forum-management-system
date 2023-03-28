@@ -6,7 +6,12 @@
     <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
-<body class="user-view d-flex flex-column min-vh-100">
+<body class="user-view d-flex flex-column min-vh-100"
+      th:with="permissionPath=${requestURI + '/update/permissions'},
+               photoPath=${requestURI + '/update/photo'},
+               updatePath=${requestURI + '/update'},
+               deletePath=${requestURI + '/delete'}">
+
 <header th:replace="~{fragments/navbar :: header(context='user-profile')}"></header>
 
 <div class="container mt-5">
@@ -39,9 +44,9 @@
           </div>
         </div>
         <div th:if="${session.isAuthenticated && (session.isAdmin || requestURI.endsWith(session.userId))}" class="card-footer text-center text-dark bg-light">
-          <a th:if="${session.isAdmin}" href="#" class="btn btn-success" th:href="@{${requestURI} + '/update/permissions'}"><i class="bi bi-toggles" title="Update permissions"></i></a>
-          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update/photo'}"><i class="bi bi-person-workspace" title="Upload photo"></i></a>
-          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-person-lines-fill" title="Update settings"></i></a>
+          <a th:if="${session.isAdmin}" href="#" class="btn btn-success" th:href="@{${permissionPath}}"><i class="bi bi-toggles" title="Update permissions"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${photoPath}}"><i class="bi bi-person-workspace" title="Upload photo"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${updatePath}}"><i class="bi bi-person-lines-fill" title="Update settings"></i></a>
           <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="bi bi-person-fill-slash" title="Delete account"></i></a>
         </div>
       </div>
@@ -126,7 +131,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <a href="#" th:href="@{${requestURI} + '/delete'}" class="btn btn-danger">Delete</a>
+        <a href="#" th:href="@{${deletePath}}" class="btn btn-danger">Delete</a>
       </div>
     </div>
   </div>

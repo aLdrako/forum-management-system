@@ -129,7 +129,7 @@ public class UserRepositoryImpl implements UserRepository {
             permission.setDeleted(true);
             session.merge(permission);
             User user = session.get(User.class, id);
-            user.setUsername(generateString());
+            user.setUsername("deleted_" + generateString());
             user.setPassword(generateString());
             user.setFirstName(generateString());
             user.setLastName(generateString());

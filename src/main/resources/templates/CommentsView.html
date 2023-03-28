@@ -29,26 +29,38 @@
     <tr th:if="${comments.isEmpty()}">
       <td colspan="7" class="text-center">No Comments</td>
     </tr>
-    <tr th:each="comment : ${comments}">
+    <tr th:each="comment : ${comments}"
+        th:with="isDeleted=${comment.createdBy.username.contains('deleted_')}">
+
       <th scope="row" class="text-center align-middle"><a href="#" th:href="@{/comments/{id}(id=${comment.id})}"><i class="bi bi-chat-left-text" style="font-size: 2rem;"></i></a></th>
       <td class="align-middle" th:text="${comment.content}">Some text (design!)</td>
-      <td class="align-middle"><a href="#" th:href="@{/users/{id}(id=${comment.createdBy.id})}" th:text="${comment.createdBy.username}">Username (design!)</a></td>
+      <td class="align-middle">
+        <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${comment.createdBy.id})}" th:text="${comment.createdBy.username}">Username (design!)</a>
+        <a th:if="${isDeleted}" th:text="anonymous">Username (design!)</a>
+      </td>
       <td class="align-middle"><a href="#" th:href="@{/posts/{id}(id=${comment.postedOn.id})}" th:text="${comment.postedOn.id}">1 (design!)</a></td>
       <td class="d-sm-none d-md-table-cell align-middle" th:text="${comment.dateCreated}">Created (design!)</td>
     </tr>
     </tbody>
   </table>
 
-  <nav aria-label="Page navigation" th:if="${totalPages > 0}">
+  <nav aria-label="Page navigation"
+       th:if="${totalPages > 0}"
+       th:with="pageQuery=${'?page='},
+                sizeQuery=${'&size='},
+                sortQuery=${'&sort='},
+                orderQuery=${'&order='},
+                linkQuery=${sizeQuery + sizePage + sortQuery + sort + orderQuery + order}">
+
     <ul class="pagination justify-content-center">
       <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
-        <a class="page-link" th:href="@{${'/comments?page=' + (currentPage - 1) + '&size=' + sizePage + '&sort=' + sort + '&order=' + order}}">Previous</a>
+        <a class="page-link" th:href="@{${pageQuery + (currentPage - 1) + linkQuery}}">Previous</a>
       </li>
       <li th:each="page : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
-        <a class="page-link" th:href="@{${'/comments?page=' + page + '&size=' + sizePage + '&sort=' + sort + '&order=' + order}}" th:text="${page + 1}" th:classappend="${currentPage == page} ? 'active'"></a>
+        <a class="page-link" th:href="@{${pageQuery + page + linkQuery}}" th:text="${page + 1}" th:classappend="${currentPage == page} ? 'active'"></a>
       </li>
       <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
-        <a class="page-link" th:href="@{${'/comments?page=' + (currentPage + 1) + '&size=' + sizePage + '&sort=' + sort + '&order=' + order}}">Next</a>
+        <a class="page-link" th:href="@{${pageQuery + (currentPage + 1) + linkQuery}}">Next</a>
       </li>
     </ul>
   </nav>
