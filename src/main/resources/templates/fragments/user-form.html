@@ -1,45 +1,72 @@
-<!--<form th:fragment="user-form" role="form" action="#" th:action="${requestURI}" th:object="${user}" th:enctype="${requestURI.endsWith('/update/photo') ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}" method="post">-->
-<form th:fragment="user-form" role="form" action="#" th:action="${requestURI}" th:object="${user}" enctype="multipart/form-data" method="post">
-    <h1 class="h3 mb-3 fw-normal" th:if="${context == 'login'}" th:text="#{user-form.login}">Login</h1>
-    <h1 class="h3 mb-3 fw-normal" th:if="${context == 'register'}" th:text="#{user-form.register}">Register</h1>
-    <h1 class="h3 mb-3 fw-normal" th:if="${context == 'user-update'}" th:text="#{user-form.update}">Update</h1>
+<form role="form" action="#" method="post"
+        th:fragment="user-form" th:action="${requestURI}" th:object="${user}"
+        th:enctype="${photoPath ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}"
+        th:with="photoPath=${requestURI.endsWith('/photo')},
+                 permissionsPath=${requestURI.endsWith('/permissions')},
+                 ctxRegister=${context == 'register'},
+                 ctxUpdate=${context == 'user-update'},
+                 ctxLogin=${context == 'login'}">
 
-    <div class="form-floating" th:if="${(context == 'register' || context == 'user-update')}">
+    <h1 class="h3 mb-3 fw-normal" th:if="${ctxLogin}" th:text="#{user-form.login}">Login</h1>
+    <h1 class="h3 mb-3 fw-normal" th:if="${ctxRegister}" th:text="#{user-form.register}">Register</h1>
+    <h1 class="h3 mb-3 fw-normal" th:if="${ctxUpdate && !photoPath && !permissionsPath}" th:text="#{user-form.update}">Update</h1>
+    <h1 class="h3 mb-3 fw-normal" th:if="${photoPath}" th:text="#{user-form.photo}">Photo</h1>
+    <h1 class="h3 mb-3 fw-normal" th:if="${permissionsPath}" th:text="#{user-form.permissions}">Photo</h1>
+
+    <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !photoPath && !permissionsPath}">
         <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="firstName" th:errorclass="is-invalid" th:field="*{firstName}" />
         <label class="form-label" for="floatingFirstName">First Name</label>
         <div id="validationFirstName" class="invalid-feedback" th:errors="*{firstName}">Error placeholder</div>
     </div>
-    <div class="form-floating" th:if="${(context == 'register' || context == 'user-update')}">
+    <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !photoPath && !permissionsPath}">
         <input type="text" class="form-control" id="floatingLastName" placeholder="Last Name" name="lastName" th:errorclass="is-invalid" th:field="*{lastName}">
         <label for="floatingLastName">Last Name</label>
         <div id="validationLastName" class="invalid-feedback" th:errors="*{lastName}">Error placeholder</div>
     </div>
-    <div class="form-floating" th:if="${(context == 'register' || context == 'user-update')}">
+    <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !photoPath && !permissionsPath}">
         <input type="email" class="form-control" id="floatingEmail" placeholder="Email" name="email" th:errorclass="is-invalid" th:field="*{email}">
         <label for="floatingEmail">Email</label>
         <div id="validationEmail" class="invalid-feedback" th:errors="*{email}">Error placeholder</div>
     </div>
-    <div class="form-floating" th:if="${context == 'register' || context == 'login'}">
+    <div class="form-floating" th:if="${ctxRegister || ctxLogin}">
         <input type="text" class="form-control" id="floatingUsername" placeholder="Username" name="username" th:errorclass="is-invalid" th:field="*{username}">
         <label for="floatingUsername">Username</label>
         <div id="validationUsername" class="invalid-feedback" th:errors="*{username}">Error placeholder</div>
     </div>
-    <div class="form-floating" th:if="${context == 'user-update' && session.isAdmin && session.updatedUserIsAdmin}">
+    <div class="form-floating" th:if="${ctxUpdate && session.isAdmin && session.updatedUserIsAdmin && !photoPath && !permissionsPath}">
         <input type="tel" class="form-control" id="floatingPhone" placeholder="Phone" name="phone" th:errorclass="is-invalid" th:field="*{phoneNumber}">
         <label for="floatingPhone">Phone</label>
         <div id="validationPhone" class="invalid-feedback" th:errors="*{phoneNumber}">Error placeholder</div>
     </div>
-    <div class="form-floating">
+    <div class="form-floating" th:if="${!photoPath && !permissionsPath}">
         <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" th:errorclass="is-invalid" th:field="*{password}">
         <label for="floatingPassword" th:text="${context == 'user-update' ? 'Password (optional)' : 'Password'}">Password</label>
         <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>
     </div>
-    <div class="mb-3" th:if="${context == 'user-update'}">
+    <div class="mb-3" th:if="${photoPath}">
         <label for="floatingPhoto" class="form-label"></label>
         <input class="form-control" id="floatingPhoto" name="photo" type="file" th:errorclass="is-invalid" th:field="*{photo}">
         <div id="validationPhoto" class="invalid-feedback" th:errors="*{photo}">Error placeholder</div>
     </div>
-    <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="login" th:if="${context == 'login'}">Login</button>
-    <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="register" th:if="${context == 'register'}">Register</button>
-    <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="update" th:if="${context == 'user-update'}">Update</button>
+
+    <div class="list-group list-group-checkable d-grid gap-1 border-0 w-auto my-1" th:if="${permissionsPath && session.isAdmin}">
+        <div>
+        <input class="list-group-item-check pe-none" type="checkbox" id="listGroupCheckableAdmin" th:checked="*{admin}" th:field="*{admin}">
+        <label class="list-group-item rounded-3 py-3 admin-item" for="listGroupCheckableAdmin">
+            Admin
+            <span class="d-block small opacity-50">Grants admin rights</span>
+        </label>
+        </div>
+        <div>
+        <input class="list-group-item-check pe-none" type="checkbox" id="listGroupCheckableBlocked" th:checked="*{blocked}" th:field="*{blocked}">
+        <label class="list-group-item rounded-3 py-3 blocked-item" for="listGroupCheckableBlocked">
+            Blocked
+            <span class="d-block small opacity-50">Restrict user actions</span>
+        </label>
+        </div>
+    </div>
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="login" th:if="${ctxLogin}">Login</button>
+    <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="register" th:if="${ctxRegister}">Register</button>
+    <button class="w-100 btn btn-lg btn-primary" type="submit" name="action" value="update" th:if="${ctxUpdate}">Update</button>
 </form>

@@ -231,7 +231,6 @@ public class UserRepositoryJDBCImpl implements UserRepository {
 
     private static void photoStatement(PreparedStatement statementPhoto, User user) throws SQLException {
         statementPhoto.setString(1, user.getPhoto());
-//        statementPhoto.setBytes(1, user.getPhoto());
         statementPhoto.setLong(2, user.getId());
     }
 
@@ -253,7 +252,6 @@ public class UserRepositoryJDBCImpl implements UserRepository {
             user.setJoiningDate(usersData.getTimestamp("join_date").toLocalDateTime());
             user.setPhoneNumber(usersData.getString("phone_number"));
             user.setPhoto(usersData.getString("photo"));
-//            user.setPhoto(usersData.getBytes("photo"));
             user.setPermission(getPermissionById(usersData.getLong("id")));
             users.add(user);
         }

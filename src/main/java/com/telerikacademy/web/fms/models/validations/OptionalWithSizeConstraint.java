@@ -10,9 +10,9 @@ import java.lang.annotation.RetentionPolicy;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = PasswordConstraintValidator.class)
-public @interface PasswordConstraint {
-    String message() default "Password should be between {min} and {max} symbols";
+@Constraint(validatedBy = OptionalWithSizeConstraintValidator.class)
+public @interface OptionalWithSizeConstraint {
+    String message() default "String should be between {min} and {max} symbols";
     int min() default 0;
     int max() default Integer.MAX_VALUE;
     Class<?>[] groups() default {};

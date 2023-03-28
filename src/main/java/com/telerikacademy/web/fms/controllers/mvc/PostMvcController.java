@@ -179,10 +179,12 @@ public class PostMvcController extends BaseMvcController {
         return "PostsViewNewNew";
     }
     @GetMapping("/{id}")
-    public String showSinglePost(@PathVariable Long id, Model model, HttpSession session) {
+    public String showSinglePost(@PathVariable Long id, @RequestParam(required=false) Map<String, String> parameters, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentUser(session);
             Post post = postServices.getById(id);
+            List<Comment> commentsByPostId = commentServices.getCommentsByPostId(id, parameters);
+            model.addAttribute("comments", commentsByPostId);
             model.addAttribute("post", post);
             return "PostViewNew";
         } catch (EntityNotFoundException e) {

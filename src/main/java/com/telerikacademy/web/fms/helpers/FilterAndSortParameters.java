@@ -21,15 +21,16 @@ public class FilterAndSortParameters {
      * @param parameters sort and order params
      * @return Map containing sort/order key-values
      */
-    public static Map<String, String> extractSortOrder(Map<String, String> parameters) {
+    public static Map<String, String> extractSortOrderComments(Map<String, String> parameters) {
         AtomicReference<String> sort = new AtomicReference<>("id");
         AtomicReference<String> order = new AtomicReference<>("asc");
         parameters.forEach((key, value) -> {
-            if (key.contains("sort")) sort.set(value);
-            if (key.contains("order")) order.set(value);
+            if (key.contains("sort") && (value.equalsIgnoreCase("content") || value.equalsIgnoreCase("postedOn") || value.equalsIgnoreCase("dateCreated"))) sort.set(value);
+            if (key.contains("order") && (value.equalsIgnoreCase("asc") || value.equalsIgnoreCase("desc"))) order.set(value);
         });
         return Map.of("sort", sort.get(), "order", order.get());
     }
+
     public static Map<String, String> extractSortOrderPosts(Map<String, String> parameters) {
         AtomicReference<String> sort = new AtomicReference<>("id");
         AtomicReference<String> order = new AtomicReference<>("asc");

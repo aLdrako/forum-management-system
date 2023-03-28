@@ -39,8 +39,10 @@
           </div>
         </div>
         <div th:if="${session.isAuthenticated && (session.isAdmin || requestURI.endsWith(session.userId))}" class="card-footer text-center text-dark bg-light">
-          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-sliders" title="Update settings"></i></a>
-          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="bi bi-person-x-fill" title="Delete account"></i></a>
+          <a th:if="${session.isAdmin}" href="#" class="btn btn-success" th:href="@{${requestURI} + '/update/permissions'}"><i class="bi bi-toggles" title="Update permissions"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update/photo'}"><i class="bi bi-person-workspace" title="Upload photo"></i></a>
+          <a href="#" class="btn btn-warning" th:href="@{${requestURI} + '/update'}"><i class="bi bi-person-lines-fill" title="Update settings"></i></a>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="bi bi-person-fill-slash" title="Delete account"></i></a>
         </div>
       </div>
     </div>
@@ -82,7 +84,8 @@
         </div>
 
         <div class="tab-pane fade" id="comments-tab-pane" role="tabpanel" aria-labelledby="comments-tab" tabindex="0">
-          <div class="list-group w-auto">
+          <form th:replace="~{/fragments/comment-form :: comment-form-sort}"></form>
+          <div class="list-group w-auto mt-1">
             <th:block th:if="${comments.isEmpty()}">
               <div class="d-flex gap-2 w-100 justify-content-center">
                 <div>
@@ -98,7 +101,7 @@
                     <h6 class="mb-0" th:text="${comment.postedOn.title}">Title (design!)</h6>
                     <p class="mb-0 opacity-75" th:text="${comment.content}">Body (design!)</p>
                   </div>
-                  <small class="opacity-50 text-nowrap" th:text="${comment.dateCreated}">Created (design!)</small>
+                  <small class="opacity-50 text-nowrap" th:text="${comment.dateCreated}">Created Date (design!)</small>
                 </div>
               </a>
             </th:block>

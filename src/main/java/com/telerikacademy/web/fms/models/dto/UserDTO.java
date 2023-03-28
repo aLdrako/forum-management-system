@@ -16,19 +16,23 @@ public class UserDTO {
     @Email(message = "Email has invalid format",
             groups = {UpdateValidationGroup.class, CreateValidationGroup.class})
     private String email;
-    @NotEmpty(message = "Username can't be empty", groups = {CreateValidationGroup.class, LoginValidationGroup.class})
+    @NotEmpty(message = "Username can't be empty",
+            groups = {CreateValidationGroup.class, LoginValidationGroup.class})
     @Size(min = 4, max = 16, message = "Username should be between 4 and 16 symbols",
             groups = {UpdateValidationGroup.class, CreateValidationGroup.class, LoginValidationGroup.class})
     @Null(message = "Username can't be changed",
             groups = UpdateValidationGroup.class)
     private String username;
-    @NotEmpty (message = "Password can't be empty", groups = {CreateValidationGroup.class, LoginValidationGroup.class})
-    @PasswordConstraint(min = 5, max = 20, groups = {UpdateValidationGroup.class, CreateValidationGroup.class, LoginValidationGroup.class})
+    @NotEmpty (message = "Password can't be empty",
+            groups = {CreateValidationGroup.class, LoginValidationGroup.class})
+    @OptionalWithSizeConstraint(min = 5, max = 20,
+            groups = {UpdateValidationGroup.class, CreateValidationGroup.class, LoginValidationGroup.class})
     private String password;
-    @Size(min = 7, max = 16, message = "Phone number should be between 7 and 16 symbols",
-            groups = UpdateValidationGroup.class)
+    @OptionalWithSizeConstraint(min = 7, max = 16, groups = UpdateValidationGroup.class)
     private String phoneNumber;
     private String photo;
+    private boolean isAdmin;
+    private boolean isBlocked;
 
     public String getFirstName() {
         return firstName;
@@ -84,5 +88,21 @@ public class UserDTO {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
     }
 }

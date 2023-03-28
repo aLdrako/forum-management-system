@@ -9,7 +9,7 @@ body {
     /*align-items: center;*/
 }
 
-.form-signin {
+.form-signin, .form-update {
     width: 100%;
     max-width: 330px;
     padding: 10% 15px 15px;
@@ -20,28 +20,56 @@ body {
     font-weight: 400;
 }
 
-.form-signin .form-floating:focus-within {
+.form-signin .form-floating:focus-within,
+.form-update .form-floating:focus-within{
     z-index: 2;
 }
 
-.form-signin div.form-floating:first-of-type > input {
+.form-signin div.form-floating:first-of-type > input,
+.form-update div.form-floating:first-of-type > input {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
     margin-bottom: -1px;
 }
 
-.form-signin div.form-floating:last-of-type > input {
+.form-signin div.form-floating:last-of-type > input,
+.form-update div.form-floating:last-of-type > input {
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     margin-bottom: 10px;
 }
 
-.form-signin div.form-floating:not(:first-of-type):not(:last-of-type) > input {
+.form-signin div.form-floating:not(:first-of-type):not(:last-of-type) > input,
+.form-update div.form-floating:not(:first-of-type):not(:last-of-type) > input {
     border-radius: 0;
 }
 
-.form-signin input[type="submit"] {
+.form-signin input[type="submit"],
+.form-update input[type="submit"] {
     margin-top: 10px;
+}
+
+.form-update .list-group-checkable .list-group-item {
+    cursor: pointer;
+}
+
+.form-update .list-group-item-check {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+}
+
+.form-update .list-group-item-check:hover ~ .list-group-item {
+    background-color: var(--bs-light);
+}
+
+.form-update .list-group-item-check:checked ~ .list-group-item.admin-item {
+    color: #fff;
+    background-color: var(--bs-success);
+}
+
+.form-update .list-group-item-check:checked ~ .list-group-item.blocked-item {
+    color: #fff;
+    background-color: var(--bs-danger);
 }
 
 /*ERROR PAGE*/
@@ -116,7 +144,7 @@ body {
     width: 100%;
 }
 .blog-post {
-    margin-bottom: 4rem;
+    margin-bottom: 1rem;
     word-wrap: break-word;
 }
 .blog-post-title {
