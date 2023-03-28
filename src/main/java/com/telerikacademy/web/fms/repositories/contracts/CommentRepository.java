@@ -1,12 +1,15 @@
 package com.telerikacademy.web.fms.repositories.contracts;
 
 import com.telerikacademy.web.fms.models.Comment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 
 public interface CommentRepository {
     List<Comment> getAll(Map<String, String> parameters);
+    Page<Comment> findAll(Map<String, String> parameters, Pageable pageable);
     Comment getById(Long id);
     Comment create(Comment comment);
     Comment update(Comment comment);

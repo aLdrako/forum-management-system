@@ -11,6 +11,9 @@ import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,7 +39,23 @@ public class CommentMvcController extends BaseMvcController {
     public String showAllComments(@RequestParam(required=false) Map<String, String> parameters, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentAdmin(session);
-            model.addAttribute("comments", commentServices.getAll(parameters));
+
+            int page = Integer.parseInt(parameters.getOrDefault("page", "0"));
+            int size = Integer.parseInt(parameters.getOrDefault("size", "10"));
+            String sort = parameters.getOrDefault("sort", "dateCreated");
+            String order = parameters.getOrDefault("order", "asc");
+
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Comment> commentPage = commentServices.findAll(parameters, pageable);
+
+            model.addAttribute("comments", commentPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("sizePage", size);
+            model.addAttribute("totalPages", commentPage.getTotalPages());
+            model.addAttribute("sort", sort);
+            model.addAttribute("order", order);
+
+//            model.addAttribute("comments", commentServices.getAll(parameters));
             return "CommentsView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";

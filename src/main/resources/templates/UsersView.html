@@ -46,7 +46,7 @@
     </table>
 
     <nav aria-label="Page navigation" th:if="${totalPages > 0}">
-        <ul class="pagination">
+        <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
                 <a class="page-link" th:href="@{${'/users?page=' + (currentPage - 1) + '&size=' + sizePage}}">Previous</a>
             </li>
@@ -58,6 +58,7 @@
             </li>
         </ul>
     </nav>
+
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
