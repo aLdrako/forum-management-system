@@ -23,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -50,11 +51,6 @@ public class PostMvcController extends BaseMvcController {
     @ModelAttribute("users")
     public List<User> populateUsers() {
         return userServices.getAll();
-    }
-
-    @ModelAttribute("formatter")
-    public DateTimeFormatter formatter() {
-        return dateTimeFormatter;
     }
 
     @GetMapping("/new")

@@ -27,12 +27,23 @@
         <section>
             <a class="btn" th:classappend="${session.isAuthenticated && post.getLikes().contains(session.user)} ? 'btn-danger bi bi-heart' : 'btn-light bi bi-heart'"
                th:href="@{/posts/{id}/like(id=${post.getId()})}">
+                <span th:if="${post.getLikes().contains(session.user)}"
+                      th:text="${#numbers.formatInteger(post.getLikes().size(), 1, 'COMMA')}"></span>
             </a>
             <a class="btn" th:classappend="${session.isAuthenticated} ? 'btn-primary bi bi-reply-fill'"
                th:href="@{/posts/{id}/reply(id=${post.getId()})}">
             </a>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Tags
+            </button>
+            <div class="collapse" id="collapseExample">&nbsp
+                <ul class="list-group list-group-horizontal d-flex flex-wrap">
+                    <li class="list-group-item" th:each="tag : ${post.getTags()}" th:text="${tag.getName()}"></li>
+                </ul>
+            </div>
+            <hr>
         </section>
-        <hr>
+
     </article>
     <div class="row justify-content-center mt-2">
         <div class="col-lg-10">
@@ -110,7 +121,6 @@
         </div>
     </div>
 </div>
-
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>
 </body>
