@@ -4,21 +4,21 @@
 <!--Script for Error Page Animation-->
 <script th:fragment="error-page">
     document.body.addEventListener('mousemove', function(event) {
-        var eyes = document.querySelectorAll('.eye');
+        const eyes = document.querySelectorAll('.eye');
         eyes.forEach(function(eye) {
-            var x = (eye.offsetLeft) + (eye.offsetWidth / 2);
-            var y = (eye.offsetTop) + (eye.offsetHeight / 2);
-            var rad = Math.atan2(event.pageX - x, event.pageY - y);
-            var rot = (rad * (180 / Math.PI) * -1) + 180;
+            const x = (eye.offsetLeft) + (eye.offsetWidth / 2);
+            const y = (eye.offsetTop) + (eye.offsetHeight / 2);
+            const rad = Math.atan2(event.pageX - x, event.pageY - y);
+            const rot = (rad * (180 / Math.PI) * -1) + 180;
             eye.style.transform = 'rotate(' + rot + 'deg)';
         });
     });
 </script>
 
+<!--Script for Users and Posts global search-->
 <script th:fragment="search-global">
     function updateAction(selectElement) {
-        var formElement = selectElement.form;
-        var action = selectElement.value === 'users' ? formElement.getAttribute('data-action-users') : formElement.getAttribute('data-action-posts');
-        formElement.action = action;
+        const formElement = selectElement.form;
+        formElement.action = selectElement.value === 'users' ? formElement.getAttribute('data-action-users') : formElement.getAttribute('data-action-posts');
     }
 </script>

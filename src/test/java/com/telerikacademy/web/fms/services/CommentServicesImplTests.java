@@ -37,13 +37,13 @@ public class CommentServicesImplTests {
     @Test
     public void getAll_Should_CallRepository() {
         // Arrange
-        when(mockCommentRepository.getAll()).thenReturn(null);
+        when(mockCommentRepository.getAll(Map.of())).thenReturn(null);
 
         // Act
-        commentServices.getAll();
+        commentServices.getAll(Map.of());
 
         // Assert
-        verify(mockCommentRepository).getAll();
+        verify(mockCommentRepository).getAll(Map.of());
     }
 
     @Test
