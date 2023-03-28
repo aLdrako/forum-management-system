@@ -15,7 +15,9 @@ import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.constraints.Size;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,10 +49,20 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
     }
 
     @GetMapping
-    public String showAllUsers(Model model, HttpSession session) {
+    public String showAllUsers(@RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "10") int size,
+                               Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentAdmin(session);
-            model.addAttribute("users", userServices.getAll());
+
+            Pageable pageable = PageRequest.of(page, size);
+            Page<User> userPage = userServices.findAll(pageable);
+
+            model.addAttribute("users", userPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("sizePage", size);
+            model.addAttribute("totalPages", userPage.getTotalPages());
+//            model.addAttribute("users", userServices.getAll());
             return "UsersView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";

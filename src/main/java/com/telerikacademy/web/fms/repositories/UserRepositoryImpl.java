@@ -4,6 +4,7 @@ import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.models.Permission;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -12,6 +13,9 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -30,13 +34,32 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         try (Session session = sessionFactory.openSession()) {
-            CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<User> query = builder.createQuery(User.class);
-            Root<User> root = query.from(User.class);
-            Join<User, Permission> permissionJoin = root.join("permission");
-            query.select(root).where(builder.equal(permissionJoin.get("isDeleted"), false));
+            CriteriaQuery<User> query = getUserCriteriaQuery(session);
             return session.createQuery(query).getResultList();
         }
+    }
+
+    @Override
+    public Page<User> findAll(Pageable pageable) {
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaQuery<User> query = getUserCriteriaQuery(session);
+
+            TypedQuery<User> typedQuery = session.createQuery(query);
+            typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+            typedQuery.setMaxResults(pageable.getPageSize());
+            List<User> users = typedQuery.getResultList();
+
+            return new PageImpl<>(users, pageable, getAll().size());
+        }
+    }
+
+    private CriteriaQuery<User> getUserCriteriaQuery(Session session) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> query = builder.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        Join<User, Permission> permissionJoin = root.join("permission");
+        query.select(root).where(builder.equal(permissionJoin.get("isDeleted"), false));
+        return query;
     }
 
     @Override
