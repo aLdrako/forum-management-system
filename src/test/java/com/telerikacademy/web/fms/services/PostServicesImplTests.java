@@ -397,17 +397,14 @@ public class PostServicesImplTests {
         Assertions.assertTrue(post.getTags().contains(tag));
     }
     @Test
-    public void updateTagsInPost_Should_RemoveTag() {
+    public void updateTagsInPost_Should_ClearOldTags() {
         // Arrange
         Post post = createMockPost();
         Tag tag = createMockTag();
         post.addTag(tag);
 
-        Mockito.when(mockTagService.createTag(tag.getName()))
-                .thenReturn(tag);
-
         // Act
-        services.updateTagsInPost(List.of(tag.getName()), post);
+        services.updateTagsInPost(List.of(), post);
         // Assert
         Assertions.assertFalse(post.getTags().contains(tag));
     }
