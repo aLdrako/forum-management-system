@@ -10,16 +10,26 @@
         <div class="collapse navbar-collapse" id="navbar">
 
           <div class="text-start flex-grow-1">
-            <a class="btn btn-outline-light me-2" href="/" th:if="${session.isAuthenticated}" th:href="@{/}" th:classappend="${context == 'home' ? 'btn-light text-dark' : ''}" th:text="#{navbar.home}">Home</a>
+            <a class="btn btn-outline-light me-2" href="/" th:href="@{/}" th:classappend="${context == 'home' ? 'btn-light text-dark' : ''}" th:text="#{navbar.home}">Home</a>
             <a class="btn btn-outline-light me-2" href="/posts" th:if="${session.isAuthenticated}" th:href="@{/posts}" th:classappend="${context == 'posts' ? 'btn-light text-dark' : ''}" th:text="#{navbar.posts}">Posts</a>
             <a class="btn btn-outline-light me-2" href="/users" th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/users}" th:classappend="${context == 'users' ? 'btn-light text-dark' : ''}" th:text="#{navbar.users}">Users</a>
             <a class="btn btn-outline-light me-2" href="/comments" th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/comments}" th:classappend="${context == 'comments' ? 'btn-light text-dark' : ''}" th:text="#{navbar.comments}">Comments</a>
             <a class="btn btn-primary" href="/posts/new" th:if="${session.isAuthenticated}" th:href="@{/posts/new}" th:classappend="${context == 'create post' ? 'btn-light text-dark' : ''}" th:text="#{navbar.post.create}">Create Post</a>
           </div>
 
-          <form th:if="${session.isAuthenticated && session.isAdmin}" action="/users/search" th:action="@{/users/search}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="get">
-            <div class="input-group form-control-dark text-bg-dark mt-2 mt-lg-0">
+          <form th:if="${session.isAuthenticated}" action="/posts/search" data-action-posts="/posts/search" data-action-users="/users/search" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="get">
+            <div class="input-group form-control-dark text-bg-dark mt-2 mt-lg-0 d-flex justify-content-end" id="inputGroupSearch">
+              <div class="flex-grow-1">
               <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." name="search" aria-label="Search">
+              </div>
+              <div class=" flex-shrink-1">
+                <label>
+                  <select class="form-select form-select-dark text-bg-dark" onchange="updateAction(this)">
+                    <option selected value="posts">Posts</option>
+                    <option th:if="${session.isAdmin}" value="users">Users</option>
+                  </select>
+                </label>
+              </div>
               <button class="btn btn-light" type="submit"><i class="bi bi-search"></i></button>
             </div>
           </form>
@@ -34,5 +44,5 @@
         </div>
     </nav>
   </div>
-
+  <script th:replace="~{fragments/scripts :: search-global}"></script>
 </header>

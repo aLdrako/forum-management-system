@@ -14,3 +14,11 @@
         });
     });
 </script>
+
+<script th:fragment="search-global">
+    function updateAction(selectElement) {
+        var formElement = selectElement.form;
+        var action = selectElement.value === 'users' ? formElement.getAttribute('data-action-users') : formElement.getAttribute('data-action-posts');
+        formElement.action = action;
+    }
+</script>

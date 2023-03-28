@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class BaseMvcController {
@@ -15,4 +16,5 @@ public class BaseMvcController {
         session.setAttribute("isAdmin", session.getAttribute("isAdmin"));
         model.addAttribute("requestURI", request.getRequestURI());
     }
+
 }

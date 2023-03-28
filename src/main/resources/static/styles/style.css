@@ -3,10 +3,19 @@ body {
     background-color: #f5f5f5;
 }
 
+/*SEARCH*/
+#inputGroupSearch .form-control {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+#inputGroupSearch .form-select {
+    border-radius: 0;
+}
+
 /*LOGIN / REGISTER / UPDATE PROFILE VIEW*/
 .login-view, .register-view, .user-update-view {
     height: 100%;
-    /*align-items: center;*/
 }
 
 .form-signin, .form-update {

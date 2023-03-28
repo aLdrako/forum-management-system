@@ -1,8 +1,8 @@
 <form role="form" action="#" method="post"
         th:fragment="user-form" th:action="${requestURI}" th:object="${user}"
         th:enctype="${photoPath ? 'multipart/form-data' : 'application/x-www-form-urlencoded'}"
-        th:with="photoPath=${requestURI.endsWith('/photo')},
-                 permissionsPath=${requestURI.endsWith('/permissions')},
+        th:with="permissionsPath=${requestURI.endsWith('/permissions')},
+                 photoPath=${requestURI.endsWith('/photo')},
                  ctxRegister=${context == 'register'},
                  ctxUpdate=${context == 'user-update'},
                  ctxLogin=${context == 'login'}">
