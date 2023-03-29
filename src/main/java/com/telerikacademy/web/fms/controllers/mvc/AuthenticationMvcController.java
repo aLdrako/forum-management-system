@@ -10,6 +10,7 @@ import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,11 +26,13 @@ public class AuthenticationMvcController extends BaseMvcController {
     private final UserServices userServices;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public AuthenticationMvcController(UserServices userServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper) {
+    public AuthenticationMvcController(UserServices userServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper, BCryptPasswordEncoder passwordEncoder) {
         this.userServices = userServices;
         this.modelMapper = modelMapper;
         this.authenticationHelper = authenticationHelper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/login")
@@ -74,6 +77,7 @@ public class AuthenticationMvcController extends BaseMvcController {
 
         try {
             User user = modelMapper.dtoToObject(userDTO);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             userServices.create(user);
             return "redirect:/";
         } catch (EntityDuplicateException e) {

@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `tags` (
   `name` varchar(32) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tags_pk` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dumping data for table forum_system.tags: ~5 rows (approximately)
 /*!40000 ALTER TABLE `tags` DISABLE KEYS */;
@@ -212,31 +212,31 @@ CREATE TABLE IF NOT EXISTS `users` (
                                        `last_name` varchar(32) NOT NULL,
                                        `email` varchar(50) NOT NULL,
                                        `username` varchar(50) NOT NULL,
-                                       `password` varchar(50) NOT NULL,
+                                       `password` varchar(100) NOT NULL,
                                        `join_date` datetime NOT NULL DEFAULT current_timestamp(),
                                        PRIMARY KEY (`id`),
                                        UNIQUE KEY `users_pk2` (`email`),
                                        UNIQUE KEY `users_pk` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dumping data for table forum_system.users: ~15 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `username`, `password`, `join_date`) VALUES
-    (1, 'Admin', 'Admin', 'admin@mail.com', 'admin', 'admin', '2023-01-01 00:00:00'),
-    (2, 'Anonymous', 'Anonymous', 'anonymous@mail.com', 'anonymous', 'anonymous', '2023-01-01 00:00:00'),
-    (3, 'Reserved1', 'Reserved1', 'reserved1@mail.com', 'reserved1', 'reserved1', '2023-01-01 00:00:00'),
-    (4, 'Reserved2', 'Reserved2', 'reserved2@mail.com', 'reserved2', 'reserved2', '2023-01-01 00:00:00'),
-    (5, 'Reserved3', 'Reserved3', 'reserved3@mail.com', 'reserved3', 'reserved3', '2023-01-01 00:00:00'),
-    (6, 'Alexandra', 'Silcock', 'asilcock0@dailynews.com', 'asilcock0', '5JHqhCU9kBa', '2023-02-01 00:00:00'),
-    (7, 'Margot', 'Rashleigh', 'mrashleigh1@rambler.ru', 'mrashleigh1', 'CclF2M7XY', '2023-02-02 00:00:00'),
-    (8, 'Brian', 'Mussalli', 'bmussallij@purevolume.com', 'bmussallij', 'X0faOXpF', '2023-02-03 00:00:00'),
-    (9, 'Orion', 'Wahner', 'owahnert@tinyurl.com', 'owahnert', 'qXO84K7', '2023-02-04 00:00:00'),
-    (10, 'Reed', 'Flynn', 'rflynn12@php.net', 'rflynn12', 'GyDuVGTRVpq', '2023-02-05 00:00:00'),
-    (11, 'Simple', 'Simple', 'simple@mail.com', 'simple', 'simple', '2023-02-10 00:00:00'),
-    (12, 'Admin', 'Blocked', 'admblocked@gmail.com', 'admblocked', 'admblocked', '2023-02-10 00:00:00'),
-    (13, 'Deleted', 'Deleted', 'deleted@mail.com', 'deleted', 'deleted', '2023-02-20 00:00:00'),
-    (14, 'Tester', 'Tester', 'tester@mail.com', 'tester', 'tester', '2023-02-20 00:00:00'),
-    (15, 'All', 'Set', 'allset@mail.com', 'allset', 'setpass', '2023-02-20 00:00:00');
+    (1, 'Admin', 'Admin', 'admin@mail.com', 'admin', '$2a$10$ylhotx8CZBhi9xh/J84djeBAsmARXlzuR4YsEzMS91dz0fqHSM1Hq', '2023-01-01 00:00:00'),
+    (2, 'Anonymous', 'Anonymous', 'anonymous@mail.com', 'anonymous', '$2a$10$aR0tcYDEZ8VADAE2JHDzB.1XaFGoDemdym0ncRchshyu4caYLfHsa', '2023-01-01 00:00:00'),
+    (3, 'Reserved1', 'Reserved1', 'reserved1@mail.com', 'reserved1', '$2a$10$8Np73OPF5lTIJI9SmhyAKu26f6TolHLu5gda0BqRO.tSzygPDsn4W', '2023-01-01 00:00:00'),
+    (4, 'Reserved2', 'Reserved2', 'reserved2@mail.com', 'reserved2', '$2a$10$/QjvkWIVsrc1OB1q.idnkOVBOA2nGnxaLnQcnX.IBWfVv2sm6vGwy', '2023-01-01 00:00:00'),
+    (5, 'Reserved3', 'Reserved3', 'reserved3@mail.com', 'reserved3', '$2a$10$g30M3YY7K.PbO8s4HiTeien2HVLrqFThG0B/V7IhXADOVquv2xmaS', '2023-01-01 00:00:00'),
+    (6, 'Alexandra', 'Silcock', 'asilcock0@dailynews.com', 'asilcock0', '$2a$10$Lq5V.57ciMf62R/GxN1g6OnwNL8Nw23PVJxthNa18churCjU3IfqK', '2023-02-01 00:00:00'),
+    (7, 'Margot', 'Rashleigh', 'mrashleigh1@rambler.ru', 'mrashleigh1', '$2a$10$pipNgarASkiksrmHNP5owuUkUMC0ZVQrh2Lse/eGGMDPc1kodI4Qm', '2023-02-02 00:00:00'),
+    (8, 'Brian', 'Mussalli', 'bmussallij@purevolume.com', 'bmussallij', '$2a$10$I.KSZJMsjb28pSJOf0Ax9OSxnpWyMbbeIh5fWTnriby4/foNM0OUe', '2023-02-03 00:00:00'),
+    (9, 'Orion', 'Wahner', 'owahnert@tinyurl.com', 'owahnert', '$2a$10$pACmP9yNHvo77b/.7g752.Oen7n2C/j9HXKnBDxeXmf5G.V6lZtUG', '2023-02-04 00:00:00'),
+    (10, 'Reed', 'Flynn', 'rflynn12@php.net', 'rflynn12', '$2a$10$mjsvvabG3jLSkzIJpZFWqOaubumwtAz1Yzlfjru2nWcNzvobPICKO', '2023-02-05 00:00:00'),
+    (11, 'Blocked', 'Blocked', 'blocked@mail.com', 'blocked', '$2a$10$a0zQqABuiKrDbYqg/MuzceHPR970m2KaBx6AsaZchqhy3f9P4mf.i', '2023-02-10 00:00:00'),
+    (12, 'Admin', 'Blocked', 'admblocked@gmail.com', 'admblocked', '$2a$10$LJ0aqde0Vi7bA1sLZmuh.OestzyesPdhEcgzbUhCaP0kyorWV.qvW', '2023-02-10 00:00:00'),
+    (13, 'Deleted', 'Deleted', 'deleted@mail.com', 'deleted', '$2a$10$OCd35EDz4gkWmv3ovx209ekNxIScst9765rHc9n9CUrs8ghB5Mu5i', '2023-02-20 00:00:00'),
+    (14, 'Tester', 'Tester', 'tester@mail.com', 'tester', '$2a$10$FauZEnNhpe0A1a5itf/0a.jdrO8ps68MVj97ZXIoLJKJ0yJwXU1Hq', '2023-02-20 00:00:00'),
+    (15, 'All', 'Set', 'allset@mail.com', 'allset', '$2a$10$cFfai/zrlwaeuq.f2vLxoOpU6Yj./oHzqCqRe4w9gWX95IsaMEw7e', '2023-02-20 00:00:00');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

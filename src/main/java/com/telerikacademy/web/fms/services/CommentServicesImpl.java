@@ -90,11 +90,10 @@ public class CommentServicesImpl implements CommentServices {
     }
 
     private void checkAuthorizedPermissions(Comment comment, User user) {
-        if (user.getPermission().isAdmin()) return;
         if (user.getPermission().isBlocked()) {
             throw new UnauthorizedOperationException(BLOCKED_ERROR_MESSAGE);
         }
-        if (!Objects.equals(comment.getCreatedBy().getId(), user.getId())) {
+        if (!user.getPermission().isAdmin() || !Objects.equals(comment.getCreatedBy().getId(), user.getId())) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_ERROR_MESSAGE);
         }
     }

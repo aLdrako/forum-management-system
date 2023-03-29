@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,13 +44,15 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
     private final CommentServices commentServices;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserMvcController(UserServices userServices, PostServices postServices, CommentServices commentServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper) {
+    public UserMvcController(UserServices userServices, PostServices postServices, CommentServices commentServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper, BCryptPasswordEncoder passwordEncoder) {
         this.userServices = userServices;
         this.postServices = postServices;
         this.commentServices = commentServices;
         this.modelMapper = modelMapper;
         this.authenticationHelper = authenticationHelper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -169,6 +172,9 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
         try {
             User currentUser = authenticationHelper.tryGetCurrentUser(session);
             User user = modelMapper.dtoToObject(id, userDTO);
+            if (user.getPassword() != null || !user.getPassword().isBlank()) {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
             userServices.update(user, currentUser);
             if (request.getRequestURI().contains("permissions")) {
                 userServices.updatePermissions(user.getPermission(), currentUser);
