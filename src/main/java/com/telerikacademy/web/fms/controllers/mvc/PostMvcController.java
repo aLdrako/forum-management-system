@@ -54,9 +54,9 @@ public class PostMvcController extends BaseMvcController {
                          Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentUser(session);
-            List<Post> posts = postServices.search(search);
-            model.addAttribute("posts", posts);
             model.addAttribute("search", search.orElse(""));
+            model.addAttribute("posts", search.get().isEmpty() ?
+                    List.of() : postServices.search(search));
             return "PostsResultSearch";
         } catch (AuthorizationException e)  {
             return "redirect:/auth/login";
