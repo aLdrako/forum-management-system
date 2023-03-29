@@ -2,24 +2,20 @@
     <h1 th:if="${context == 'create'}" th:text="#{navbar.post.create}">Create Post</h1>
     <h1 th:if="${context == 'update'}" th:text="#{post-form.update}">Update Post</h1>
 
-    <div th:if="${context == 'create' || context == 'update'}">
-        <label th:text="#{post.label.title}">Title</label>
-        <br/>
-        <input class="input-post" type="text" th:field="*{title}"/>
-        <label class="error" th:errors="*{title}">Title error placeholder</label>
-        <br/><br/>
-        <label th:text="#{post.label.content}">Content</label>
-        <br/>
-        <textarea class="input-post" th:field="*{content}"></textarea>
-        <label class="error" th:errors="*{content}">Content error placeholder</label>
-        <br/><br/>
+    <div class="mb-3" th:if="${context == 'create' || context == 'update'}">
+        <label class="form-label" th:text="#{post.label.title}">Title</label>
+        <input class="form-control" type="text" th:field="*{title}"/>
+        <label class="text-danger" th:errors="*{title}">Title error placeholder</label>
+        <label class="form-label" th:text="#{post.label.content}">Content</label>
+        <textarea class="form-control" th:field="*{content}"></textarea>
+        <label class="text-danger" th:errors="*{content}">Content error placeholder</label>
         <div th:if="${context == 'update'}">
-            <label th:text="#{post.tags.label}">Tags</label>
+            <label class="form-label" th:text="#{post.tags.label}">Tags</label>
             <br/>
-            <input class="input-post" type="text" th:field="*{tags}"/>
-            <label class="error" th:errors="*">Tags error placeholder</label>
-        <br/><br/>
+            <input class="form-control" type="text" th:field="*{tags}"/>
+            <label class="text-danger" th:errors="*">Tags error placeholder</label>
         </div>
+        <br/>
         <input  type="submit" value="Save"/>
     </div>
 </form>
