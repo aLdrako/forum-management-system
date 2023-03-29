@@ -28,6 +28,8 @@ public class UserDTO {
     @OptionalWithSizeConstraint(min = 5, max = 20,
             groups = {UpdateValidationGroup.class, CreateValidationGroup.class, LoginValidationGroup.class})
     private String password;
+    @NotEmpty (message = "Password confirmation can't be empty", groups = CreateValidationGroup.class)
+    private String passwordConfirm;
     @OptionalWithSizeConstraint(min = 7, max = 16, groups = UpdateValidationGroup.class)
     private String phoneNumber;
     private String photo;
@@ -72,6 +74,14 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
     }
 
     public String getPhoneNumber() {

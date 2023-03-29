@@ -7,6 +7,8 @@ import com.telerikacademy.web.fms.repositories.contracts.CommentRepository;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +34,12 @@ public class CommentServicesImpl implements CommentServices {
     public List<Comment> getAll(Map<String, String> parameters) {
         return commentRepository.getAll(parameters);
     }
+
+    @Override
+    public Page<Comment> findAll(Map<String, String> parameters, Pageable pageable) {
+        return commentRepository.findAll(parameters, pageable);
+    }
+
 
     @Override
     public Comment getById(Long id) {

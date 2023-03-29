@@ -76,6 +76,7 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
     public String search(@RequestParam Map<String, String> parameter, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentAdmin(session);
+            model.addAttribute("search", parameter.get("search"));
             List<User> users = userServices.search(String.valueOf(parameter.entrySet().iterator().next()));
             model.addAttribute("users", users);
             return "UsersView";
@@ -114,13 +115,13 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
             "{id}/update/permissions"
     })
     public String showUpdateUserPage(@PathVariable Long id, Model model, HttpSession session) {
-
         try {
             authenticationHelper.tryGetCurrentUser(session);
             User user = userServices.getById(id);
             UserDTO userDTO = modelMapper.objectToDto(user);
             model.addAttribute("user", userDTO);
             session.setAttribute("updatedUserIsAdmin", user.getPermission().isAdmin());
+            session.setAttribute("updatedUserUsername", user.getUsername());
             return "UserUpdateView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
@@ -148,6 +149,14 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
         }
 
         if (bindingResult.hasErrors() && (photo == null || photo.isEmpty())) {
+            return "UserUpdateView";
+        }
+
+        if (!request.getRequestURI().contains("photo") &&
+                !request.getRequestURI().contains("permissions") &&
+                userDTO.getPassword() != null && userDTO.getPasswordConfirm() != null &&
+                !userDTO.getPassword().equals(userDTO.getPasswordConfirm())) {
+            bindingResult.rejectValue("passwordConfirm", "password_error", "Password confirmation should match password");
             return "UserUpdateView";
         }
 

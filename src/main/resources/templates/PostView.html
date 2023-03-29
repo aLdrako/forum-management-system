@@ -9,13 +9,15 @@
 
 <body class="user-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='post-details')}"></header>
-<div class="container mt-5">
+<div class="container mt-5" th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted_')}">
     <article class="blog-post">
         <h2 class="blog-post-title" th:text="${post.getTitle()}">Sample post title</h2>
         <p class="blog-post-meta">
             <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
-            <span><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
-                     th:text="${post.getUserCreated().getUsername()}">&nbsp&nbsp</a></span>
+            <span>
+                <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}" th:text="${post.getUserCreated().getUsername()}">&nbsp&nbsp</a>
+                <span th:if="${isDeleted}" th:text="anonymous">anonymous</span>
+            </span>
             <span>
                 <a class="btn btn-warning text-dark btn-sm" href="#"
                    th:href="@{${requestURI} + '/update'}" th:if="${session.user == post.getUserCreated() || session.isAdmin}"
@@ -57,16 +59,17 @@
                 </div>
             </div>
         </th:block>
-        <th:block th:each="comment : ${comments}">
+        <th:block th:each="comment : ${comments}"
+                  th:with="isDeleted=${comment.createdBy.username.contains('deleted_')}">
+
             <a href="#" th:href="@{/comments/{id}(id=${comment.id})}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
                 <i class="bi bi-chat-left-text" style="font-size: 2rem; color: cornflowerblue;"></i>
                 <div class="d-flex gap-2 w-100 justify-content-between">
                     <div class="flex-grow-1">
                         <p class="mb-0 opacity-75" th:text="${comment.content}">Body (design!)</p>
                     </div>
-                    <small class="d-sm-none d-md-inline" th:text="${comment.createdBy.username}">Created By (design!)</small>
+                    <small class="d-sm-none d-md-inline" th:text="${!isDeleted ? comment.createdBy.username : 'anonymous'}">Created By (design!)</small>
                     <small class="opacity-50 text-nowrap" th:text="${comment.dateCreated}">Date Created (design!)</small>
-
                 </div>
             </a>
         </th:block>

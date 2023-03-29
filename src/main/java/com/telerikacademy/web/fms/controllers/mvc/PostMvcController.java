@@ -221,21 +221,18 @@ public class PostMvcController extends BaseMvcController {
                                 BindingResult bindingResult,
                                 Model model,
                                 HttpSession session) {
-        User currentUser = null;
-        try {
-            currentUser = authenticationHelper.tryGetCurrentUser(session);
-        } catch (AuthorizationException e) {
-            return "redirect:/auth/login";
-        }
 
         if (bindingResult.hasErrors()) return "CommentCreateView";
 
         try {
+            User currentUser = authenticationHelper.tryGetCurrentUser(session);
             commentDTO.setPostId(id);
             Comment comment = modelMapper.dtoToObject(commentDTO);
             comment.setCreatedBy(currentUser);
             commentServices.create(comment, currentUser);
             return "redirect:/comments/" + comment.getId();
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";

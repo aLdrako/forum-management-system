@@ -9,9 +9,10 @@
 <body class="users-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='users')}"></header>
 
-<div class="container mx-auto my-3">
+<div class="container mx-auto my-3"
+     th:with="postsPath=${requestURI.contains('/search')}">
 
-    <h6 class="display-6">All Users</h6>
+    <h6 class="display-6" th:text="${postsPath} ? 'Searching results for: ' + (${search}) : 'All Users'">All Users</h6>
 
     <table class="table table-bordered table-striped table-hover mt-1">
         <thead>
@@ -45,19 +46,24 @@
         </tbody>
     </table>
 
-    <nav aria-label="Page navigation" th:if="${totalPages > 0}">
-        <ul class="pagination">
+    <nav aria-label="Page navigation"
+         th:if="${totalPages > 0}"
+         th:with="pageQuery=${'?page='},
+                  sizeQuery=${'&size='}">
+
+        <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{${'/users?page=' + (currentPage - 1) + '&size=' + sizePage}}">Previous</a>
+                <a class="page-link" th:href="@{${pageQuery + (currentPage - 1) + sizeQuery + sizePage}}">Previous</a>
             </li>
             <li th:each="page : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
-                <a class="page-link" th:href="@{${'/users?page=' + page + '&size=' + sizePage}}" th:text="${page + 1}" th:classappend="${currentPage == page} ? 'active'"></a>
+                <a class="page-link" th:href="@{${pageQuery + page + sizeQuery + sizePage}}" th:text="${page + 1}" th:classappend="${currentPage == page} ? 'active'"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{${'/users?page=' + (currentPage + 1) + '&size=' + sizePage}}">Next</a>
+                <a class="page-link" th:href="@{${pageQuery + (currentPage + 1) + sizeQuery + sizePage}}">Next</a>
             </li>
         </ul>
     </nav>
+
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

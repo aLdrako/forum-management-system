@@ -64,6 +64,12 @@ public class AuthenticationMvcController extends BaseMvcController {
 
     @PostMapping("/register")
     public String handleRegister(@Validated(CreateValidationGroup.class) @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult) {
+
+        if (!userDTO.getPassword().equals(userDTO.getPasswordConfirm())) {
+            bindingResult.rejectValue("passwordConfirm", "password_error", "Password confirmation should match password");
+            return "RegisterView";
+        }
+
         if (bindingResult.hasErrors()) return "RegisterView";
 
         try {

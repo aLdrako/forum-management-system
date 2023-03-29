@@ -1,7 +1,9 @@
 <form role="form" action="#" method="post"
-      th:fragment="comment-form" th:action="${requestURI}" th:object="${comment}">
-    <h6 class="display-6" th:if="${context == 'comment-create'}" th:text="#{comment-form.create}">Create</h6>
-    <h6 class="display-6" th:if="${context == 'comment-update'}" th:text="#{comment-form.update}">Update</h6>
+      th:fragment="comment-form" th:action="${requestURI}" th:object="${comment}"
+      th:with="ctxCreate=${context == 'comment-create'},
+               ctxUpdate=${context == 'comment-update'}">
+    <h6 class="display-6" th:if="${ctxCreate}" th:text="#{comment-form.create}">Create</h6>
+    <h6 class="display-6" th:if="${ctxUpdate}" th:text="#{comment-form.update}">Update</h6>
     <div class="input-group mb-3">
         <div class="form-floating">
             <textarea class="form-control" placeholder="Leave a comment here" id="floatingComment" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></textarea>

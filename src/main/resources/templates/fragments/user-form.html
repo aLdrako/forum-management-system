@@ -5,13 +5,14 @@
                  photoPath=${requestURI.endsWith('/photo')},
                  ctxRegister=${context == 'register'},
                  ctxUpdate=${context == 'user-update'},
-                 ctxLogin=${context == 'login'}">
+                 ctxLogin=${context == 'login'},
+                 userMatch=${session.currentUser == session.updatedUserUsername}">
 
     <h1 class="h3 mb-3 fw-normal" th:if="${ctxLogin}" th:text="#{user-form.login}">Login</h1>
     <h1 class="h3 mb-3 fw-normal" th:if="${ctxRegister}" th:text="#{user-form.register}">Register</h1>
     <h1 class="h3 mb-3 fw-normal" th:if="${ctxUpdate && !photoPath && !permissionsPath}" th:text="#{user-form.update}">Update</h1>
     <h1 class="h3 mb-3 fw-normal" th:if="${photoPath}" th:text="#{user-form.photo}">Photo</h1>
-    <h1 class="h3 mb-3 fw-normal" th:if="${permissionsPath}" th:text="#{user-form.permissions}">Photo</h1>
+    <h1 class="h3 mb-3 fw-normal" th:if="${permissionsPath}" th:text="#{user-form.permissions}">Permissions</h1>
 
     <div class="form-floating" th:if="${(ctxRegister || ctxUpdate) && !photoPath && !permissionsPath}">
         <input type="text" class="form-control" id="floatingFirstName" placeholder="First Name" name="firstName" th:errorclass="is-invalid" th:field="*{firstName}" />
@@ -38,14 +39,19 @@
         <label for="floatingPhone">Phone</label>
         <div id="validationPhone" class="invalid-feedback" th:errors="*{phoneNumber}">Error placeholder</div>
     </div>
-    <div class="form-floating" th:if="${!photoPath && !permissionsPath}">
+    <div class="form-floating" th:if="${!photoPath && !permissionsPath && userMatch}">
         <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" th:errorclass="is-invalid" th:field="*{password}">
-        <label for="floatingPassword" th:text="${context == 'user-update' ? 'Password (optional)' : 'Password'}">Password</label>
+        <label for="floatingPassword" th:text="${ctxUpdate ? 'Password (optional)' : 'Password'}">Password</label>
         <div id="validationPassword" class="invalid-feedback" th:errors="*{password}">Error placeholder</div>
+    </div>
+    <div class="form-floating" th:if="${!photoPath && !permissionsPath && !ctxLogin && userMatch}">
+        <input type="password" class="form-control" id="floatingPasswordConfirm" placeholder="Password Confirmation" name="passwordConfirm" th:errorclass="is-invalid" th:field="*{passwordConfirm}">
+        <label for="floatingPasswordConfirm">Password (confirmation)</label>
+        <div id="validationPasswordConfirm" class="invalid-feedback" th:errors="*{passwordConfirm}">Error placeholder</div>
     </div>
     <div class="mb-3" th:if="${photoPath}">
         <label for="floatingPhoto" class="form-label"></label>
-        <input class="form-control" id="floatingPhoto" name="photo" type="file" th:errorclass="is-invalid" th:field="*{photo}">
+        <input type="file" class="form-control" id="floatingPhoto" name="photo" th:errorclass="is-invalid" th:field="*{photo}">
         <div id="validationPhoto" class="invalid-feedback" th:errors="*{photo}">Error placeholder</div>
     </div>
 

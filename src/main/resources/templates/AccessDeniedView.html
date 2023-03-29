@@ -2,18 +2,19 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <title th:text="#{page.title.access-denied}">Forum Management System</title>
-  <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <title th:text="#{page.title.access-denied}">Forum Management System</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
-<body class="access-denied d-flex flex-column min-vh-100">
-<header th:replace="~{fragments/navbar :: header(context='access-denied')}"></header>
-
-<div class="container mx-auto my-5">
-  <div class="alert alert-danger" role="alert" th:text="${error}">Error placeholder</div>
+<body class="error-page">
+<div>
+    <span class='error-num'>4</span>
+    <div class='eye'></div>
+    <span class='error-num'>3</span>
+    <p class='alert alert-dark' th:text="${error}">Forbidden Action</p>
+    <a href='#' th:href="@{/}" class="btn btn-light text-dark">Go back</a>
 </div>
 
-<div th:replace="~{fragments/footer :: footer}"></div>
-<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+<script th:replace="~{fragments/scripts :: error-page}"></script>
 </body>
 </html>

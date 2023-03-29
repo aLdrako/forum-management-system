@@ -5,12 +5,18 @@ import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.CommentRepository;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +47,41 @@ public class CommentRepositoryImpl implements CommentRepository {
             }
         }
     }
+
+    @Override
+    public Page<Comment> findAll(Map<String, String> parameters, Pageable pageable) {
+        try (Session session = sessionFactory.openSession()) {
+            if (parameters.size() == 0) {
+                CriteriaQuery<Comment> criteriaQuery = session.getCriteriaBuilder().createQuery(Comment.class);
+                Root<Comment> root = criteriaQuery.from(Comment.class);
+                criteriaQuery.select(root);
+
+                TypedQuery<Comment> typedQuery = session.createQuery(criteriaQuery);
+                typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+                typedQuery.setMaxResults(pageable.getPageSize());
+                List<Comment> comments = typedQuery.getResultList();
+
+                return new PageImpl<>(comments, pageable, getAll(Map.of()).size());
+            } else {
+                int pageNo = pageable.getPageNumber();
+                int pageSize = pageable.getPageSize();
+                int startIndex = pageNo * pageSize;
+                List<Comment> pageContent = new ArrayList<>();
+
+                CriteriaBuilder builder = session.getCriteriaBuilder();
+                CriteriaQuery<Comment> criteriaQuery = builder.createQuery(Comment.class);
+                Root<Comment> root = criteriaQuery.from(Comment.class);
+                List<Comment> comments = getComments(parameters, session, builder, criteriaQuery, root);
+
+                for (int i = startIndex; i < comments.size() && i < startIndex + pageSize; i++) {
+                    pageContent.add(comments.get(i));
+                }
+
+                return new PageImpl<>(pageContent, PageRequest.of(pageNo, pageSize), comments.size());
+            }
+        }
+    }
+
 
     @Override
     public Comment getById(Long id) {
@@ -141,9 +182,9 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
     }
 
-    private static List<Comment> getComments(Map<String, String> parameters, Session session, CriteriaBuilder builder, CriteriaQuery<Comment> criteriaQuery, Root<Comment> commentRoot) {
+    private static List<Comment> getComments(Map<String, String> parameters, Session session, CriteriaBuilder builder, CriteriaQuery<Comment> criteriaQuery, Root<Comment> root) {
         Map<String, String> params = extractSortOrderComments(parameters);
-        Path<Object> commentFieldPath = commentRoot.get(params.get("sort"));
+        Path<Object> commentFieldPath = root.get(params.get("sort"));
         Order order = params.get("order").equalsIgnoreCase("desc") ? builder.desc(commentFieldPath) : builder.asc(commentFieldPath);
         criteriaQuery.orderBy(order);
         return session.createQuery(criteriaQuery).getResultList();
