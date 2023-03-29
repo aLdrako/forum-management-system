@@ -13,7 +13,7 @@ import java.util.*;
 @Service
 public class PostServicesImpl implements PostServices {
     private static final String UNAUTHORIZED_MESSAGE = "Only the user that created the post or an admin can update/delete a post.";
-    private static final String UNAUTHORIZED_MESSAGE_BLOCKED = "User is blocked";
+    private static final String UNAUTHORIZED_MESSAGE_BLOCKED = "User is blocked and cannot create/update/delete posts!";
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final TagServices tagServices;
