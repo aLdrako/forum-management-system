@@ -55,6 +55,7 @@ public class Helpers {
         userDTO.setEmail("mockdto@mail.com");
         userDTO.setUsername("MockUsernameDTO");
         userDTO.setPassword("MockPasswordDTO");
+        userDTO.setPasswordConfirm("MockPasswordDTO");
         userDTO.setPhoneNumber(null);
         userDTO.setPhoto(null);
         return userDTO;

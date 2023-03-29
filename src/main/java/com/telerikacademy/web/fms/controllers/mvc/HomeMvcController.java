@@ -23,10 +23,12 @@ public class HomeMvcController extends BaseMvcController {
     public List<Post> getMostCommentedPosts() {
         return postServices.getMostCommented();
     }
+
     @ModelAttribute("mostRecentPosts")
     public List<Post> getMostRecentPosts() {
         return postServices.getMostRecent();
     }
+
     @GetMapping
     public String showHomePage() {
         return "index";

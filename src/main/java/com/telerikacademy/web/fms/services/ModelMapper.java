@@ -49,7 +49,7 @@ public class ModelMapper {
         user.setEmail(userDTO.getEmail());
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
-        if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
+        if (userDTO.getPhoneNumber() != null && !userDTO.getPhoneNumber().isBlank()) user.setPhoneNumber(userDTO.getPhoneNumber());
         if (userDTO.getPhoto() != null) user.setPhoto(userDTO.getPhoto());
         return user;
     }
