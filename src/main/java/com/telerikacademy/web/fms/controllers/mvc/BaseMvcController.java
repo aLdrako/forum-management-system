@@ -13,8 +13,7 @@ public class BaseMvcController {
     public void populateModels(HttpSession session, HttpServletRequest request, Model model) {
         boolean isAuthenticated = session.getAttribute("currentUser") != null;
         session.setAttribute("isAuthenticated" , isAuthenticated);
-        session.setAttribute("isAdmin", session.getAttribute("isAdmin"));
+//        session.setAttribute("isAdmin", session.getAttribute("isAdmin"));
         model.addAttribute("requestURI", request.getRequestURI());
     }
-
 }

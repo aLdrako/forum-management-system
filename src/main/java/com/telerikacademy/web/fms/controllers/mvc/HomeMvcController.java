@@ -19,10 +19,6 @@ public class HomeMvcController extends BaseMvcController {
         this.postServices = postServices;
     }
 
-    @GetMapping
-    public String showHomePage() {
-        return "index";
-    }
     @ModelAttribute("mostCommentedPosts")
     public List<Post> getMostCommentedPosts() {
         return postServices.getMostCommented();
@@ -30,5 +26,9 @@ public class HomeMvcController extends BaseMvcController {
     @ModelAttribute("mostRecentPosts")
     public List<Post> getMostRecentPosts() {
         return postServices.getMostRecent();
+    }
+    @GetMapping
+    public String showHomePage() {
+        return "index";
     }
 }

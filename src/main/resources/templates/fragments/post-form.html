@@ -2,20 +2,44 @@
     <h1 th:if="${context == 'create'}" th:text="#{navbar.post.create}">Create Post</h1>
     <h1 th:if="${context == 'update'}" th:text="#{post-form.update}">Update Post</h1>
 
-    <div class="mb-3" th:if="${context == 'create' || context == 'update'}">
-        <label class="form-label" th:text="#{post.label.title}">Title</label>
-        <input class="form-control" type="text" th:field="*{title}"/>
-        <label class="text-danger" th:errors="*{title}">Title error placeholder</label>
-        <label class="form-label" th:text="#{post.label.content}">Content</label>
-        <textarea class="form-control" th:field="*{content}"></textarea>
-        <label class="text-danger" th:errors="*{content}">Content error placeholder</label>
-        <div th:if="${context == 'update'}">
-            <label class="form-label" th:text="#{post.tags.label}">Tags</label>
-            <br/>
-            <input class="form-control" type="text" th:field="*{tags}"/>
-            <label class="text-danger" th:errors="*">Tags error placeholder</label>
+    <div th:if="${context == 'create' || context == 'update'}">
+        <div class="input-group">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingTitle" placeholder="Title" th:errorclass="is-invalid" th:field="*{title}">
+                <label for="floatingTitle" th:text="#{post.label.title}">Title</label>
+                <div id="validationTitle" class="invalid-feedback" th:errors="*{title}">Error placeholder</div>
+            </div>
+            <div class="form-floating mb-3" th:if="${context == 'update'}">
+                <input type="text" class="form-control" id="floatingTags" placeholder="Tags" th:errorclass="is-invalid" th:field="*{tags}">
+                <label for="floatingTags" th:text="#{post.tags.label}">Tags</label>
+                <th:block th:each="tagError : ${#fields.errors()}">
+                    <div id="validationTags" th:text="${tagError}" th:if="${tagError.contains('Tags')}">Error placeholder</div>
+                </th:block>
+            </div>
         </div>
-        <br/>
-        <input  type="submit" value="Save"/>
+        <div class="input-group mb-3" >
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Write content" id="floatingContent" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></textarea>
+                <label for="floatingContent" th:text="#{post.label.content}">Content</label>
+                <div id="validationContent" class="invalid-feedback" th:errors="*{content}">Error placeholder</div>
+            </div>
+            <button class="btn btn-success input-group-text" type="submit" name="action" value="save" style="width: 100px">Save</button>
+        </div>
+    </div>
+</form>
+
+<form method="get" action="#"
+      th:fragment="post-form-sort" th:action="${requestURI}">
+    <div class="input-group input-group-sm" th:if="${!posts.isEmpty()}">
+        <select class="form-select" id="inputGroupPostSort" name="sort">
+            <option value="title">Title</option>
+            <option value="likes">Likes</option>
+            <option selected value="dateCreated">Date Created</option>
+        </select>
+        <select class="form-select" id="inputGroupPostOrder" name="order">
+            <option selected value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+        <button class="btn btn-primary" type="submit">Sort & Order</button>
     </div>
 </form>

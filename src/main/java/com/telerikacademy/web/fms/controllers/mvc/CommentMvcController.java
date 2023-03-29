@@ -41,7 +41,7 @@ public class CommentMvcController extends BaseMvcController {
             authenticationHelper.tryGetCurrentAdmin(session);
 
             int page = Integer.parseInt(parameters.getOrDefault("page", "0"));
-            int size = Integer.parseInt(parameters.getOrDefault("size", "10"));
+            int size = Integer.parseInt(parameters.getOrDefault("size", "8"));
             String sort = parameters.getOrDefault("sort", "dateCreated");
             String order = parameters.getOrDefault("order", "asc");
 
@@ -54,7 +54,6 @@ public class CommentMvcController extends BaseMvcController {
             model.addAttribute("totalPages", commentPage.getTotalPages());
             model.addAttribute("sort", sort);
             model.addAttribute("order", order);
-
 //            model.addAttribute("comments", commentServices.getAll(parameters));
             return "CommentsView";
         } catch (AuthorizationException e) {

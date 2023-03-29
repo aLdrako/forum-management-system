@@ -6,11 +6,13 @@ import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
 import com.telerikacademy.web.fms.models.Comment;
+import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.UserDTO;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
+import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,12 +39,14 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserMvcController extends BaseMvcController implements HandlerExceptionResolver {
     private final UserServices userServices;
+    private final PostServices postServices;
     private final CommentServices commentServices;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
 
-    public UserMvcController(UserServices userServices, CommentServices commentServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper) {
+    public UserMvcController(UserServices userServices, PostServices postServices, CommentServices commentServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper) {
         this.userServices = userServices;
+        this.postServices = postServices;
         this.commentServices = commentServices;
         this.modelMapper = modelMapper;
         this.authenticationHelper = authenticationHelper;
@@ -96,9 +100,11 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
         try {
             authenticationHelper.tryGetCurrentUser(session);
             User user = userServices.getById(id);
+            parameters.put("userId", String.valueOf(id));
+            List<Post> postsByUserId = postServices.getAll(parameters);
             List<Comment> commentsByUserId = commentServices.getCommentsByUserId(id, parameters);
             model.addAttribute("comments", commentsByUserId);
-            model.addAttribute("posts", user.getPosts());
+            model.addAttribute("posts", postsByUserId);
             model.addAttribute("user", user);
             return "UserView";
         } catch (AuthorizationException e)  {

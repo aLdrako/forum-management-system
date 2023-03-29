@@ -43,7 +43,7 @@
             </div>
           </div>
         </div>
-        <div th:if="${session.isAuthenticated && (session.isAdmin || requestURI.endsWith(session.userId))}" class="card-footer text-center text-dark bg-light">
+        <div th:if="${session.isAuthenticated && (session.isAdmin || session.currentUser == user.username)}" class="card-footer text-center text-dark bg-light">
           <a th:if="${session.isAdmin}" href="#" class="btn btn-success" th:href="@{${permissionPath}}"><i class="bi bi-toggles" title="Update permissions"></i></a>
           <a href="#" class="btn btn-warning" th:href="@{${photoPath}}"><i class="bi bi-person-workspace" title="Upload photo"></i></a>
           <a href="#" class="btn btn-warning" th:href="@{${updatePath}}"><i class="bi bi-person-lines-fill" title="Update settings"></i></a>
@@ -65,7 +65,8 @@
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="posts-tab-pane" role="tabpanel" aria-labelledby="posts-tab" tabindex="0">
-          <div class="list-group w-auto">
+          <form th:replace="~{/fragments/post-form :: post-form-sort}"></form>
+          <div class="list-group w-auto mt-1">
             <th:block th:if="${posts.isEmpty()}">
               <div class="d-flex gap-2 w-100 justify-content-center">
                 <div>
