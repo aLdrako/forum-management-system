@@ -6,6 +6,8 @@ import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.TagServices;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -105,5 +107,10 @@ public class PostServicesImpl implements PostServices {
     @Override
     public List<Post> getMostRecent() {
         return postRepository.getTopTenMostRecent();
+    }
+
+    @Override
+    public Page<Post> findAll(List<Post> allPosts, Pageable pageable, Map<String, String> parameters) {
+        return postRepository.findAll(allPosts, pageable, parameters);
     }
 }

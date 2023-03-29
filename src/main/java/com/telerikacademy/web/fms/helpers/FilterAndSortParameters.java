@@ -54,6 +54,9 @@ public class FilterAndSortParameters {
         if (parameters.containsKey("userId") && !parameters.get("userId").isEmpty()) {
             predicates.add(builder.equal(userJoin.get("id"), parameters.get("userId")));
         }
+        if (parameters.containsKey("username") && !parameters.get("username").isEmpty()) {
+            predicates.add(builder.equal(userJoin.get("username"), parameters.get("username")));
+        }
         if (parameters.containsKey("title")) predicates.add(builder.like(root.get("title"), "%" +
                 parameters.get("title") + "%"));
         if (parameters.containsKey("content")) predicates.add(builder.like(root.get("content"), "%" +

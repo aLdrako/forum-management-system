@@ -5,8 +5,17 @@ public class FilterPostsDto {
     private String title;
     private String content;
     private String tag;
+    private String username;
     private String sort;
     private String order;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getTitle() {
         return title;

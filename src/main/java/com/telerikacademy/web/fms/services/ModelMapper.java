@@ -156,8 +156,10 @@ public class ModelMapper {
         Optional.ofNullable(filterDto.getTitle()).ifPresent(v -> map.put("title", filterDto.getTitle()));
         Optional.ofNullable(filterDto.getContent()).ifPresent(v -> map.put("content", filterDto.getContent()));
         Optional.ofNullable(filterDto.getTag()).ifPresent(v -> map.put("tag", filterDto.getTag()));
+        Optional.ofNullable(filterDto.getTag()).ifPresent(v -> map.put("username", filterDto.getUsername()));
         Optional.ofNullable(filterDto.getSort()).ifPresent(v -> map.put("sort", filterDto.getSort()));
         Optional.ofNullable(filterDto.getOrder()).ifPresent(v -> map.put("order", filterDto.getOrder()));
+
         return map;
     }
 

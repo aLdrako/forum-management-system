@@ -5,6 +5,8 @@ import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -87,4 +89,10 @@ public class PostRepositoryListImpl implements PostRepository {
     public List<Post> search(Optional<String> keyword) {
         return null;
     }
+
+    @Override
+    public Page<Post> findAll(List<Post> allPosts, Pageable pageable, Map<String, String> parameters) {
+        return null;
+    }
+
 }

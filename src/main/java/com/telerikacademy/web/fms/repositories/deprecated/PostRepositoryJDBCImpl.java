@@ -6,6 +6,8 @@ import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.sql.*;
 import java.util.*;
@@ -315,6 +317,12 @@ public class PostRepositoryJDBCImpl implements PostRepository {
     public List<Post> search(Optional<String> keyword) {
         return null;
     }
+
+    @Override
+    public Page<Post> findAll(List<Post> allPosts, Pageable pageable, Map<String, String> parameters) {
+        return null;
+    }
+
 
     private List<Post> getPosts(ResultSet postData) throws SQLException {
         List<Post> posts = new ArrayList<>();

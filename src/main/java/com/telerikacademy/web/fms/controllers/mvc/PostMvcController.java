@@ -17,6 +17,9 @@ import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,13 +53,26 @@ public class PostMvcController extends BaseMvcController {
     }
 
     @GetMapping ("/search")
-    public String search(@RequestParam(required = false) Optional<String> search,
+    public String search(@RequestParam(required = false) Map<String, String> parameters,
                          Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentUser(session);
-            model.addAttribute("search", search.orElse(""));
-            model.addAttribute("posts", search.get().isEmpty() ?
-                    List.of() : postServices.search(search));
+            model.addAttribute("search", parameters.getOrDefault("q", ""));
+            model.addAttribute("posts", parameters.get("q").isEmpty() ?
+                    List.of() : postServices.search(parameters.get("q").describeConstable()));
+
+            int page = Integer.parseInt(parameters.getOrDefault("page", "0"));
+            int size = Integer.parseInt(parameters.getOrDefault("size", "8"));
+            Pageable pageable = PageRequest.of(page, size);
+            List<Post> allPosts = postServices.search(parameters.get("q").describeConstable());
+
+            Page<Post> postPage = postServices.findAll(allPosts, pageable, parameters);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("sizePage", size);
+            model.addAttribute("totalPages", postPage.getTotalPages());
+            model.addAttribute("q", parameters.getOrDefault("q", ""));
+            model.addAttribute("posts", postPage.getContent());
+
             return "PostsResultSearch";
         } catch (AuthorizationException e)  {
             return "redirect:/auth/login";
@@ -185,16 +201,39 @@ public class PostMvcController extends BaseMvcController {
     }
 
     @GetMapping
-    public String showAllPosts(@ModelAttribute("filterPostOptions") FilterPostsDto filterDto, Model model,
+    public String showAllPosts(@RequestParam(required=false) Map<String, String> parameters,
+                               @ModelAttribute("filterPostOptions") FilterPostsDto filterDto, Model model,
                                HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentUser(session);
+            int page = Integer.parseInt(parameters.getOrDefault("page", "0"));
+            int size = Integer.parseInt(parameters.getOrDefault("size", "8"));
+            Pageable pageable = PageRequest.of(page, size);
+            List<Post> allPosts = postServices.getAll(parameters);
+
+            String sort = parameters.getOrDefault("sort", "dateCreated");
+            String order = parameters.getOrDefault("order", "asc");
+
+            Page<Post> postPage = postServices.findAll(allPosts, pageable, parameters);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("sizePage", size);
+            model.addAttribute("totalPages", postPage.getTotalPages());
+            model.addAttribute("sort", sort);
+            model.addAttribute("order", order);
+            model.addAttribute("title", parameters.getOrDefault("title", ""));
+            model.addAttribute("content", parameters.getOrDefault("content", ""));
+            model.addAttribute("tag", parameters.getOrDefault("tag", ""));
+            model.addAttribute("username", parameters.getOrDefault("username", ""));
+
+            model.addAttribute("posts", postPage.getContent());
+
+            return "PostsView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
+        } catch (UnsupportedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
         }
-        model.addAttribute("posts", postServices.getAll(modelMapper.dtoToMap(filterDto)));
-
-        return "PostsView";
     }
     @GetMapping("/{id}")
     public String showSinglePost(@PathVariable Long id, @RequestParam(required=false) Map<String, String> parameters, Model model, HttpSession session) {

@@ -6,12 +6,17 @@ import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.Tag;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.hibernate.query.sqm.tree.select.SqmSortSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -161,6 +166,36 @@ public class PostRepositoryImpl implements PostRepository {
             );
             criteriaQuery.where(finalPredicate);
             return session.createQuery(criteriaQuery).getResultList();
+        }
+    }
+
+    @Override
+    public Page<Post> findAll(List<Post> allPosts, Pageable pageable, Map<String, String> parameters) {
+        try (Session session = sessionFactory.openSession()) {
+            if (parameters.size() == 0) {
+                CriteriaQuery<Post> criteriaQuery = session.getCriteriaBuilder().createQuery(Post.class);
+                Root<Post> root = criteriaQuery.from(Post.class);
+                criteriaQuery.select(root);
+
+                TypedQuery<Post> typedQuery = session.createQuery(criteriaQuery);
+                typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+                typedQuery.setMaxResults(pageable.getPageSize());
+                List<Post> posts = typedQuery.getResultList();
+
+                return new PageImpl<>(posts, pageable, getAll(Map.of()).size());
+            } else {
+                int pageNo = pageable.getPageNumber();
+                int pageSize = pageable.getPageSize();
+                int startIndex = pageNo * pageSize;
+                List<Post> pageContent = new ArrayList<>();
+
+
+                for (int i = startIndex; i < allPosts.size() && i < startIndex + pageSize; i++) {
+                    pageContent.add(allPosts.get(i));
+                }
+
+                return new PageImpl<>(pageContent, PageRequest.of(pageNo, pageSize), allPosts.size());
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.telerikacademy.web.fms.repositories.contracts;
 
 import com.telerikacademy.web.fms.models.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -17,4 +19,6 @@ public interface PostRepository {
     Post getPostByUserId(Long userId, Long postId);
 
     List<Post> search(Optional<String> keyword);
+
+    Page<Post> findAll(List<Post> allPosts, Pageable pageable, Map<String, String> parameters);
 }
