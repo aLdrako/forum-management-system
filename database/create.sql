@@ -15,7 +15,7 @@ create or replace table users
     last_name  varchar(32)                          not null,
     email      varchar(50)                          not null,
     username   varchar(50)                          not null,
-    password   varchar(50)                          not null,
+    password   varchar(100)                          not null,
     join_date  datetime default current_timestamp() not null,
     constraint users_pk
         unique (username),

@@ -49,19 +49,10 @@
     <nav aria-label="Page navigation"
          th:if="${totalPages > 0}"
          th:with="pageQuery=${'?page='},
-                  sizeQuery=${'&size='}">
+                  sizeQuery=${'&size='},
+                  linkQuery=${sizeQuery + sizePage}">
 
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{${pageQuery + (currentPage - 1) + sizeQuery + sizePage}}">Previous</a>
-            </li>
-            <li th:each="page : ${#numbers.sequence(0, totalPages - 1)}" class="page-item">
-                <a class="page-link" th:href="@{${pageQuery + page + sizeQuery + sizePage}}" th:text="${page + 1}" th:classappend="${currentPage == page} ? 'active'"></a>
-            </li>
-            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{${pageQuery + (currentPage + 1) + sizeQuery + sizePage}}">Next</a>
-            </li>
-        </ul>
+        <ul th:replace="~{fragments/pagination :: pagination}"></ul>
     </nav>
 
 </div>

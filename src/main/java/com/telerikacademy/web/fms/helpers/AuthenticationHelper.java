@@ -6,6 +6,7 @@ import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -19,9 +20,11 @@ public class AuthenticationHelper {
     private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication";
     private static final String INVALID_AUTHORIZATION_ERROR = "You don't have rights to perform this operation!";
     private final UserServices userServices;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public AuthenticationHelper(UserServices userServices) {
+    public AuthenticationHelper(UserServices userServices, BCryptPasswordEncoder passwordEncoder) {
         this.userServices = userServices;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User tryGetUser(HttpHeaders headers) {
@@ -45,9 +48,13 @@ public class AuthenticationHelper {
     public User verifyAuthentication(String username, String password) {
         try {
             User user = userServices.search(USERNAME_PREFIX + username).get(0);
-            if (!user.getPassword().equals(password)) {
+
+            if (!passwordEncoder.matches(password, user.getPassword())) {
                 throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
             }
+//            if (!user.getPassword().equals(password)) {
+//                throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+//            }
             return user;
         } catch (EntityNotFoundException e) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
