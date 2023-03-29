@@ -44,15 +44,13 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
     private final CommentServices commentServices;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
-    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserMvcController(UserServices userServices, PostServices postServices, CommentServices commentServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper, BCryptPasswordEncoder passwordEncoder) {
+    public UserMvcController(ModelMapper modelMapper, UserServices userServices, PostServices postServices, CommentServices commentServices, AuthenticationHelper authenticationHelper) {
+        this.modelMapper = modelMapper;
         this.userServices = userServices;
         this.postServices = postServices;
         this.commentServices = commentServices;
-        this.modelMapper = modelMapper;
         this.authenticationHelper = authenticationHelper;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -172,12 +170,11 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
         try {
             User currentUser = authenticationHelper.tryGetCurrentUser(session);
             User user = modelMapper.dtoToObject(id, userDTO);
-            if (user.getPassword() != null || !user.getPassword().isBlank()) {
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-            }
-            userServices.update(user, currentUser);
+
             if (request.getRequestURI().contains("permissions")) {
                 userServices.updatePermissions(user.getPermission(), currentUser);
+            } else {
+                userServices.update(user, currentUser);
             }
             return "redirect:/users/" + user.getId();
         } catch (AuthorizationException e) {

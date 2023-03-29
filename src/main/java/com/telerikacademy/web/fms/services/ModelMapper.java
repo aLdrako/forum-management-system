@@ -5,6 +5,7 @@ import com.telerikacademy.web.fms.models.dto.*;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -13,19 +14,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
-
 @Component
 public class ModelMapper {
 
     private final UserServices userServices;
     private final PostServices postServices;
     private final CommentServices commentServices;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public ModelMapper(UserServices userServices, PostServices postServices, CommentServices commentServices) {
+    public ModelMapper(UserServices userServices, PostServices postServices, CommentServices commentServices, BCryptPasswordEncoder passwordEncoder) {
         this.userServices = userServices;
         this.postServices = postServices;
         this.commentServices = commentServices;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User dtoToObject(Long id, UserDTO userDTO) {
@@ -34,7 +35,7 @@ public class ModelMapper {
         if (userDTO.getLastName() != null) user.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) user.setEmail(userDTO.getEmail());
         if (userDTO.getFirstName() != null) user.setFirstName(userDTO.getFirstName());
-        if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) user.setPassword(userDTO.getPassword());
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         if (userDTO.getPhoneNumber() != null && !userDTO.getPhoneNumber().isBlank()) user.setPhoneNumber(userDTO.getPhoneNumber());
         if (userDTO.getPhoto() != null) user.setPhoto(userDTO.getPhoto());
         user.getPermission().setAdmin(userDTO.isAdmin());
@@ -48,8 +49,8 @@ public class ModelMapper {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
-        if (userDTO.getPhoneNumber() != null) user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        if (userDTO.getPhoneNumber() != null && !userDTO.getPhoneNumber().isBlank()) user.setPhoneNumber(userDTO.getPhoneNumber());
         if (userDTO.getPhoto() != null) user.setPhoto(userDTO.getPhoto());
         return user;
     }

@@ -26,13 +26,11 @@ public class AuthenticationMvcController extends BaseMvcController {
     private final UserServices userServices;
     private final ModelMapper modelMapper;
     private final AuthenticationHelper authenticationHelper;
-    private final BCryptPasswordEncoder passwordEncoder;
 
-    public AuthenticationMvcController(UserServices userServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper, BCryptPasswordEncoder passwordEncoder) {
+    public AuthenticationMvcController(UserServices userServices, ModelMapper modelMapper, AuthenticationHelper authenticationHelper) {
         this.userServices = userServices;
         this.modelMapper = modelMapper;
         this.authenticationHelper = authenticationHelper;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/login")
@@ -77,7 +75,6 @@ public class AuthenticationMvcController extends BaseMvcController {
 
         try {
             User user = modelMapper.dtoToObject(userDTO);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
             userServices.create(user);
             return "redirect:/";
         } catch (EntityDuplicateException e) {

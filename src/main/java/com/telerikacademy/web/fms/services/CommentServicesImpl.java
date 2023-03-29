@@ -93,7 +93,7 @@ public class CommentServicesImpl implements CommentServices {
         if (user.getPermission().isBlocked()) {
             throw new UnauthorizedOperationException(BLOCKED_ERROR_MESSAGE);
         }
-        if (!user.getPermission().isAdmin() || !Objects.equals(comment.getCreatedBy().getId(), user.getId())) {
+        if (!Objects.equals(comment.getCreatedBy().getId(), user.getId()) && !user.getPermission().isAdmin()) {
             throw new UnauthorizedOperationException(UNAUTHORIZED_ERROR_MESSAGE);
         }
     }
