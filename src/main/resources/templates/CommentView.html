@@ -20,7 +20,7 @@
       <span th:text="${comment.dateCreated} + ' by '">Date Created</span>
       <span>
         <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${comment.createdBy.id})}" th:text="${comment.createdBy.username}">Username (design!)</a>
-        <a th:if="${isDeleted}" th:text="anonymous">Username (design!)</a>
+        <span th:if="${isDeleted}" th:text="anonymous">Username (design!)</span>
       </span>
     </p>
     <p th:text="${comment.content}">Comment content (design!)</p>

@@ -24,10 +24,12 @@
             <h6 class="display-6">Most Recent</h6>
             <hr class="pb-3">
             <div class="card">
-                <div class="card-body" th:each="post : ${mostRecentPosts}">
+                <div class="card-body" th:each="post : ${mostRecentPosts}"
+                     th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted_')}">
                     <h5 class="card-title"><a href="#" th:unless="${session.isAuthenticated}" th:href="@{/auth/login}" class="text-decoration-none" th:text="${post.getTitle()}">Post title</a></h5>
                     <h5 class="card-title"><a href="#" th:if="${session.isAuthenticated}" th:href="@{/posts/{id}(id=${post.getId()})}" class="text-decoration-none" th:text="${post.getTitle()}">Post title</a></h5>
-                    <h6 class="card-subtitle mb-2 text-muted" th:text="${post.getUserCreated().getUsername()}">Author</h6>
+                    <h6 th:if="${!isDeleted}" class="card-subtitle mb-2 text-muted" th:text="${post.getUserCreated().getUsername()}">Author</h6>
+                    <h6 th:if="${isDeleted}" class="card-subtitle mb-2 text-muted" th:text="anonymous">Author</h6>
                     <p class="card-text text-truncate" th:text="${post.getContent()}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                 </div>
             </div>

@@ -16,8 +16,8 @@ import java.util.Optional;
 public class AuthenticationHelper {
     private static final String USERNAME_PREFIX = "username=";
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication!";
-    private static final String INVALID_AUTHORIZATION_ERROR = "Unauthorized operation";
+    private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication";
+    private static final String INVALID_AUTHORIZATION_ERROR = "You don't have rights to perform this operation!";
     private final UserServices userServices;
 
     public AuthenticationHelper(UserServices userServices) {
@@ -86,5 +86,4 @@ public class AuthenticationHelper {
         credentials[1] = credentials[1].strip();
         return credentials;
     }
-
 }

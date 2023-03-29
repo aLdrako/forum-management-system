@@ -1,4 +1,4 @@
-<table th:fragment="posts-view" class="table mt-5">
+<table th:fragment="posts-view" class="table mt-3">
   <thead>
   <tr th:if="${!posts.isEmpty()}">
     <th scope="col">Posts</th>
@@ -10,15 +10,18 @@
   <tr th:if="${posts.isEmpty()}">
     <td colspan="7" class="text-center" th:text="#{navigation.posts.empty}">No Comments</td>
   </tr>
-  <tr th:each="post : ${posts}">
+  <tr th:each="post : ${posts}"
+      th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted_')}">
     <td>
       <span class="post-title">
         <a class="text-decoration-none text-dark" href="#" th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}">Sample post title</a>
       </span>
       <p class="blog-post-meta">
         <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
-        <span><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
-                 th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a></span>
+        <span>
+          <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}" th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a>
+          <span th:if="${isDeleted}" th:text="anonymous">anonymous</span>
+        </span>
       </p>
     </td>
     <td>

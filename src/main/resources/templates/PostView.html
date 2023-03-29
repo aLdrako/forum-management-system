@@ -9,13 +9,15 @@
 
 <body class="user-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='post-details')}"></header>
-<div class="container mt-5">
+<div class="container mt-5" th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted_')}">
     <article class="blog-post">
         <h2 class="blog-post-title" th:text="${post.getTitle()}">Sample post title</h2>
         <p class="blog-post-meta">
             <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
-            <span><a href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
-                     th:text="${post.getUserCreated().getUsername()}">&nbsp&nbsp</a></span>
+            <span>
+                <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}" th:text="${post.getUserCreated().getUsername()}">&nbsp&nbsp</a>
+                <span th:if="${isDeleted}" th:text="anonymous">anonymous</span>
+            </span>
             <span>
                 <a class="btn btn-warning text-dark btn-sm" href="#"
                    th:href="@{${requestURI} + '/update'}" th:if="${session.user == post.getUserCreated() || session.isAdmin}"
