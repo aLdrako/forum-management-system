@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -81,7 +80,7 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
     public String search(@RequestParam Map<String, String> parameter, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentAdmin(session);
-            model.addAttribute("search", parameter.get("search"));
+            model.addAttribute("search", parameter.get("q"));
             List<User> users = userServices.search(String.valueOf(parameter.entrySet().iterator().next()));
             model.addAttribute("users", users);
             return "UsersView";
