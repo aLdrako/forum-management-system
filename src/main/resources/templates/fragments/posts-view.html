@@ -16,13 +16,14 @@
       <span class="post-title">
         <a class="text-decoration-none text-dark" href="#" th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}">Sample post title</a>
       </span>
-      <p class="blog-post-meta">
+      <p class="blog-post-meta" th:classappend="${#sets.isEmpty(post.getTags())} ? '' : 'mb-1'">
         <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
         <span>
           <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}" th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a>
           <span th:if="${isDeleted}" th:text="#{deleted.user.message}">anonymous</span>
         </span>
       </p>
+      <p class="badge text-bg-primary me-2 mb-0" th:if="${tagStat.index < 5}" th:each="tag : ${post.getTags()}" th:text="${tag.getName()}"></p>
     </td>
     <td>
       <p class="blog-post-meta">
