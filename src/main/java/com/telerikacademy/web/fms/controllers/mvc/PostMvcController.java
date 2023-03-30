@@ -58,13 +58,13 @@ public class PostMvcController extends BaseMvcController {
         try {
             authenticationHelper.tryGetCurrentUser(session);
             model.addAttribute("search", parameters.getOrDefault("q", ""));
-            model.addAttribute("posts", parameters.get("q").isEmpty() ?
-                    List.of() : postServices.search(parameters.get("q").describeConstable()));
+            List<Post> allPosts = parameters.get("q").isEmpty() ?
+                    List.of() : postServices.search(parameters.get("q").describeConstable());
+            model.addAttribute("posts", allPosts);
 
             int page = Integer.parseInt(parameters.getOrDefault("page", "0"));
             int size = Integer.parseInt(parameters.getOrDefault("size", "8"));
             Pageable pageable = PageRequest.of(page, size);
-            List<Post> allPosts = postServices.search(parameters.get("q").describeConstable());
 
             Page<Post> postPage = postServices.findAll(allPosts, pageable, parameters);
             model.addAttribute("currentPage", page);

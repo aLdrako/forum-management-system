@@ -11,7 +11,7 @@
     <td colspan="7" class="text-center" th:text="#{navigation.posts.empty}">No Comments</td>
   </tr>
   <tr th:each="post : ${posts}"
-      th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted_')}">
+      th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted')}">
     <td>
       <span class="post-title">
         <a class="text-decoration-none text-dark" href="#" th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}">Sample post title</a>
@@ -20,7 +20,7 @@
         <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
         <span>
           <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}" th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a>
-          <span th:if="${isDeleted}" th:text="anonymous">anonymous</span>
+          <span th:if="${isDeleted}" th:text="#{deleted.user.message}">anonymous</span>
         </span>
       </p>
     </td>
