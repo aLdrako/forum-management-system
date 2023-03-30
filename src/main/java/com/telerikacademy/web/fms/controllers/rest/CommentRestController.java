@@ -54,8 +54,8 @@ public class CommentRestController {
                             schema = @Schema(implementation = CommentOutputDTO.class, type="array"))})
     })
     @Parameters({
-            @Parameter(name = "sort", example = "content", description = "Sort by content, postedOn, dateCreated"),
-            @Parameter(name = "order", example = "desc", description = "Order by Ascending (asc) or Descending (desc)")
+            @Parameter(name = "sort", example = "content", description = "Sort by content, postedOn, dateCreated", schema = @Schema(type = "string")),
+            @Parameter(name = "order", example = "desc", description = "Order by Ascending (asc) or Descending (desc)", schema = @Schema(type = "string"))
     })
     @GetMapping
     public List<CommentOutputDTO> getAll(@Parameter(hidden = true) @RequestParam Map<String, String> parameter) {

@@ -94,9 +94,9 @@ public class UserRestController {
             @ApiResponse(responseCode = "404", description = "No users found", content = { @Content(schema = @Schema()) }),
     })
     @Parameters({
-            @Parameter(name = "firstName", example = "admin", description = "First name of the user"),
-            @Parameter(name = "username", example = "anonymous", description = "Username of the user"),
-            @Parameter(name = "email", example = "tester@mail.com", description = "Email of the user")
+            @Parameter(name = "firstName", example = "admin", description = "First name of the user", schema = @Schema(type = "string")),
+            @Parameter(name = "username", example = "anonymous", description = "Username of the user", schema = @Schema(type = "string")),
+            @Parameter(name = "email", example = "tester@mail.com", description = "Email of the user", schema = @Schema(type = "string"))
     })
     @GetMapping("/search")
     public List<User> search(@Parameter(hidden = true) @RequestParam Map<String, String> parameter) {
@@ -209,9 +209,9 @@ public class UserRestController {
             @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
     })
     @Parameters({
-            @Parameter(name = "title", example = "Java", description = "Filter by title, username, tag, content"),
-            @Parameter(name = "sortBy", example = "content", description = "Sort by content, title, datecreated"),
-            @Parameter(name = "orderBy", example = "desc", description = "Order by Ascending (asc) or Descending (desc)")
+            @Parameter(name = "title", example = "Java", description = "Filter by title, username, tag, content", schema = @Schema(type = "string")),
+            @Parameter(name = "sortBy", example = "content", description = "Sort by content, title, datecreated", schema = @Schema(type = "string")),
+            @Parameter(name = "orderBy", example = "desc", description = "Order by Ascending (asc) or Descending (desc)", schema = @Schema(type = "string"))
     })
     @GetMapping("/{userId}/posts")
     public List<PostOutputDTO> getPostsByUserId(@PathVariable Long userId, @Parameter(hidden = true) @RequestParam Map<String, String> parameters) {
@@ -251,8 +251,8 @@ public class UserRestController {
             @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
     })
     @Parameters({
-            @Parameter(name = "sort", example = "content", description = "Sort by content, postedOn, dateCreated"),
-            @Parameter(name = "order", example = "desc", description = "Order by Ascending (asc) or Descending (desc)")
+            @Parameter(name = "sort", example = "content", description = "Sort by content, postedOn, dateCreated", schema = @Schema(type = "string")),
+            @Parameter(name = "order", example = "desc", description = "Order by Ascending (asc) or Descending (desc)", schema = @Schema(type = "string"))
     })
     @GetMapping("/{userId}/comments")
     public List<CommentOutputDTO> getCommentsByUserId(@PathVariable Long userId, @Parameter(hidden = true) @RequestParam Map<String, String> parameters) {
