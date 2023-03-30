@@ -91,7 +91,8 @@ public class CommentRestController {
             @ApiResponse(responseCode = "200", description = "Comment created",
                     content = { @Content(schema = @Schema(implementation = CommentOutputDTO.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Post Not Found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Post Not Found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = { @Content(schema = @Schema()) })
     })
     @PostMapping
     public CommentOutputDTO create(@Validated(CreateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
@@ -117,7 +118,8 @@ public class CommentRestController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommentOutputDTO.class))}
             ),
             @ApiResponse(responseCode = "404", description = "Comment not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized operation")
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = { @Content(schema = @Schema()) })
     })
     @PutMapping("/{id}")
     public CommentOutputDTO update(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
