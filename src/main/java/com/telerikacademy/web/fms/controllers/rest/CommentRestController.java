@@ -12,6 +12,14 @@ import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Comment Rest Controller", description = "Comment management API")
 @RestController
 @RequestMapping("/api/comments")
 public class CommentRestController {
@@ -34,11 +43,35 @@ public class CommentRestController {
         this.authenticationHelper = authenticationHelper;
     }
 
+    @Operation(
+            summary = "Get all Comments",
+            description = "Get a list of all CommentOutputDTO objects based on specified query parameters",
+            tags = {"comments", "get all", "sort"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "List of CommentOutputDTO objects",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CommentOutputDTO.class, type="array"))})
+    })
+    @Parameters({
+            @Parameter(name = "sort", example = "content", description = "Sort by content, postedOn, dateCreated"),
+            @Parameter(name = "order", example = "desc", description = "Order by Ascending (asc) or Descending (desc)")
+    })
     @GetMapping
-    public List<CommentOutputDTO> getAll(@RequestParam Map<String, String> parameter) {
+    public List<CommentOutputDTO> getAll(@Parameter(hidden = true) @RequestParam Map<String, String> parameter) {
         return commentServices.getAll(parameter).stream().map(modelMapper::objectToDto).toList();
     }
 
+    @Operation(
+            summary = "Get Comment by ID",
+            description = "Get a Comment object by its ID",
+            tags = {"comments", "get"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Comment found",
+                    content = { @Content(schema = @Schema(implementation = CommentOutputDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "404", description = "Comment not found", content = {@Content(schema = @Schema())})
+    })
     @GetMapping("/{id}")
     public CommentOutputDTO getById(@PathVariable Long id) {
         try {
@@ -49,6 +82,17 @@ public class CommentRestController {
         }
     }
 
+    @Operation(
+            summary = "Create a new Comment",
+            description = "Create a new Comment object",
+            tags = {"comments", "create"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Comment created",
+                    content = { @Content(schema = @Schema(implementation = CommentOutputDTO.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Post Not Found", content = @Content)
+    })
     @PostMapping
     public CommentOutputDTO create(@Validated(CreateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
         try {
@@ -63,6 +107,18 @@ public class CommentRestController {
         }
     }
 
+    @Operation(
+            summary = "Update Comment by ID",
+            description = "Update an existing Comment by ID",
+            tags = {"comments", "update"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Comment updated successfully",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommentOutputDTO.class))}
+            ),
+            @ApiResponse(responseCode = "404", description = "Comment not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation")
+    })
     @PutMapping("/{id}")
     public CommentOutputDTO update(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody CommentDTO commentDTO, @RequestHeader HttpHeaders headers) {
         try {
@@ -76,6 +132,16 @@ public class CommentRestController {
         }
     }
 
+    @Operation(
+            summary = "Delete a Comment by ID",
+            description = "Delete a Comment object based on the given ID",
+            tags = {"comments", "delete"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Comment deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Comment not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access")
+    })
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id, @RequestHeader HttpHeaders headers) {
         try {

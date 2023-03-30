@@ -36,9 +36,12 @@ public class AuthenticationHelper {
             String[] credentials = validateHeaderValues(userInfo.orElse(""));
 
             User user = userServices.search(String.valueOf(credentials[0])).get(0);
-            if (!user.getPassword().equals(credentials[1])) {
+            if (!passwordEncoder.matches(credentials[1],  user.getPassword())) {
                 throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
             }
+//            if (!user.getPassword().equals(credentials[1])) {
+//                throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+//            }
             return user;
         } catch (AuthorizationException e) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);

@@ -1,9 +1,12 @@
 package com.telerikacademy.web.fms.models.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerikacademy.web.fms.models.validations.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
 public class UserDTO {
+    @Schema(name = "CreateUserFirstName", description = "The first name of the user for creation.")
     @NotEmpty(message = "First name can't be empty", groups = CreateValidationGroup.class)
     @Size(min = 4, max = 32, message = "First name should be between 4 and 32 symbols",
             groups = {UpdateValidationGroup.class, CreateValidationGroup.class})
@@ -100,6 +103,7 @@ public class UserDTO {
         this.photo = photo;
     }
 
+    @JsonIgnore
     public boolean isAdmin() {
         return isAdmin;
     }
@@ -108,6 +112,7 @@ public class UserDTO {
         isAdmin = admin;
     }
 
+    @JsonIgnore
     public boolean isBlocked() {
         return isBlocked;
     }
