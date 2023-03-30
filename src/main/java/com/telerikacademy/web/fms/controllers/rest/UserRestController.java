@@ -116,7 +116,8 @@ public class UserRestController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "User created",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
-            @ApiResponse(responseCode = "409", description = "User with same email/username already exists", content = { @Content(schema = @Schema()) })
+            @ApiResponse(responseCode = "409", description = "User with same email/username already exists", content = { @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = { @Content(schema = @Schema()) })
     })
     @PostMapping
     public User create(@Validated(CreateValidationGroup.class) @RequestBody UserDTO userDTO) {
@@ -137,7 +138,8 @@ public class UserRestController {
             @ApiResponse(responseCode = "200", description = "User updated", content = {@Content(schema = @Schema(implementation = User.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "User not found", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "409", description = "User with same email/username already exists", content = {@Content(schema = @Schema())}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = {@Content(schema = @Schema())})
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = { @Content(schema = @Schema()) })
     })
     @PutMapping("/{id}")
     public User update(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody UserDTO userDTO, @RequestHeader HttpHeaders headers) {
@@ -162,7 +164,8 @@ public class UserRestController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User permissions updated", content = {@Content(schema = @Schema(implementation = User.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "User not found", content = {@Content(schema = @Schema())}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = {@Content(schema = @Schema())})
+            @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = { @Content(schema = @Schema()) })
     })
     @PutMapping("/{id}/permissions")
     public User updatePermissions(@PathVariable Long id, @RequestBody PermissionDTO permissionDTO, @RequestHeader HttpHeaders headers) {
