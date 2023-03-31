@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{page.title.tags}">Forum Management System</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+
+<body class="comments-view d-flex flex-column min-vh-100">
+<header th:replace="~{fragments/navbar :: header(context='tags')}"></header>
+
+<div class="container mx-auto my-3">
+    <h6 class="display-6">All Tags</h6>
+    <table class="table table-bordered table-striped table-hover mt-1" style="width: 30%">
+        <thead>
+        <tr>
+            <th scope="col" class="col-md-3"><i class="bi bi-tag"></i></th>
+            <th scope="col">Tag Name</th>
+            <th scope="col" class="col-md-3">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${tags.isEmpty()}">
+            <td colspan="7" class="text-center">No Tags</td>
+        </tr>
+        <tr th:each="tag : ${tags}">
+            <th scope="row" th:text="${tag.getId()}">1</th>
+            <td th:text="${tag.getName()}">Some text (design!)</td>
+            <td class="align-middle text-center">
+                <a data-bs-toggle="modal" data-bs-target="#deleteModal"
+                   class="btn btn-danger" href="#">
+                    <i class="bi bi-x-circle" title="Delete"></i></a>
+            </td>
+            <div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete tag?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <a href="#" th:href="@{/tags/{id}/delete(id=${tag.getId()})}" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tr>
+        </tbody>
+    </table>
+
+  <!--  <nav aria-label="Page navigation"
+         th:if="${totalPages > 0}"
+         th:with="pageQuery=${'?page='},
+                sizeQuery=${'&size='},
+                sortQuery=${'&sort='},
+                orderQuery=${'&order='},
+                linkQuery=${sizeQuery + sizePage + sortQuery + sort + orderQuery + order}">
+
+        <ul th:replace="~{fragments/pagination :: pagination}"></ul>
+    </nav>-->
+
+</div>
+<!-- Delete Modal -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script th:replace="~{fragments/scripts :: bootstrap}"></script>
+</body>
+</html>

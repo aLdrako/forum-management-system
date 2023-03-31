@@ -52,4 +52,21 @@ public class TagRepositoryImpl implements TagRepository {
             return result.get(0);
         }
     }
+
+    @Override
+    public void delete(Tag tag) {
+        try (Session session = sessionFactory.openSession()){
+            session.beginTransaction();
+            session.remove(tag);
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public List<Tag> getAll() {
+        try (Session session = sessionFactory.openSession()){
+            Query<Tag> query = session.createQuery("from Tag", Tag.class);
+            return query.list();
+        }
+    }
 }

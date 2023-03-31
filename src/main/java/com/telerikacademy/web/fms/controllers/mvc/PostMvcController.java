@@ -152,7 +152,7 @@ public class PostMvcController extends BaseMvcController {
             Post newPost = modelMapper.dtoToObject(id, postDto);
             postServices.update(newPost, user);
             postServices.updateTagsInPost(postDto.getTags(), newPost);
-            return "redirect:/posts";
+            return "redirect:/posts/" + newPost.getId();
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "NotFoundView";
