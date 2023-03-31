@@ -26,7 +26,7 @@
                 <a data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger text-light btn-sm" href="#"
                    th:if="${session.user == post.getUserCreated() || session.isAdmin}">Delete Post</a></span>
         </p>
-        <p th:text="${post.getContent()}">This blog post shows a few different types of content.</p>
+        <p th:utext="${post.getContent()}">This blog post shows a few different types of content.</p>
         <section>
             <a class="btn" th:classappend="${session.isAuthenticated && post.getLikes().contains(session.user)} ? 'btn-danger bi bi-heart' : 'btn-light bi bi-heart'"
                th:href="@{/posts/{id}/like(id=${post.getId()})}">
@@ -47,7 +47,6 @@
             </div>
             <hr>
         </section>
-
     </article>
 
     <form th:replace="~{/fragments/comment-form :: comment-form-sort}"></form>

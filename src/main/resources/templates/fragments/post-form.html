@@ -19,13 +19,16 @@
         </div>
         <div class="input-group mb-3" >
             <div class="form-floating">
-                <textarea class="form-control" placeholder="Write content" id="floatingContent" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></textarea>
-                <label for="floatingContent" th:text="#{post.label.content}">Content</label>
+                <div contenteditable="true" id="editor" style=height:200px th:utext="${content}"></div>
+                <input type="hidden" id="floatingContent" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></input>
+<!--                <textarea class="form-control" placeholder="Write content" id="floatingContent" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></textarea>-->
+<!--                <label for="floatingContent" th:text="#{post.label.content}">Content</label>-->
                 <div id="validationContent" class="invalid-feedback" th:errors="*{content}">Error placeholder</div>
             </div>
-            <button class="btn btn-success input-group-text" type="submit" name="action" value="save" style="width: 100px">Save</button>
+            <button class="btn btn-success input-group-text" type="submit" name="action" value="save" style="width: 100px" onclick="onSubmit()">Save</button>
         </div>
     </div>
+    <script th:replace="~{fragments/scripts :: quilljs}"></script>
 </form>
 
 <form method="get" action="#"

@@ -88,6 +88,18 @@ body {
     color: #dc3545;
 }
 
+#editor, .ql-toolbar {
+    background-color: white;
+}
+
+#editor {
+    border-bottom-left-radius: .375rem;
+}
+
+.ql-toolbar {
+    border-top-left-radius: .375rem;
+}
+
 /*ERROR PAGE*/
 .error-page {
     background-color: rgb(51, 51, 51);

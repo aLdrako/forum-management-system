@@ -48,7 +48,7 @@
                         <h4 class="mb-0 text-decoration-none text-dark home-page-post-title text-truncate" th:text="${post.getTitle()}">Post Title</h4>
                         <div class="mb-1 text-muted" th:if="${!isDeleted}" th:text="${post.getUserCreated().getUsername()}">Author</div>
                         <div class="mb-1 text-muted" th:if="${isDeleted}" th:text="#{deleted.user.message}">Author</div>
-                        <p class="card-text mb-auto text-truncate" th:text="${post.getContent()}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p class="card-text mb-auto text-truncate" th:utext="${post.getContent()}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         <a href="#" th:if="${session.isAuthenticated}" th:href="@{/posts/{id}(id=${post.getId()})}" class="stretched-link">Continue reading</a>
                         <a href="#" th:unless="${session.isAuthenticated}" th:href="@{/auth/login}" class="stretched-link">Continue reading</a>
                     </div>
