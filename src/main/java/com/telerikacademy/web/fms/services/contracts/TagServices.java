@@ -7,7 +7,7 @@ import com.telerikacademy.web.fms.models.User;
 import java.util.List;
 
 public interface TagServices {
-    Tag getTagById(Long id);
+    Tag getTagById(Long id, User user);
     Tag createTag(String tagName);
 
     void delete(Long id, User user);

@@ -16,7 +16,7 @@ import java.util.Objects;
 @Service
 public class TagServicesImpl implements TagServices {
 
-    public static final String UNAUTHORIZED_MESSAGE = "Only admins can remove/change tags!";
+    public static final String UNAUTHORIZED_MESSAGE = "Only admins can view/remove tags!";
     private final TagRepository tagRepository;
 
     public TagServicesImpl(TagRepository tagRepository) {
@@ -24,7 +24,8 @@ public class TagServicesImpl implements TagServices {
     }
 
     @Override
-    public Tag getTagById(Long id) {
+    public Tag getTagById(Long id, User user) {
+        checkAuthorizedPermissions(user);
         return tagRepository.getTagById(id);
     }
 
