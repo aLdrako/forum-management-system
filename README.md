@@ -27,7 +27,7 @@ Anonymous users ***should*** be able to see a list of the top 10 most commented 
 Accessible only if the user is authenticated.
 The user ***must*** be able to log in and log out.
 Users ***must*** be able to browse posts created by the other users with an option to sort and filter them.
-Users ***must*** be able to view a single post including its title, content, comments, likes, etc. The details of the post and any available user actions (comment/like/edit) ***hould*** be presented on the same page.
+Users ***must*** be able to view a single post including its title, content, comments, likes, etc. The details of the post and any available user actions (comment/like/edit) ***should*** be presented on the same page.
 Users ***must*** be able to update their profile information. Users ***should not*** be able to change their username once registered. Users ***could*** upload a profile photo.
 Users ***must*** be able to create a new post with at least a title and content.
 Each user ***must*** be able to edit only personal posts or comments.
@@ -99,7 +99,13 @@ Provide a link to a GitLab repository with the following information in the READ
 - Host your application's backend in a public hosting provider of your choice (e.g., AWS, Azure, Heroku)
 - Use branches while working with Git
 
-### Teamwork Guidelines
+## API Documentation
+<img src="https://static1.smartbear.co/swagger/media/assets/images/swagger_logo.svg" alt="logo" width="300px" style="margin-top: 20px;"/>
+
+### [FMS OpenAPI](https://app.swaggerhub.com/apis/aLdrako/forum_management_system-open-api/v1.2) v1.2 OAS3
+
+
+## Teamwork Guidelines
 Please see the Teamwork Guidelines [document](https://learn.telerikacademy.com/mod/page/view.php?id=39002 "document").
 ### Appendix
 - [Guidelines for designing good REST API](https://florimond.dev/en/posts/2018/08/restful-api-design-13-best-practices-to-make-your-users-happy/)

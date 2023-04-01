@@ -36,7 +36,7 @@
       <td class="align-middle" th:text="${comment.content}">Some text (design!)</td>
       <td class="align-middle">
         <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${comment.createdBy.id})}" th:text="${comment.createdBy.username}">Username (design!)</a>
-        <span th:if="${isDeleted}" th:text="anonymous">Username (design!)</span>
+        <span th:if="${isDeleted}" th:text="#{deleted.user.message}">Username (design!)</span>
       </td>
       <td class="align-middle"><a href="#" th:href="@{/posts/{id}(id=${comment.postedOn.id})}" th:text="${comment.postedOn.id}">1 (design!)</a></td>
       <td class="d-sm-none d-md-table-cell align-middle" th:text="${comment.dateCreated}">Created (design!)</td>
