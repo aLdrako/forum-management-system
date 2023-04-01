@@ -19,7 +19,7 @@
         </div>
         <div class="input-group mb-3" >
             <div class="form-floating">
-                <div contenteditable="true" id="editor" style=height:200px th:utext="${content}"></div>
+                <div id="editor" style=height:200px th:utext="${content}"></div>
                 <input type="hidden" id="floatingContent" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></input>
 <!--                <textarea class="form-control" placeholder="Write content" id="floatingContent" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></textarea>-->
 <!--                <label for="floatingContent" th:text="#{post.label.content}">Content</label>-->
