@@ -241,6 +241,7 @@ public class PostMvcController extends BaseMvcController {
             authenticationHelper.tryGetCurrentUser(session);
             Post post = postServices.getById(id);
             List<Comment> commentsByPostId = commentServices.getCommentsByPostId(id, parameters);
+            model.addAttribute("comment" , new CommentDTO());
             model.addAttribute("comments", commentsByPostId);
             model.addAttribute("post", post);
             return "PostView";
@@ -252,11 +253,11 @@ public class PostMvcController extends BaseMvcController {
         }
     }
 
-    @GetMapping("{id}/reply")
-    public String showCommentCreatePage(@PathVariable Long id, Model model) {
-        model.addAttribute("comment" , new CommentDTO());
-        return "CommentCreateView";
-    }
+//    @GetMapping("{id}/reply")
+//    public String showCommentCreatePage(@PathVariable Long id, Model model) {
+//        model.addAttribute("comment" , new CommentDTO());
+//        return "CommentCreateView";
+//    }
 
     @PostMapping("{id}/reply")
     public String createComment(@PathVariable Long id, @Validated(CreateValidationGroup.class) @ModelAttribute("comment") CommentDTO commentDTO,
@@ -265,6 +266,7 @@ public class PostMvcController extends BaseMvcController {
                                 HttpSession session) {
 
         if (bindingResult.hasErrors()) return "CommentCreateView";
+//        if (bindingResult.hasErrors()) return "PostView";
 
         try {
             User currentUser = authenticationHelper.tryGetCurrentUser(session);
@@ -272,7 +274,8 @@ public class PostMvcController extends BaseMvcController {
             Comment comment = modelMapper.dtoToObject(commentDTO);
             comment.setCreatedBy(currentUser);
             commentServices.create(comment, currentUser);
-            return "redirect:/comments/" + comment.getId();
+//            return "redirect:/comments/" + comment.getId();
+            return "redirect:/posts/" + id;
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         } catch (EntityNotFoundException e) {

@@ -24,7 +24,7 @@
             <a class="btn btn-outline-light me-2" href="/users" th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/users}" th:classappend="${ctxUsers ? 'btn-light text-dark' : ''}" th:text="#{navbar.users}">Users</a>
             <a class="btn btn-outline-light me-2" href="/comments" th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/comments}" th:classappend="${ctxComments ? 'btn-light text-dark' : ''}" th:text="#{navbar.comments}">Comments</a>
             <a class="btn btn-outline-light me-2" href="/tags" th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/tags}" th:classappend="${ctxTags ? 'btn-light text-dark' : ''}" th:text="#{navbar.tags}">Tags</a>
-            <a class="btn btn-primary" href="/posts/new" th:if="${session.isAuthenticated}" th:href="@{/posts/new}" th:classappend="${ctxCreatePost ? 'btn-light text-dark' : ''}" th:text="#{navbar.post.create}">Create Post</a>
+            <a class="btn btn-primary mt-2 mt-md-0" href="/posts/new" th:if="${session.isAuthenticated}" th:href="@{/posts/new}" th:classappend="${ctxCreatePost ? 'btn-light text-dark' : ''}" th:text="#{navbar.post.create}">Create Post</a>
 
           </div>
 
