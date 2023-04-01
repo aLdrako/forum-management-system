@@ -147,7 +147,7 @@ public class PostRestController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Likes of post are updated"),
             @ApiResponse(responseCode = "404", description = "Post Not Found"),
-            @ApiResponse(responseCode = "404", description = "Unauthorized access")
+            @ApiResponse(responseCode = "401", description = "Unauthorized access")
     })
     @PutMapping("/{id}/like")
     public void changePostLikes(@PathVariable Long id,
@@ -166,7 +166,7 @@ public class PostRestController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Post deleted"),
             @ApiResponse(responseCode = "404", description = "Post Not Found"),
-            @ApiResponse(responseCode = "404", description = "Unauthorized access")
+            @ApiResponse(responseCode = "401", description = "Unauthorized access")
     })
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id, @RequestHeader HttpHeaders headers) {
