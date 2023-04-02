@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 //@Repository
 public class PostRepositoryListImpl implements PostRepository {
@@ -85,6 +84,7 @@ public class PostRepositoryListImpl implements PostRepository {
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id %d does not have post with id %d!", userId, postId)));
     }
+
     @Override
     public List<Post> search(Optional<String> keyword) {
         return null;

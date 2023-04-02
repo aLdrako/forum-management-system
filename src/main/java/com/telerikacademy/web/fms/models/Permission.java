@@ -1,7 +1,10 @@
 package com.telerikacademy.web.fms.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "permissions")
@@ -47,6 +50,7 @@ public class Permission {
     public void setBlocked(boolean blocked) {
         isBlocked = blocked;
     }
+
     @JsonIgnore
     public boolean isDeleted() {
         return isDeleted;

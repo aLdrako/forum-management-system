@@ -5,27 +5,34 @@
     <div th:if="${context == 'create' || context == 'update'}">
         <div class="input-group">
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="floatingTitle" placeholder="Title" th:errorclass="is-invalid" th:field="*{title}">
+                <input type="text" class="form-control" id="floatingTitle" placeholder="Title"
+                       th:errorclass="is-invalid" th:field="*{title}">
                 <label for="floatingTitle" th:text="#{post.label.title}">Title</label>
                 <div id="validationTitle" class="invalid-feedback" th:errors="*{title}">Error placeholder</div>
             </div>
             <div class="form-floating mb-3" th:if="${context == 'update'}">
-                <input type="text" class="form-control" id="floatingTags" placeholder="Tags" th:errorclass="is-invalid" th:field="*{tags}">
+                <input type="text" class="form-control" id="floatingTags" placeholder="Tags" th:errorclass="is-invalid"
+                       th:field="*{tags}">
                 <label for="floatingTags" th:text="#{post.tags.label}">Tags</label>
                 <th:block th:each="tagError : ${#fields.errors()}">
-                    <div id="validationTags" th:text="${tagError}" th:if="${tagError.contains('Tags')}">Error placeholder</div>
+                    <div id="validationTags" th:text="${tagError}" th:if="${tagError.contains('Tags')}">Error
+                        placeholder
+                    </div>
                 </th:block>
             </div>
         </div>
-        <div class="input-group mb-3" >
+        <div class="input-group mb-3">
             <div class="form-floating">
                 <div id="editor" style=height:200px th:utext="${content}"></div>
-                <input type="hidden" id="floatingContent" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></input>
-<!--                <textarea class="form-control" placeholder="Write content" id="floatingContent" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></textarea>-->
-<!--                <label for="floatingContent" th:text="#{post.label.content}">Content</label>-->
+                <input type="hidden" id="floatingContent" style="height: 100px" th:errorclass="is-invalid"
+                       th:field="*{content}"></input>
+                <!--                <textarea class="form-control" placeholder="Write content" id="floatingContent" style="height: 100px" th:errorclass="is-invalid" th:field="*{content}"></textarea>-->
+                <!--                <label for="floatingContent" th:text="#{post.label.content}">Content</label>-->
                 <div id="validationContent" class="invalid-feedback" th:errors="*{content}">Error placeholder</div>
             </div>
-            <button class="btn btn-success input-group-text" type="submit" name="action" value="save" style="width: 100px" onclick="onSubmit()">Save</button>
+            <button class="btn btn-success input-group-text" type="submit" name="action" value="save"
+                    style="width: 100px" onclick="onSubmit()">Save
+            </button>
         </div>
     </div>
     <script th:replace="~{fragments/scripts :: quilljs}"></script>

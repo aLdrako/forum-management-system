@@ -18,6 +18,7 @@ public class FilterAndSortParameters {
     /**
      * Method to extract parameters from URL query {path}?sort=***&order=***
      * Used for sorting/ordering comments/posts
+     *
      * @param parameters sort and order params
      * @return Map containing sort/order key-values
      */
@@ -25,8 +26,10 @@ public class FilterAndSortParameters {
         AtomicReference<String> sort = new AtomicReference<>("id");
         AtomicReference<String> order = new AtomicReference<>("asc");
         parameters.forEach((key, value) -> {
-            if (key.contains("sort") && (value.equalsIgnoreCase("content") || value.equalsIgnoreCase("postedOn") || value.equalsIgnoreCase("dateCreated"))) sort.set(value);
-            if (key.contains("order") && (value.equalsIgnoreCase("asc") || value.equalsIgnoreCase("desc"))) order.set(value);
+            if (key.contains("sort") && (value.equalsIgnoreCase("content") || value.equalsIgnoreCase("postedOn") || value.equalsIgnoreCase("dateCreated")))
+                sort.set(value);
+            if (key.contains("order") && (value.equalsIgnoreCase("asc") || value.equalsIgnoreCase("desc")))
+                order.set(value);
         });
         return Map.of("sort", sort.get(), "order", order.get());
     }
@@ -47,6 +50,7 @@ public class FilterAndSortParameters {
         });
         return Map.of("sort", sort.get(), "order", order.get());
     }
+
     public static Predicate extractFilterPredicate(Map<String, String> parameters, CriteriaBuilder builder,
                                                    Root<Post> root, Join<Post, User> userJoin,
                                                    Join<Post, Tag> tagJoin) {

@@ -1,42 +1,45 @@
 <table th:fragment="posts-view" class="table mt-3">
-  <thead>
-  <tr th:if="${!posts.isEmpty()}">
-    <th scope="col">Posts</th>
-    <th scope="col">Replies</th>
-    <th scope="col">Likes</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:if="${posts.isEmpty()}">
-    <td colspan="7" class="text-center" th:text="#{navigation.posts.empty}">No Comments</td>
-  </tr>
-  <tr th:each="post : ${posts}"
-      th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted')}">
-    <td>
+    <thead>
+    <tr th:if="${!posts.isEmpty()}">
+        <th scope="col">Posts</th>
+        <th scope="col">Replies</th>
+        <th scope="col">Likes</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${posts.isEmpty()}">
+        <td colspan="7" class="text-center" th:text="#{navigation.posts.empty}">No Comments</td>
+    </tr>
+    <tr th:each="post : ${posts}"
+        th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted')}">
+        <td>
       <span class="post-title">
-        <a class="text-decoration-none text-dark" href="#" th:href="@{/posts/{id}(id=${post.getId()})}" th:text="${post.getTitle()}">Sample post title</a>
+        <a class="text-decoration-none text-dark" href="#" th:href="@{/posts/{id}(id=${post.getId()})}"
+           th:text="${post.getTitle()}">Sample post title</a>
       </span>
-      <p class="blog-post-meta" th:classappend="${#sets.isEmpty(post.getTags())} ? '' : 'mb-1'">
-        <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
-        <span>
-          <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}" th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a>
+            <p class="blog-post-meta" th:classappend="${#sets.isEmpty(post.getTags())} ? '' : 'mb-1'">
+                <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
+                <span>
+          <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
+             th:text="${post.getUserCreated().getUsername()} + ' '">Mark</a>
           <span th:if="${isDeleted}" th:text="#{deleted.user.message}">anonymous</span>
         </span>
-      </p>
-      <p class="badge text-bg-primary me-2 mb-0" th:if="${tagStat.index < 5}" th:each="tag : ${post.getTags()}" th:text="${tag.getName()}"></p>
-    </td>
-    <td>
-      <p class="blog-post-meta">
-        <span><i class="bi bi-chat-right-fill post-likes-comments">&nbsp</i></span>
-        <span class="post-likes-comments" th:text="${post.getComments().size()}">Comments Count</span>
-      </p>
-    </td>
-    <td>
-      <p class="blog-post-meta">
-        <span><i class="bi bi-heart-fill post-likes-comments">&nbsp</i></span>
-        <span class="post-likes-comments" th:text="${post.getLikes().size()}">Likes</span>
-      </p>
-    </td>
-  </tr>
-  </tbody>
+            </p>
+            <p class="badge text-bg-primary me-2 mb-0" th:if="${tagStat.index < 5}" th:each="tag : ${post.getTags()}"
+               th:text="${tag.getName()}"></p>
+        </td>
+        <td>
+            <p class="blog-post-meta">
+                <span><i class="bi bi-chat-right-fill post-likes-comments">&nbsp</i></span>
+                <span class="post-likes-comments" th:text="${post.getComments().size()}">Comments Count</span>
+            </p>
+        </td>
+        <td>
+            <p class="blog-post-meta">
+                <span><i class="bi bi-heart-fill post-likes-comments">&nbsp</i></span>
+                <span class="post-likes-comments" th:text="${post.getLikes().size()}">Likes</span>
+            </p>
+        </td>
+    </tr>
+    </tbody>
 </table>

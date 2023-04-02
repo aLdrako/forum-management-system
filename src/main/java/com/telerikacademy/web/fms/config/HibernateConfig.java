@@ -22,7 +22,7 @@ public class HibernateConfig {
         dbClassName = environment.getProperty("spring.datasource.driver-class-name");
     }
 
-    @Bean(name="entityManagerFactory")
+    @Bean(name = "entityManagerFactory")
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());

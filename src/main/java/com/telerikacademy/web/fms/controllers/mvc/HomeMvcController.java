@@ -27,10 +27,12 @@ public class HomeMvcController extends BaseMvcController {
     public List<Post> getMostCommentedPosts() {
         return postServices.getMostCommented();
     }
+
     @ModelAttribute("usersCount")
     public int getUsersCount() {
         return userServices.getAll().size();
     }
+
     @ModelAttribute("postsCount")
     public int getPostsCount() {
         return postServices.getAll(Map.of()).size();

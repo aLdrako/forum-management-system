@@ -3,7 +3,7 @@ package com.telerikacademy.web.fms.models.validations;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class OptionalWithSizeConstraintValidator implements ConstraintValidator<OptionalWithSizeConstraint, String>  {
+public class OptionalWithSizeConstraintValidator implements ConstraintValidator<OptionalWithSizeConstraint, String> {
     private int min;
     private int max;
 

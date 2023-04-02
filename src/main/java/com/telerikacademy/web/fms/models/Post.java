@@ -5,7 +5,9 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
 
@@ -64,6 +66,7 @@ public class Post {
         tags = new HashSet<>();
         comments = new HashSet<>();
     }
+
     public Post(Long id, String title, String content, User userCreated, LocalDateTime datecreated) {
         this(id, title, content, userCreated);
         this.datecreated = datecreated;
@@ -83,12 +86,15 @@ public class Post {
     public Set<Tag> getTags() {
         return new HashSet<>(tags);
     }
+
     public void addTag(Tag tag) {
         tags.add(tag);
     }
+
     public void clearTags() {
         tags.clear();
     }
+
     public void removeTag(Tag tag) {
         tags.remove(tag);
     }
@@ -153,6 +159,7 @@ public class Post {
     public void setDatecreated(LocalDateTime dateCreated) {
         this.datecreated = dateCreated;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

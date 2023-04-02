@@ -64,7 +64,8 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public User updatePermissions(Permission permission, User authenticatedUser) {
-        if (permission.getUserId() == 1) throw new UnauthorizedOperationException(UPDATE_SUPER_USER_PERMISSION_ERROR_MESSAGE);
+        if (permission.getUserId() == 1)
+            throw new UnauthorizedOperationException(UPDATE_SUPER_USER_PERMISSION_ERROR_MESSAGE);
         User user = userRepository.getById(permission.getUserId());
         checkAdminPermissions(authenticatedUser);
         Permission updatedPermission = userRepository.updatePermissions(permission);

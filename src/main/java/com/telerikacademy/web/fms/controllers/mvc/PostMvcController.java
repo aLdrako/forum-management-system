@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/posts")
@@ -47,12 +46,13 @@ public class PostMvcController extends BaseMvcController {
         this.modelMapper = modelMapper;
         this.authenticationHelper = authenticationHelper;
     }
+
     @ModelAttribute("users")
     public List<User> populateUsers() {
         return userServices.getAll();
     }
 
-    @GetMapping ("/search")
+    @GetMapping("/search")
     public String search(@RequestParam(required = false) Map<String, String> parameters,
                          Model model, HttpSession session) {
         try {
@@ -74,7 +74,7 @@ public class PostMvcController extends BaseMvcController {
             model.addAttribute("posts", postPage.getContent());
 
             return "PostsResultSearch";
-        } catch (AuthorizationException e)  {
+        } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         } catch (UnauthorizedOperationException e) {
             model.addAttribute("error", e.getMessage());
@@ -92,6 +92,7 @@ public class PostMvcController extends BaseMvcController {
         model.addAttribute("post", new PostDTO());
         return "PostCreateView";
     }
+
     @PostMapping("/new")
     public String createPost(@Valid @ModelAttribute("post") PostDTO postDTO,
                              BindingResult bindingResult, Model model, HttpSession session) {
@@ -136,6 +137,7 @@ public class PostMvcController extends BaseMvcController {
             return "NotFoundView";
         }
     }
+
     @PostMapping("{id}/update")
     public String updatePost(@PathVariable Long id, @Valid @ModelAttribute("post") PostDTO postDto,
                              BindingResult bindingResult, Model model, HttpSession session) {
@@ -161,6 +163,7 @@ public class PostMvcController extends BaseMvcController {
             return "AccessDeniedView";
         }
     }
+
     @GetMapping("/{id}/delete")
     public String deletePost(@PathVariable Long id, Model model, HttpSession session) {
         User user;
@@ -180,6 +183,7 @@ public class PostMvcController extends BaseMvcController {
             return "AccessDeniedView";
         }
     }
+
     @GetMapping("/{id}/like")
     public String changeLikes(@PathVariable Long id, Model model, HttpSession session) {
         User user;
@@ -201,7 +205,7 @@ public class PostMvcController extends BaseMvcController {
     }
 
     @GetMapping
-    public String showAllPosts(@RequestParam(required=false) Map<String, String> parameters,
+    public String showAllPosts(@RequestParam(required = false) Map<String, String> parameters,
                                @ModelAttribute("filterPostOptions") FilterPostsDto filterDto, Model model,
                                HttpSession session) {
         try {
@@ -230,18 +234,19 @@ public class PostMvcController extends BaseMvcController {
             return "PostsView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
-        } catch (UnsupportedOperationException e) {
+        } catch (UnauthorizedOperationException e) {
             model.addAttribute("error", e.getMessage());
             return "AccessDeniedView";
         }
     }
+
     @GetMapping("/{id}")
-    public String showSinglePost(@PathVariable Long id, @RequestParam(required=false) Map<String, String> parameters, Model model, HttpSession session) {
+    public String showSinglePost(@PathVariable Long id, @RequestParam(required = false) Map<String, String> parameters, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentUser(session);
             Post post = postServices.getById(id);
             List<Comment> commentsByPostId = commentServices.getCommentsByPostId(id, parameters);
-            model.addAttribute("comment" , new CommentDTO());
+            model.addAttribute("comment", new CommentDTO());
             model.addAttribute("comments", commentsByPostId);
             model.addAttribute("post", post);
             return "PostView";
@@ -253,12 +258,6 @@ public class PostMvcController extends BaseMvcController {
         }
     }
 
-//    @GetMapping("{id}/reply")
-//    public String showCommentCreatePage(@PathVariable Long id, Model model) {
-//        model.addAttribute("comment" , new CommentDTO());
-//        return "CommentCreateView";
-//    }
-
     @PostMapping("{id}/reply")
     public String createComment(@PathVariable Long id, @Validated(CreateValidationGroup.class) @ModelAttribute("comment") CommentDTO commentDTO,
                                 BindingResult bindingResult,
@@ -266,7 +265,6 @@ public class PostMvcController extends BaseMvcController {
                                 HttpSession session) {
 
         if (bindingResult.hasErrors()) return "CommentCreateView";
-//        if (bindingResult.hasErrors()) return "PostView";
 
         try {
             User currentUser = authenticationHelper.tryGetCurrentUser(session);
@@ -274,7 +272,6 @@ public class PostMvcController extends BaseMvcController {
             Comment comment = modelMapper.dtoToObject(commentDTO);
             comment.setCreatedBy(currentUser);
             commentServices.create(comment, currentUser);
-//            return "redirect:/comments/" + comment.getId();
             return "redirect:/posts/" + id;
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";

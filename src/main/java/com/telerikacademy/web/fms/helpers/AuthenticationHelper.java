@@ -2,6 +2,7 @@ package com.telerikacademy.web.fms.helpers;
 
 import com.telerikacademy.web.fms.exceptions.AuthorizationException;
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
+import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
 import jakarta.servlet.http.HttpSession;
@@ -36,7 +37,7 @@ public class AuthenticationHelper {
             String[] credentials = validateHeaderValues(userInfo.orElse(""));
 
             User user = userServices.search(String.valueOf(credentials[0])).get(0);
-            if (!passwordEncoder.matches(credentials[1],  user.getPassword())) {
+            if (!passwordEncoder.matches(credentials[1], user.getPassword())) {
                 throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
             }
 //            if (!user.getPassword().equals(credentials[1])) {
@@ -81,7 +82,7 @@ public class AuthenticationHelper {
         }
         User user = userServices.search(USERNAME_PREFIX + currentUsername).get(0);
         if (!user.getPermission().isAdmin()) {
-            throw new UnsupportedOperationException(INVALID_AUTHORIZATION_ERROR);
+            throw new UnauthorizedOperationException(INVALID_AUTHORIZATION_ERROR);
         }
     }
 

@@ -9,10 +9,11 @@ public class PostOutputDTO {
     private List<String> tags;
     private String userCreated;
     private String dateCreated;
+
     public PostOutputDTO() {
     }
 
-    public PostOutputDTO(String title, String content,String userCreated, int likes, List<String> tags, String dateCreated) {
+    public PostOutputDTO(String title, String content, String userCreated, int likes, List<String> tags, String dateCreated) {
         this.title = title;
         this.content = content;
         this.likes = likes;
@@ -24,6 +25,7 @@ public class PostOutputDTO {
     public String getTitle() {
         return title;
     }
+
     public String getContent() {
         return content;
     }
@@ -31,6 +33,7 @@ public class PostOutputDTO {
     public int getLikes() {
         return likes;
     }
+
     public List<String> getTags() {
         return tags;
     }
@@ -38,6 +41,7 @@ public class PostOutputDTO {
     public String getUserCreated() {
         return userCreated;
     }
+
     public String getDateCreated() {
         return dateCreated;
     }

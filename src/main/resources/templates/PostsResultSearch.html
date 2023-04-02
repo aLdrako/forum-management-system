@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title th:text="#{navigation.posts}">Forum Management System</title>
-  <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <title th:text="#{navigation.posts}">Forum Management System</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
 <body class="users-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='posts')}"></header>
 <div class="container mx-auto my-3">
-  <h6 class="display-6" th:text="'Searching results for: ' + ${search}">All Posts</h6>
-  <table th:replace="~{fragments/posts-view :: posts-view}"></table>
-  <nav aria-label="Page navigation"
-       th:if="${totalPages > 0}"
-       th:with="pageQuery=${'?page='},
+    <h6 class="display-6" th:text="'Searching results for: ' + ${search}">All Posts</h6>
+    <table th:replace="~{fragments/posts-view :: posts-view}"></table>
+    <nav aria-label="Page navigation"
+         th:if="${totalPages > 0}"
+         th:with="pageQuery=${'?page='},
                 sizeQuery=${'&size='},
                 searchQuery=${'&q='},
                 linkQuery=${sizeQuery + sizePage + searchQuery + q}">
-    <ul th:replace="~{fragments/pagination :: pagination}"></ul>
-  </nav>
+        <ul th:replace="~{fragments/pagination :: pagination}"></ul>
+    </nav>
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

@@ -3,7 +3,6 @@ package com.telerikacademy.web.fms.services;
 
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
-import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.Tag;
 import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.TagRepository;
@@ -11,7 +10,6 @@ import com.telerikacademy.web.fms.services.contracts.TagServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TagServicesImpl implements TagServices {

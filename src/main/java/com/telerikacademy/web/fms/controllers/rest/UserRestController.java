@@ -6,15 +6,15 @@ import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
 import com.telerikacademy.web.fms.models.Comment;
+import com.telerikacademy.web.fms.models.Permission;
+import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
+import com.telerikacademy.web.fms.models.dto.PermissionDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
+import com.telerikacademy.web.fms.models.dto.UserDTO;
 import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import com.telerikacademy.web.fms.services.ModelMapper;
-import com.telerikacademy.web.fms.models.Permission;
-import com.telerikacademy.web.fms.models.dto.PermissionDTO;
-import com.telerikacademy.web.fms.models.User;
-import com.telerikacademy.web.fms.models.dto.UserDTO;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import com.telerikacademy.web.fms.services.contracts.UserServices;
@@ -32,7 +32,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Tag(name = "User Rest Controller", description = "User management API")
 @RestController
@@ -58,7 +60,7 @@ public class UserRestController {
             tags = {"users", "get all"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "All users", content = { @Content(schema = @Schema(implementation = User.class, type="array"), mediaType = "application/json") })
+            @ApiResponse(responseCode = "200", description = "All users", content = {@Content(schema = @Schema(implementation = User.class, type = "array"), mediaType = "application/json")})
     })
     @GetMapping
     public List<User> getAll() {
@@ -71,8 +73,8 @@ public class UserRestController {
             tags = {"users", "get"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User found", content = { @Content(schema = @Schema(implementation = User.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
+            @ApiResponse(responseCode = "200", description = "User found", content = {@Content(schema = @Schema(implementation = User.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "User not found", content = {@Content(schema = @Schema())})
     })
     @GetMapping("/{id}")
     public User getById(@PathVariable Long id) {
@@ -90,8 +92,8 @@ public class UserRestController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User(s) found",
-                    content = { @Content(schema = @Schema(implementation = User.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", description = "No users found", content = { @Content(schema = @Schema()) }),
+                    content = {@Content(schema = @Schema(implementation = User.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "No users found", content = {@Content(schema = @Schema())}),
     })
     @Parameters({
             @Parameter(name = "firstName", example = "admin", description = "First name of the user", schema = @Schema(type = "string")),
@@ -116,8 +118,8 @@ public class UserRestController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "User created",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
-            @ApiResponse(responseCode = "409", description = "User with same email/username already exists", content = { @Content(schema = @Schema()) }),
-            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = { @Content(schema = @Schema()) })
+            @ApiResponse(responseCode = "409", description = "User with same email/username already exists", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = {@Content(schema = @Schema())})
     })
     @PostMapping
     public User create(@Validated(CreateValidationGroup.class) @RequestBody UserDTO userDTO) {
@@ -139,7 +141,7 @@ public class UserRestController {
             @ApiResponse(responseCode = "404", description = "User not found", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "409", description = "User with same email/username already exists", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = {@Content(schema = @Schema())}),
-            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = { @Content(schema = @Schema()) })
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = {@Content(schema = @Schema())})
     })
     @PutMapping("/{id}")
     public User update(@PathVariable Long id, @Validated(UpdateValidationGroup.class) @RequestBody UserDTO userDTO, @RequestHeader HttpHeaders headers) {
@@ -165,7 +167,7 @@ public class UserRestController {
             @ApiResponse(responseCode = "200", description = "User permissions updated", content = {@Content(schema = @Schema(implementation = User.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "User not found", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "401", description = "Unauthorized operation", content = {@Content(schema = @Schema())}),
-            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = { @Content(schema = @Schema()) })
+            @ApiResponse(responseCode = "400", description = "The validation of the body has failed", content = {@Content(schema = @Schema())})
     })
     @PutMapping("/{id}/permissions")
     public User updatePermissions(@PathVariable Long id, @RequestBody PermissionDTO permissionDTO, @RequestHeader HttpHeaders headers) {
@@ -208,8 +210,8 @@ public class UserRestController {
             tags = {"posts", "get", "sort", "filter"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "All posts of a specific user", content = { @Content(schema = @Schema(implementation = PostOutputDTO.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
+            @ApiResponse(responseCode = "200", description = "All posts of a specific user", content = {@Content(schema = @Schema(implementation = PostOutputDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "User not found", content = {@Content(schema = @Schema())})
     })
     @Parameters({
             @Parameter(name = "title", example = "Java", description = "Filter by title, username, tag, content", schema = @Schema(type = "string")),
@@ -232,8 +234,8 @@ public class UserRestController {
             tags = {"posts", "get"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Specific post of a specific user", content = { @Content(schema = @Schema(implementation = PostOutputDTO.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", description = "User or post not found", content = { @Content(schema = @Schema()) })
+            @ApiResponse(responseCode = "200", description = "Specific post of a specific user", content = {@Content(schema = @Schema(implementation = PostOutputDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "User or post not found", content = {@Content(schema = @Schema())})
     })
     @GetMapping("/{userId}/posts/{postId}")
     public PostOutputDTO getPostByUserId(@PathVariable Long userId, @PathVariable Long postId) {
@@ -250,8 +252,8 @@ public class UserRestController {
             tags = {"comments", "get", "sort"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "All comments of a specific user", content = { @Content(schema = @Schema(implementation = CommentOutputDTO.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", description = "User not found", content = { @Content(schema = @Schema()) })
+            @ApiResponse(responseCode = "200", description = "All comments of a specific user", content = {@Content(schema = @Schema(implementation = CommentOutputDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "User not found", content = {@Content(schema = @Schema())})
     })
     @Parameters({
             @Parameter(name = "sort", example = "content", description = "Sort by content, postedOn, dateCreated", schema = @Schema(type = "string")),
@@ -272,8 +274,8 @@ public class UserRestController {
             tags = {"comments", "get"}
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Specific comment of a specific user", content = { @Content(schema = @Schema(implementation = CommentOutputDTO.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "404", description = "User or comment not found", content = { @Content(schema = @Schema()) })
+            @ApiResponse(responseCode = "200", description = "Specific comment of a specific user", content = {@Content(schema = @Schema(implementation = CommentOutputDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "User or comment not found", content = {@Content(schema = @Schema())})
     })
     @GetMapping("/{userId}/comments/{commentId}")
     public CommentOutputDTO getCommentByUserId(@PathVariable Long userId, @PathVariable Long commentId) {

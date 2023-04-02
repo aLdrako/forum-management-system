@@ -1,7 +1,8 @@
 package com.telerikacademy.web.fms.services;
 
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
-import com.telerikacademy.web.fms.models.*;
+import com.telerikacademy.web.fms.models.Post;
+import com.telerikacademy.web.fms.models.User;
 import com.telerikacademy.web.fms.repositories.contracts.PostRepository;
 import com.telerikacademy.web.fms.repositories.contracts.UserRepository;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
@@ -10,7 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class PostServicesImpl implements PostServices {

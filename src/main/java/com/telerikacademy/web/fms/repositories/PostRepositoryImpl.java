@@ -1,7 +1,6 @@
 package com.telerikacademy.web.fms.repositories;
 
 import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
-import com.telerikacademy.web.fms.models.Comment;
 import com.telerikacademy.web.fms.models.Post;
 import com.telerikacademy.web.fms.models.Tag;
 import com.telerikacademy.web.fms.models.User;
@@ -11,7 +10,6 @@ import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.hibernate.query.sqm.tree.select.SqmSortSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,7 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.extractFilterPredicate;
 import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.extractSortOrderPosts;
@@ -28,6 +29,7 @@ import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.extract
 public class PostRepositoryImpl implements PostRepository {
 
     private final SessionFactory sessionFactory;
+
     @Autowired
     public PostRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -35,7 +37,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post getById(Long id) {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             Post post = session.get(Post.class, id);
             if (post == null) {
                 throw new EntityNotFoundException("Post", id);
@@ -46,7 +48,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getAll(Map<String, String> parameters) {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Post> criteriaQuery = criteriaBuilder.createQuery(Post.class);
             Root<Post> post = criteriaQuery.from(Post.class);
@@ -86,7 +88,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post create(Post post) {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(post);
             session.getTransaction().commit();
@@ -96,7 +98,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public void update(Post post) {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.merge(post);
             session.getTransaction().commit();
@@ -105,7 +107,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public void delete(Post post) {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.remove(post);
             session.getTransaction().commit();
@@ -114,20 +116,20 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getTopTenMostCommented() {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             return session.createQuery("""
-                                        from Post p
-                                        left join p.comments as pc
-                                        group by p
-                                        order by count(pc) desc
-                                        limit 10
-                                        """, Post.class).list();
+                    from Post p
+                    left join p.comments as pc
+                    group by p
+                    order by count(pc) desc
+                    limit 10
+                    """, Post.class).list();
         }
     }
 
     @Override
     public List<Post> getTopTenMostRecent() {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             return session.createQuery("from Post p order by p.datecreated desc limit 10",
                     Post.class).list();
         }
@@ -135,7 +137,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post getPostByUserId(Long userId, Long postId) {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery("from Post where id = :postId and " +
                     "userCreated.id = :userId", Post.class);
             query.setParameter("postId", postId);
@@ -147,10 +149,11 @@ public class PostRepositoryImpl implements PostRepository {
             return result.get(0);
         }
     }
+
     @Override
     public List<Post> search(Optional<String> keyword) {
         String query = keyword.orElse("");
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
             CriteriaQuery<Post> criteriaQuery = criteriaBuilder.createQuery(Post.class);
             Root<Post> post = criteriaQuery.from(Post.class);

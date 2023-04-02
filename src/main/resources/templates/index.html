@@ -13,7 +13,8 @@
         <div class="col px-0">
             <h1 class="display-4 fst-italic">Welcome to Java Fundamentals Forum</h1>
             <p class="lead mt-3">
-                Our forum is a community of Java programmers from all levels of experience who come together to share knowledge, discuss the latest trends, and help each other improve their programming skills. <br><br>
+                Our forum is a community of Java programmers from all levels of experience who come together to share
+                knowledge, discuss the latest trends, and help each other improve their programming skills. <br><br>
                 So join us today and be a part of our Java programming community!
             </p>
         </div>
@@ -39,35 +40,46 @@
 
     <div class="row g-5">
         <div class="col-md-6">
-            <h6 class="display-6">Most Recent</h6>
+            <h6 class="display-6 text-center">Most Recent</h6>
             <hr class="pb-3">
             <div th:each="post : ${mostRecentPosts}"
                  th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted')}">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
-                        <h4 class="mb-0 text-decoration-none text-dark home-page-post-title text-truncate" th:text="${post.getTitle()}">Post Title</h4>
-                        <div class="mb-1 text-muted" th:if="${!isDeleted}" th:text="${post.getUserCreated().getUsername()}">Author</div>
+                        <h4 class="mb-0 text-decoration-none text-dark home-page-post-title text-truncate"
+                            th:text="${post.getTitle()}">Post Title</h4>
+                        <div class="mb-1 text-muted" th:if="${!isDeleted}"
+                             th:text="${post.getUserCreated().getUsername()}">Author
+                        </div>
                         <div class="mb-1 text-muted" th:if="${isDeleted}" th:text="#{deleted.user.message}">Author</div>
-                        <p class="card-text mb-auto text-truncate" th:utext="${post.getContent()}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" th:if="${session.isAuthenticated}" th:href="@{/posts/{id}(id=${post.getId()})}" class="stretched-link">Continue reading</a>
-                        <a href="#" th:unless="${session.isAuthenticated}" th:href="@{/auth/login}" class="stretched-link">Continue reading</a>
+                        <p class="card-text mb-auto text-truncate" th:text="${post.getContent()}">Some quick example
+                            text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" th:if="${session.isAuthenticated}" th:href="@{/posts/{id}(id=${post.getId()})}"
+                           class="stretched-link">Continue reading</a>
+                        <a href="#" th:unless="${session.isAuthenticated}" th:href="@{/auth/login}"
+                           class="stretched-link">Continue reading</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <h6 class="display-6">Most Commented</h6>
+            <h6 class="display-6 text-center">Most Commented</h6>
             <hr class="pb-3">
             <div th:each="post : ${mostCommentedPosts}"
                  th:with="isDeleted=${post.getUserCreated().getUsername().contains('deleted')}">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
-                        <h4 class="mb-0 text-decoration-none text-dark home-page-post-title text-truncate" th:text="${post.getTitle()}">Post Title</h4>
-                        <p class="mb-1 text-muted" th:if="${!isDeleted}" th:text="${post.getUserCreated().getUsername()}">Author</p>
+                        <h4 class="mb-0 text-decoration-none text-dark home-page-post-title text-truncate"
+                            th:text="${post.getTitle()}">Post Title</h4>
+                        <p class="mb-1 text-muted" th:if="${!isDeleted}"
+                           th:text="${post.getUserCreated().getUsername()}">Author</p>
                         <p class="mb-1 text-muted" th:if="${isDeleted}" th:text="#{deleted.user.message}">Author</p>
-                        <p class="card-text mb-auto text-truncate" th:text="${post.getContent()}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" th:if="${session.isAuthenticated}" th:href="@{/posts/{id}(id=${post.getId()})}" class="stretched-link">Continue reading</a>
-                        <a href="#" th:unless="${session.isAuthenticated}" th:href="@{/auth/login}" class="stretched-link">Continue reading</a>
+                        <p class="card-text mb-auto text-truncate" th:text="${post.getContent()}">Some quick example
+                            text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" th:if="${session.isAuthenticated}" th:href="@{/posts/{id}(id=${post.getId()})}"
+                           class="stretched-link">Continue reading</a>
+                        <a href="#" th:unless="${session.isAuthenticated}" th:href="@{/auth/login}"
+                           class="stretched-link">Continue reading</a>
                     </div>
                 </div>
             </div>

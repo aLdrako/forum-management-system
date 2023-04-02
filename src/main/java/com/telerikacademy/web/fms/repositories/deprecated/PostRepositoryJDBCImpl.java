@@ -10,7 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 //@Repository
 @PropertySource("classpath:application.properties")
@@ -45,12 +48,12 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query)
-                ){
+        ) {
             int parameterCounter = 1;
             //if (title.isPresent()) statement.setString(parameterCounter++, "%" + title.get() + "%");
             //if (userId.isPresent()) statement.setLong(parameterCounter++, userId.get());
 
-            try (ResultSet resultSet = statement.executeQuery()){
+            try (ResultSet resultSet = statement.executeQuery()) {
                 return getPosts(resultSet);
             }
         } catch (SQLException e) {
@@ -95,9 +98,9 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query);
-                ) {
+        ) {
             statement.setLong(1, id);
-            try (ResultSet resultSet = statement.executeQuery()){
+            try (ResultSet resultSet = statement.executeQuery()) {
                 List<Post> result = getPosts(resultSet);
                 if (result.size() == 0) {
                     throw new EntityNotFoundException("Post", id);
@@ -121,7 +124,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query);
-                ){
+        ) {
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getContent());
             statement.setLong(3, post.getUserCreated().getId());
@@ -144,7 +147,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(query)
-                ){
+        ) {
             Long id = null;
             while (resultSet.next()) {
                 id = resultSet.getLong("max");
@@ -154,6 +157,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void update(Post post) {
         getById(post.getId());
@@ -165,7 +169,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query);
-                ){
+        ) {
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getContent());
             statement.setLong(3, post.getId());
@@ -176,6 +180,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void delete(Post post) {
         getById(post.getId());
@@ -188,13 +193,14 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query)
-                ){
+        ) {
             statement.setLong(1, post.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     private void deleteLikesOfPost(Long postId) {
         String query = """
                 delete 
@@ -204,13 +210,14 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query)
-                ){
+        ) {
             statement.setLong(1, postId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     private void deleteCommentsOfPost(Long postId) {
         String query = """
                 delete 
@@ -220,13 +227,14 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query);
-                ){
+        ) {
             statement.setLong(1, postId);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public List<Post> getTopTenMostCommented() {
         String query = SQL_POSTS_LIKES_JOINED;
@@ -240,7 +248,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(query)
-                ){
+        ) {
             List<Post> result = getPosts(resultSet);
             if (result.size() == 10) {
                 return result;
@@ -252,6 +260,7 @@ public class PostRepositoryJDBCImpl implements PostRepository {
             throw new RuntimeException(e);
         }
     }
+
     private List<Post> returnPostsWithNoComments(int postsToReturnCount) {
         String query = SQL_POSTS_LIKES_JOINED;
         query += """
@@ -262,15 +271,16 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query)
-                ){
+        ) {
             statement.setInt(1, postsToReturnCount);
-            try (ResultSet resultSet = statement.executeQuery()){
+            try (ResultSet resultSet = statement.executeQuery()) {
                 return getPosts(resultSet);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public List<Post> getTopTenMostRecent() {
         String query = SQL_POSTS_LIKES_JOINED;
@@ -282,12 +292,13 @@ public class PostRepositoryJDBCImpl implements PostRepository {
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(query)
-                ){
+        ) {
             return getPosts(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public Post getPostByUserId(Long userId, Long postId) {
         getById(postId);
@@ -298,10 +309,10 @@ public class PostRepositoryJDBCImpl implements PostRepository {
         try (
                 Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
                 PreparedStatement statement = connection.prepareStatement(query)
-                ){
+        ) {
             statement.setLong(1, userId);
             statement.setLong(2, postId);
-            try (ResultSet resultSet = statement.executeQuery()){
+            try (ResultSet resultSet = statement.executeQuery()) {
                 List<Post> result = getPosts(resultSet);
                 if (result.size() == 0) {
                     throw new EntityNotFoundException("Post", postId, "user id", userId);

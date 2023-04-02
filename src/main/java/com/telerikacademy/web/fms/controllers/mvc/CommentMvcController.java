@@ -36,7 +36,7 @@ public class CommentMvcController extends BaseMvcController {
     }
 
     @GetMapping
-    public String showAllComments(@RequestParam(required=false) Map<String, String> parameters, Model model, HttpSession session) {
+    public String showAllComments(@RequestParam(required = false) Map<String, String> parameters, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentAdmin(session);
 
@@ -54,11 +54,10 @@ public class CommentMvcController extends BaseMvcController {
             model.addAttribute("totalPages", commentPage.getTotalPages());
             model.addAttribute("sort", sort);
             model.addAttribute("order", order);
-//            model.addAttribute("comments", commentServices.getAll(parameters));
             return "CommentsView";
         } catch (AuthorizationException e) {
             return "redirect:/auth/login";
-        } catch (UnsupportedOperationException e) {
+        } catch (UnauthorizedOperationException e) {
             model.addAttribute("error", e.getMessage());
             return "AccessDeniedView";
         }

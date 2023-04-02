@@ -1,9 +1,15 @@
 package com.telerikacademy.web.fms.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.telerikacademy.web.fms.models.validations.*;
+import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
+import com.telerikacademy.web.fms.models.validations.LoginValidationGroup;
+import com.telerikacademy.web.fms.models.validations.OptionalWithSizeConstraint;
+import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Size;
 
 public class UserDTO {
     @Schema(name = "CreateUserFirstName", description = "The first name of the user for creation.")
@@ -26,12 +32,12 @@ public class UserDTO {
     @Null(message = "Username can't be changed",
             groups = UpdateValidationGroup.class)
     private String username;
-    @NotEmpty (message = "Password can't be empty",
+    @NotEmpty(message = "Password can't be empty",
             groups = {CreateValidationGroup.class, LoginValidationGroup.class})
     @OptionalWithSizeConstraint(min = 5, max = 20,
             groups = {UpdateValidationGroup.class, CreateValidationGroup.class, LoginValidationGroup.class})
     private String password;
-    @NotEmpty (message = "Password confirmation can't be empty", groups = CreateValidationGroup.class)
+    @NotEmpty(message = "Password confirmation can't be empty", groups = CreateValidationGroup.class)
     private String passwordConfirm;
     @OptionalWithSizeConstraint(min = 7, max = 16, groups = UpdateValidationGroup.class)
     private String phoneNumber;

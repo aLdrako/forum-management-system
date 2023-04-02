@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <title th:text="#{page.title.comment}">Forum Management System</title>
-  <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <title th:text="#{page.title.comment}">Forum Management System</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 
 <body class="comment-view d-flex flex-column min-vh-100"
@@ -14,40 +14,47 @@
 <header th:replace="~{fragments/navbar :: header(context='comment')}"></header>
 
 <div class="container mt-5">
-  <article class="blog-post">
-    <h4 class="display-4 blog-post-title"><a href="#" class="text-decoration-none" th:href="@{/posts/{id}(id=${comment.postedOn.id})}" th:text="${comment.postedOn.title}">Post title (design!)</a></h4>
-    <p class="blog-post-meta">
-      <span th:text="${comment.dateCreated} + ' by '">Date Created</span>
-      <span>
-        <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${comment.createdBy.id})}" th:text="${comment.createdBy.username}">Username (design!)</a>
+    <article class="blog-post">
+        <h4 class="display-4 blog-post-title"><a href="#" class="text-decoration-none"
+                                                 th:href="@{/posts/{id}(id=${comment.postedOn.id})}"
+                                                 th:text="${comment.postedOn.title}">Post title (design!)</a></h4>
+        <p class="blog-post-meta">
+            <span th:text="${comment.dateCreated} + ' by '">Date Created</span>
+            <span>
+        <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${comment.createdBy.id})}"
+           th:text="${comment.createdBy.username}">Username (design!)</a>
         <span th:if="${isDeleted}" th:text="anonymous">Username (design!)</span>
       </span>
-    </p>
-    <p th:text="${comment.content}">Comment content (design!)</p>
-    <section th:if="${session.isAuthenticated && (session.isAdmin || session.currentUser == comment.createdBy.username)}">
-      <a href="#" class="btn btn-warning" th:href="@{${updatePath}}"><i class="bi bi-chat-right-dots" title="Update comment"></i></a>
-      <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="bi bi-envelope-slash" title="Delete comment"></i></a>
-    </section>
-  </article>
+        </p>
+        <p th:text="${comment.content}">Comment content (design!)</p>
+        <section
+                th:if="${session.isAuthenticated && (session.isAdmin || session.currentUser == comment.createdBy.username)}">
+            <a href="#" class="btn btn-warning" th:href="@{${updatePath}}"><i class="bi bi-chat-right-dots"
+                                                                              title="Update comment"></i></a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i
+                    class="bi bi-envelope-slash" title="Delete comment"></i></a>
+        </section>
+    </article>
 </div>
 
 <!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="deleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to delete comment?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <a href="#" th:href="@{${deletePath}}" class="btn btn-danger">Delete</a>
-      </div>
+<div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete comment?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" th:href="@{${deletePath}}" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

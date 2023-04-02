@@ -1,11 +1,10 @@
 package com.telerikacademy.web.fms.models.dto;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PostDTO {
     @NotEmpty(message = "Title must not be empty!")
@@ -16,11 +15,13 @@ public class PostDTO {
     private String content;
 
     private List<@Pattern(regexp = "^[A-Za-z0-9]{5,32}$",
-            message ="Tags must be separated by a comma and each tag must " +
-                    "be between 5 and 32 characters with no special symbols!")String> tags;
+            message = "Tags must be separated by a comma and each tag must " +
+                    "be between 5 and 32 characters with no special symbols!") String> tags;
+
     public List<String> getTags() {
         return tags;
     }
+
     public void setTags(List<String> tags) {
         this.tags = tags;
     }

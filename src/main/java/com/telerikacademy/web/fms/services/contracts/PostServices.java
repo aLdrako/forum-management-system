@@ -11,9 +11,13 @@ import java.util.Optional;
 
 public interface PostServices {
     Post getById(Long id);
+
     List<Post> getAll(Map<String, String> parameters);
+
     Post create(Post post, User user);
+
     void update(Post post, User user);
+
     void delete(Long id, User user);
 
     Post getPostByUserId(Long userId, Long postId);

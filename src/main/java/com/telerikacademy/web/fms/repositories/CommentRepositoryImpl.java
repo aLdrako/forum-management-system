@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.*;
+import static com.telerikacademy.web.fms.helpers.FilterAndSortParameters.extractSortOrderComments;
 
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
@@ -147,7 +147,8 @@ public class CommentRepositoryImpl implements CommentRepository {
             query.setParameter("commentId", commentId);
             query.setParameter("userId", userId);
             List<Comment> list = query.list();
-            if (list.size() == 0) throw new EntityNotFoundException(String.format(USER_NO_COMMENT_WITH_ID, userId, commentId));
+            if (list.size() == 0)
+                throw new EntityNotFoundException(String.format(USER_NO_COMMENT_WITH_ID, userId, commentId));
             return list.get(0);
         }
     }
@@ -177,7 +178,8 @@ public class CommentRepositoryImpl implements CommentRepository {
             query.setParameter("commentId", commentId);
             query.setParameter("postId", postId);
             List<Comment> list = query.list();
-            if (list.size() == 0) throw new EntityNotFoundException(String.format(POST_NO_COMMENT_WITH_ID, postId, commentId));
+            if (list.size() == 0)
+                throw new EntityNotFoundException(String.format(POST_NO_COMMENT_WITH_ID, postId, commentId));
             return list.get(0);
         }
     }

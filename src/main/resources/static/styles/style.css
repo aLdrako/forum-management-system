@@ -30,7 +30,7 @@ body {
 }
 
 .form-signin .form-floating:focus-within,
-.form-update .form-floating:focus-within{
+.form-update .form-floating:focus-within {
     z-index: 2;
 }
 
@@ -150,20 +150,24 @@ body {
 .posts-table {
     position: center;
 }
+
 .posts-header {
     display: table-header-group;
     font-weight: bold;
     text-align: center;
 }
+
 .posts-cell {
     display: table-cell;
     width: 25%;
     text-align: left;
     margin-right: 5px;
 }
+
 .posts-row {
     display: table-row;
 }
+
 .posts-error {
     color: red;
 }
@@ -171,29 +175,36 @@ body {
 .col-lg-6.post-container {
     width: 100%;
 }
+
 .blog-post {
     margin-bottom: 1rem;
     word-wrap: break-word;
 }
+
 .blog-post-title {
     margin-bottom: .25rem;
     font-size: 2.5rem;
 }
+
 .blog-post-meta {
     margin-bottom: 1.25rem;
     color: #727272;
 }
+
 .input-post {
     width: 70%;
 }
+
 .post-title {
     font-style: italic;
     font-size: 17pt;
 }
+
 .post-likes-comments {
     width: 2px;
 }
-.home-page-post-title{
+
+.home-page-post-title {
     font-family: "Playfair Display", Georgia, "Times New Roman", serif;
 }
 

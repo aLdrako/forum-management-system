@@ -16,126 +16,150 @@
 
 <div class="container mt-5">
 
-  <div class="row justify-content-center">
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-header text-center" th:classappend="${user.getPermission().isAdmin()} ? 'text-white bg-success' : 'text-dark bg-light' + (${user.getPermission().isBlocked()} ? 'text-white bg-danger' : 'text-dark bg-light')">
-          <h4 th:text="${user.username.toUpperCase()}">User Profile</h4>
-        </div>
-        <div class="card-body d-flex align-items-center">
-          <div class="col-md-5 text-center me-5">
-            <img th:if="${user.photo}" class="rounded-circle" height="150px" alt="" th:alt="${user.username}" src="../static/images/no-profile-picture.jpg" th:src="'data:image/jpeg;base64,' + ${user.photo}">
-            <img th:unless="${user.photo}" class="rounded-circle" height="150px" alt="No Profile Picture" src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
-          </div>
-          <div class="col-lg-10 col-md-8 col-sm-10">
-            <div class="form-group d-flex align-items-center mb-3">
-              <i class="bi bi-person-fill me-2"></i>
-              <span th:text="${user.firstName} + ' ' + (${user.getLastName()})">Full Name</span>
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header text-center"
+                     th:classappend="${user.getPermission().isAdmin()} ? 'text-white bg-success' : 'text-dark bg-light' + (${user.getPermission().isBlocked()} ? 'text-white bg-danger' : 'text-dark bg-light')">
+                    <h4 th:text="${user.username.toUpperCase()}">User Profile</h4>
+                </div>
+                <div class="card-body d-flex align-items-center">
+                    <div class="col-md-5 text-center me-5">
+                        <img th:if="${user.photo}" class="rounded-circle" height="150px" alt=""
+                             th:alt="${user.username}" src="../static/images/no-profile-picture.jpg"
+                             th:src="'data:image/jpeg;base64,' + ${user.photo}">
+                        <img th:unless="${user.photo}" class="rounded-circle" height="150px" alt="No Profile Picture"
+                             src="../static/images/no-profile-picture.jpg" th:src="@{/images/no-profile-picture.jpg}">
+                    </div>
+                    <div class="col-lg-10 col-md-8 col-sm-10">
+                        <div class="form-group d-flex align-items-center mb-3">
+                            <i class="bi bi-person-fill me-2"></i>
+                            <span th:text="${user.firstName} + ' ' + (${user.getLastName()})">Full Name</span>
+                        </div>
+                        <div class="form-group d-flex align-items-center mb-3">
+                            <i class="bi bi-envelope-fill me-2"></i>
+                            <span th:text="${user.email}">Email Address</span>
+                        </div>
+                        <div class="form-group d-flex align-items-center">
+                            <i class="bi bi-telephone-fill me-2"></i>
+                            <span th:if="${user.phoneNumber}" th:text="${user.phoneNumber}">Phone Number</span>
+                            <span th:unless="${user.phoneNumber}">No Phone</span>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${session.isAuthenticated && (session.isAdmin || session.currentUser == user.username)}"
+                     class="card-footer text-center text-dark bg-light">
+                    <a th:if="${session.isAdmin}" href="#" class="btn btn-success" th:href="@{${permissionPath}}"><i
+                            class="bi bi-toggles" title="Update permissions"></i></a>
+                    <a href="#" class="btn btn-warning" th:href="@{${photoPath}}"><i class="bi bi-person-workspace"
+                                                                                     title="Upload photo"></i></a>
+                    <a href="#" class="btn btn-warning" th:href="@{${updatePath}}"><i class="bi bi-person-lines-fill"
+                                                                                      title="Update settings"></i></a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i
+                            class="bi bi-person-fill-slash" title="Delete account"></i></a>
+                </div>
             </div>
-            <div class="form-group d-flex align-items-center mb-3">
-              <i class="bi bi-envelope-fill me-2"></i>
-              <span th:text="${user.email}">Email Address</span>
-            </div>
-            <div class="form-group d-flex align-items-center">
-              <i class="bi bi-telephone-fill me-2"></i>
-              <span th:if="${user.phoneNumber}" th:text="${user.phoneNumber}">Phone Number</span>
-              <span th:unless="${user.phoneNumber}">No Phone</span>
-            </div>
-          </div>
         </div>
-        <div th:if="${session.isAuthenticated && (session.isAdmin || session.currentUser == user.username)}" class="card-footer text-center text-dark bg-light">
-          <a th:if="${session.isAdmin}" href="#" class="btn btn-success" th:href="@{${permissionPath}}"><i class="bi bi-toggles" title="Update permissions"></i></a>
-          <a href="#" class="btn btn-warning" th:href="@{${photoPath}}"><i class="bi bi-person-workspace" title="Upload photo"></i></a>
-          <a href="#" class="btn btn-warning" th:href="@{${updatePath}}"><i class="bi bi-person-lines-fill" title="Update settings"></i></a>
-          <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger"><i class="bi bi-person-fill-slash" title="Delete account"></i></a>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <div class="row justify-content-center mt-2">
-    <div class="col-lg-10">
-      <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="posts-tab" data-bs-toggle="tab" data-bs-target="#posts-tab-pane" type="button" role="tab" aria-controls="posts-tab-pane" aria-selected="true">Posts</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments-tab-pane" type="button" role="tab" aria-controls="comments-tab-pane" aria-selected="false">Comments</button>
-        </li>
-      </ul>
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="posts-tab-pane" role="tabpanel" aria-labelledby="posts-tab" tabindex="0">
-          <form th:replace="~{/fragments/post-form :: post-form-sort}"></form>
-          <div class="list-group w-auto mt-1">
-            <th:block th:if="${posts.isEmpty()}">
-              <div class="d-flex gap-2 w-100 justify-content-center">
-                <div>
-                  <h6 class="mb-0 display-6">No Posts</h6>
+    <div class="row justify-content-center mt-2">
+        <div class="col-lg-10">
+            <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="posts-tab" data-bs-toggle="tab" data-bs-target="#posts-tab-pane"
+                            type="button" role="tab" aria-controls="posts-tab-pane" aria-selected="true">Posts
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments-tab-pane"
+                            type="button" role="tab" aria-controls="comments-tab-pane" aria-selected="false">Comments
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="posts-tab-pane" role="tabpanel" aria-labelledby="posts-tab"
+                     tabindex="0">
+                    <form th:replace="~{/fragments/post-form :: post-form-sort}"></form>
+                    <div class="list-group w-auto mt-1">
+                        <th:block th:if="${posts.isEmpty()}">
+                            <div class="d-flex gap-2 w-100 justify-content-center">
+                                <div>
+                                    <h6 class="mb-0 display-6">No Posts</h6>
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block th:each="post : ${posts}">
+                            <a href="#" th:href="@{/posts/{id}(id=${post.id})}"
+                               class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                                <i class="bi bi-postcard" style="font-size: 2rem; color: cornflowerblue;"></i>
+                                <div class="d-flex gap-2 w-100 justify-content-between">
+                                    <div>
+                                        <h6 class="mb-0" th:text="${post.title}">Title (design!)</h6>
+                                        <p class="mb-0 opacity-75"
+                                           th:text="${post.content.length() >= 90 ? #strings.substring(post.content, 0, 90) + '...' : post.content}">
+                                            Body (design!)</p>
+                                    </div>
+                                    <small class="opacity-50 text-nowrap d-none d-xxl-block"
+                                           th:text="${post.datecreated}">Created (design!)</small>
+                                </div>
+                            </a>
+                        </th:block>
+                    </div>
                 </div>
-              </div>
-            </th:block>
-            <th:block th:each="post : ${posts}">
-              <a href="#" th:href="@{/posts/{id}(id=${post.id})}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                <i class="bi bi-postcard" style="font-size: 2rem; color: cornflowerblue;"></i>
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div>
-                    <h6 class="mb-0" th:text="${post.title}">Title (design!)</h6>
-                    <p class="mb-0 opacity-75" th:text="${post.content}">Body (design!)</p>
-                  </div>
-                  <small class="opacity-50 text-nowrap" th:text="${post.datecreated}">Created (design!)</small>
-                </div>
-              </a>
-            </th:block>
-          </div>
-        </div>
 
-        <div class="tab-pane fade" id="comments-tab-pane" role="tabpanel" aria-labelledby="comments-tab" tabindex="0">
-          <form th:replace="~{/fragments/comment-form :: comment-form-sort}"></form>
-          <div class="list-group w-auto mt-1">
-            <th:block th:if="${comments.isEmpty()}">
-              <div class="d-flex gap-2 w-100 justify-content-center">
-                <div>
-                  <h6 class="mb-0 display-6">No Comments</h6>
+                <div class="tab-pane fade" id="comments-tab-pane" role="tabpanel" aria-labelledby="comments-tab"
+                     tabindex="0">
+                    <form th:replace="~{/fragments/comment-form :: comment-form-sort}"></form>
+                    <div class="list-group w-auto mt-1">
+                        <th:block th:if="${comments.isEmpty()}">
+                            <div class="d-flex gap-2 w-100 justify-content-center">
+                                <div>
+                                    <h6 class="mb-0 display-6">No Comments</h6>
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block th:each="comment : ${comments}">
+                            <a href="#" th:href="@{/comments/{id}(id=${comment.id})}"
+                               class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                                <i class="bi bi-chat-left-text" style="font-size: 2rem; color: cornflowerblue;"></i>
+                                <div class="d-flex gap-2 w-100 justify-content-between">
+                                    <div>
+                                        <h6 class="mb-0" th:text="${comment.postedOn.title}">Title (design!)</h6>
+                                        <p class="mb-0 opacity-75"
+                                           th:text="${comment.content.length() >= 90 ? #strings.substring(comment.content, 0, 90) + '...' : comment.content}">
+                                            Body (design!)</p>
+                                    </div>
+                                    <small class="opacity-50 text-nowrap d-none d-xxl-block"
+                                           th:text="${comment.dateCreated}">Created Date (design!)</small>
+                                </div>
+                            </a>
+                        </th:block>
+                    </div>
                 </div>
-              </div>
-            </th:block>
-            <th:block th:each="comment : ${comments}">
-              <a href="#" th:href="@{/comments/{id}(id=${comment.id})}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                <i class="bi bi-chat-left-text" style="font-size: 2rem; color: cornflowerblue;"></i>
-                <div class="d-flex gap-2 w-100 justify-content-between">
-                  <div>
-                    <h6 class="mb-0" th:text="${comment.postedOn.title}">Title (design!)</h6>
-                    <p class="mb-0 opacity-75" th:text="${comment.content}">Body (design!)</p>
-                  </div>
-                  <small class="opacity-50 text-nowrap" th:text="${comment.dateCreated}">Created Date (design!)</small>
-                </div>
-              </a>
-            </th:block>
-          </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
 </div>
 
 <!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="deleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to delete account?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <a href="#" th:href="@{${deletePath}}" class="btn btn-danger">Delete</a>
-      </div>
+<div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete account?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" th:href="@{${deletePath}}" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

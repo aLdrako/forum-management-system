@@ -9,51 +9,74 @@
                  ctxComments=${context == 'comments'},
                  ctxCreatePost=${context == 'create post'}">
 
-  <div class="container">
-    <nav class="navbar navbar-expand-xl rounded">
-      <img class="rounded me-2 mb-xl-0 mb-2" src="../../static/images/FMS_logo.png" height="40px" alt="FMS" th:src="@{/images/FMS_logo.png}">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+    <div class="container">
+        <nav class="navbar navbar-expand-xl rounded">
+            <img class="rounded me-2 mb-xl-0 mb-2" src="../../static/images/FMS_logo.png" height="40px" alt="FMS"
+                 th:src="@{/images/FMS_logo.png}">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+                    aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbar">
+            <div class="collapse navbar-collapse" id="navbar">
 
-          <div class="text-start flex-grow-1">
-            <a class="btn btn-outline-light me-2" href="/" th:href="@{/}" th:classappend="${ctxHome ? 'btn-light text-dark' : ''}" th:text="#{navbar.home}">Home</a>
-            <a class="btn btn-outline-light me-2" href="/posts" th:if="${session.isAuthenticated}" th:href="@{/posts}" th:classappend="${ctxPosts ? 'btn-light text-dark' : ''}" th:text="#{navbar.posts}">Posts</a>
-            <a class="btn btn-outline-light me-2" href="/users" th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/users}" th:classappend="${ctxUsers ? 'btn-light text-dark' : ''}" th:text="#{navbar.users}">Users</a>
-            <a class="btn btn-outline-light me-2" href="/comments" th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/comments}" th:classappend="${ctxComments ? 'btn-light text-dark' : ''}" th:text="#{navbar.comments}">Comments</a>
-            <a class="btn btn-outline-light me-2" href="/tags" th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/tags}" th:classappend="${ctxTags ? 'btn-light text-dark' : ''}" th:text="#{navbar.tags}">Tags</a>
-            <a class="btn btn-primary mt-2 mt-md-0" href="/posts/new" th:if="${session.isAuthenticated}" th:href="@{/posts/new}" th:classappend="${ctxCreatePost ? 'btn-light text-dark' : ''}" th:text="#{navbar.post.create}">Create Post</a>
+                <div class="text-start flex-grow-1">
+                    <a class="btn btn-outline-light me-2" href="/" th:href="@{/}"
+                       th:classappend="${ctxHome ? 'btn-light text-dark' : ''}" th:text="#{navbar.home}">Home</a>
+                    <a class="btn btn-outline-light me-2" href="/posts" th:if="${session.isAuthenticated}"
+                       th:href="@{/posts}" th:classappend="${ctxPosts ? 'btn-light text-dark' : ''}"
+                       th:text="#{navbar.posts}">Posts</a>
+                    <a class="btn btn-outline-light me-2" href="/users"
+                       th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/users}"
+                       th:classappend="${ctxUsers ? 'btn-light text-dark' : ''}" th:text="#{navbar.users}">Users</a>
+                    <a class="btn btn-outline-light me-2" href="/comments"
+                       th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/comments}"
+                       th:classappend="${ctxComments ? 'btn-light text-dark' : ''}" th:text="#{navbar.comments}">Comments</a>
+                    <a class="btn btn-outline-light me-2" href="/tags"
+                       th:if="${session.isAuthenticated && session.isAdmin}" th:href="@{/tags}"
+                       th:classappend="${ctxTags ? 'btn-light text-dark' : ''}" th:text="#{navbar.tags}">Tags</a>
+                    <a class="btn btn-primary mt-2 mt-md-0" href="/posts/new" th:if="${session.isAuthenticated}"
+                       th:href="@{/posts/new}" th:classappend="${ctxCreatePost ? 'btn-light text-dark' : ''}"
+                       th:text="#{navbar.post.create}">Create Post</a>
 
-          </div>
+                </div>
 
-          <form th:if="${session.isAuthenticated}" action="/posts/search" data-action-posts="/posts/search" data-action-users="/users/search" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="get">
-            <div class="input-group form-control-dark text-bg-dark mt-2 mt-xl-0 d-flex justify-content-end" id="inputGroupSearch">
-              <div class="flex-grow-1">
-              <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." name="q" aria-label="Search">
-              </div>
-              <div class=" flex-shrink-1">
-                <label>
-                  <select class="form-select form-select-dark text-bg-dark" onchange="updateAction(this)">
-                    <option selected value="posts">Posts</option>
-                    <option th:if="${session.isAdmin}" value="users">Users</option>
-                  </select>
-                </label>
-              </div>
-              <button class="btn btn-light" type="submit"><i class="bi bi-search"></i></button>
+                <form th:if="${session.isAuthenticated}" action="/posts/search" data-action-posts="/posts/search"
+                      data-action-users="/users/search" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
+                      method="get">
+                    <div class="input-group form-control-dark text-bg-dark mt-2 mt-xl-0 d-flex justify-content-end"
+                         id="inputGroupSearch">
+                        <div class="flex-grow-1">
+                            <input type="search" class="form-control form-control-dark text-bg-dark"
+                                   placeholder="Search..." name="q" aria-label="Search">
+                        </div>
+                        <div class=" flex-shrink-1">
+                            <label>
+                                <select class="form-select form-select-dark text-bg-dark" onchange="updateAction(this)">
+                                    <option selected value="posts">Posts</option>
+                                    <option th:if="${session.isAdmin}" value="users">Users</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button class="btn btn-light" type="submit"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+
+                <div class="text-end pe-3 pe-sm-0 mt-2 mt-xl-0">
+                    <a class="btn btn-outline-light me-2" href="/auth/login"
+                       th:if="${ctxLogin && !session.isAuthenticated}" th:href="@{/auth/login}"
+                       th:text="#{navbar.login}">Login</a>
+                    <a class="btn btn-primary" href="/auth/register" th:if="${ctxRegister && !session.isAuthenticated}"
+                       th:href="@{/auth/register}" th:text="#{navbar.register}">Registration</a>
+                    <a class="btn btn-primary me-2" href="/users" th:if="${session.isAuthenticated}"
+                       th:href="@{/users/{id}(id=${session.userId})}"><i class="bi bi-person-fill"
+                                                                         th:title="#{navbar.user-profile}"></i></a>
+                    <a class="btn btn-danger" href="/auth/logout" th:if="${session.isAuthenticated}"
+                       th:href="@{/auth/logout}"><i class="bi bi-box-arrow-right" th:title="#{navbar.logout}"></i></a>
+                </div>
+
             </div>
-          </form>
-
-          <div class="text-end pe-3 pe-sm-0 mt-2 mt-xl-0">
-            <a class="btn btn-outline-light me-2" href="/auth/login" th:if="${ctxLogin && !session.isAuthenticated}" th:href="@{/auth/login}" th:text="#{navbar.login}">Login</a>
-            <a class="btn btn-primary" href="/auth/register" th:if="${ctxRegister && !session.isAuthenticated}" th:href="@{/auth/register}" th:text="#{navbar.register}">Registration</a>
-            <a class="btn btn-primary me-2" href="/users" th:if="${session.isAuthenticated}" th:href="@{/users/{id}(id=${session.userId})}"><i class="bi bi-person-fill" th:title="#{navbar.user-profile}"></i></a>
-            <a class="btn btn-danger" href="/auth/logout" th:if="${session.isAuthenticated}" th:href="@{/auth/logout}"><i class="bi bi-box-arrow-right" th:title="#{navbar.logout}"></i></a>
-          </div>
-
-        </div>
-    </nav>
-  </div>
-  <script th:replace="~{fragments/scripts :: search-global}"></script>
+        </nav>
+    </div>
+    <script th:replace="~{fragments/scripts :: search-global}"></script>
 </header>

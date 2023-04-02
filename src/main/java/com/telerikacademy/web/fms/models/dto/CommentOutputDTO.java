@@ -3,7 +3,7 @@ package com.telerikacademy.web.fms.models.dto;
 public class CommentOutputDTO {
     private String content;
     private String createdBy;
-    private String  postedOn;
+    private String postedOn;
     private String dateCreated;
 
     public String getContent() {

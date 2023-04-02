@@ -2,7 +2,10 @@ package com.telerikacademy.web.fms.models.dto;
 
 import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 public class CommentDTO {
     @NotEmpty(message = "Content can't be empty", groups = {CreateValidationGroup.class, UpdateValidationGroup.class})

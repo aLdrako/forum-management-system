@@ -6,11 +6,8 @@ import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
 import com.telerikacademy.web.fms.models.Tag;
 import com.telerikacademy.web.fms.models.User;
-import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
 import com.telerikacademy.web.fms.services.contracts.TagServices;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Tag Rest Controller", description = "Tag management API")
 @RestController
 @RequestMapping("/api/tags")
@@ -29,11 +27,13 @@ public class TagRestController {
 
     private final TagServices tagServices;
     private final AuthenticationHelper authenticationHelper;
+
     @Autowired
     public TagRestController(TagServices tagServices, AuthenticationHelper authenticationHelper) {
         this.tagServices = tagServices;
         this.authenticationHelper = authenticationHelper;
     }
+
     @Operation(summary = "Get All Tags", description = "Get a list of all Tags",
             tags = {"tags", "get all"})
     @ApiResponses({
@@ -53,6 +53,7 @@ public class TagRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
+
     @Operation(summary = "Get a tag", description = "Get a tag from database",
             tags = {"tag", "get tag"})
     @ApiResponses({

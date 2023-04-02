@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface TagRepository {
     Tag getTagById(Long id);
+
     Tag createTag(Tag tag);
+
     Tag getTagByName(String name);
 
     void delete(Tag tag);

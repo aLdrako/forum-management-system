@@ -6,7 +6,8 @@ import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.*;
+
+import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
 
 @Entity
 @Table(name = "comments")
@@ -24,7 +25,7 @@ public class Comment {
     private User createdBy;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name ="post_id", referencedColumnName = "id")
+    @JoinColumn(name = "post_id", referencedColumnName = "id")
     private Post postedOn;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -54,6 +55,7 @@ public class Comment {
     public String getDateCreated() {
         return formatToString(dateCreated);
     }
+
     public void setDateCreated(LocalDateTime dateCreated) {
         this.dateCreated = dateCreated;
     }

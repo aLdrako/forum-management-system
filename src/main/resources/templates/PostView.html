@@ -15,36 +15,44 @@
         <p class="blog-post-meta">
             <span th:text="${post.getDatecreated()} + ' by '">Date Created</span>
             <span>
-                <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}" th:text="${post.getUserCreated().getUsername()}">&nbsp&nbsp</a>
+                <a th:if="${!isDeleted}" href="#" th:href="@{/users/{id}(id=${post.getUserCreated().getId()})}"
+                   th:text="${post.getUserCreated().getUsername()}">&nbsp&nbsp</a>
                 <span th:if="${isDeleted}" th:text="#{deleted.user.message}">anonymous</span>
             </span>
             <span>
                 <a class="btn btn-warning text-dark btn-sm" href="#"
-                   th:href="@{${requestURI} + '/update'}" th:if="${session.user == post.getUserCreated() || session.isAdmin}"
+                   th:href="@{${requestURI} + '/update'}"
+                   th:if="${session.user == post.getUserCreated() || session.isAdmin}"
                    th:text="#{post-form.update}">Update Post</a></span>
             <span>
-                <a data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger text-light btn-sm" href="#"
+                <a data-bs-toggle="modal" data-bs-target="#deleteModal" class="btn btn-danger text-light btn-sm"
+                   href="#"
                    th:if="${session.user == post.getUserCreated() || session.isAdmin}">Delete Post</a></span>
         </p>
         <p th:utext="${post.getContent()}">This blog post shows a few different types of content.</p>
         <section>
-            <a class="btn" th:classappend="${session.isAuthenticated && post.getLikes().contains(session.user)} ? 'btn-danger bi bi-heart' : 'btn-light bi bi-heart'"
+            <a class="btn"
+               th:classappend="${session.isAuthenticated && post.getLikes().contains(session.user)} ? 'btn-danger bi bi-heart' : 'btn-light bi bi-heart'"
                th:href="@{/posts/{id}/like(id=${post.getId()})}">
                 <span th:if="${post.getLikes().contains(session.user)}"
                       th:text="${#numbers.formatInteger(post.getLikes().size(), 1, 'COMMA')}"></span>
             </a>
-<!--            <a class="btn" th:classappend="${session.isAuthenticated} ? 'btn-primary bi bi-reply-fill'"-->
-<!--               th:href="@{/posts/{id}/reply(id=${post.getId()})}">-->
-<!--            </a>-->
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            <!--            <a class="btn" th:classappend="${session.isAuthenticated} ? 'btn-primary bi bi-reply-fill'"-->
+            <!--               th:href="@{/posts/{id}/reply(id=${post.getId()})}">-->
+            <!--            </a>-->
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                    aria-expanded="false" aria-controls="collapseExample">
                 Tags
             </button>
-            <a class="btn" th:classappend="${session.isAuthenticated} ? 'btn-primary bi bi-reply-fill'"  data-bs-toggle="collapse" href="#collapseReply" role="button" aria-expanded="false" aria-controls="collapseReply"></a>
+            <a class="btn" th:classappend="${session.isAuthenticated} ? 'btn-primary bi bi-reply-fill'"
+               data-bs-toggle="collapse" href="#collapseReply" role="button" aria-expanded="false"
+               aria-controls="collapseReply"></a>
             <div class="collapse multi-collapse" id="collapseExample">&nbsp
                 <ul class="list-group list-group-horizontal d-flex flex-wrap">
-                    <li class="list-group-item" th:if="${!post.getTags().isEmpty()}" th:each="tag : ${post.getTags()}" th:text="${tag.getName()}"></li>
+                    <li class="list-group-item" th:if="${!post.getTags().isEmpty()}" th:each="tag : ${post.getTags()}"
+                        th:text="${tag.getName()}"></li>
                 </ul>
-                    <h6 class="text-center" th:if="${post.getTags().isEmpty()}" th:text="#{post.tags.empty}">No Tags</h6>
+                <h6 class="text-center" th:if="${post.getTags().isEmpty()}" th:text="#{post.tags.empty}">No Tags</h6>
             </div>
             <div class="collapse multi-collapse" id="collapseReply">
                 <form th:replace="~{/fragments/comment-form :: comment-form(context='comment-create')}"></form>
@@ -65,14 +73,18 @@
         <th:block th:each="comment : ${comments}"
                   th:with="isDeleted=${comment.createdBy.username.contains('deleted_')}">
 
-            <a href="#" th:href="@{/comments/{id}(id=${comment.id})}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+            <a href="#" th:href="@{/comments/{id}(id=${comment.id})}"
+               class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
                 <i class="bi bi-chat-left-text" style="font-size: 2rem; color: cornflowerblue;"></i>
                 <div class="d-flex gap-2 w-100 justify-content-between">
                     <div class="flex-grow-1">
                         <p class="mb-0 opacity-75" th:text="${comment.content}">Body (design!)</p>
                     </div>
-                    <small class="d-sm-none d-md-inline" th:text="${!isDeleted ? comment.createdBy.username : 'anonymous'}">Created By (design!)</small>
-                    <small class="opacity-50 text-nowrap" th:text="${comment.dateCreated}">Date Created (design!)</small>
+                    <small class="d-sm-none d-md-inline"
+                           th:text="${!isDeleted ? comment.createdBy.username : 'anonymous'}">Created By
+                        (design!)</small>
+                    <small class="opacity-50 text-nowrap" th:text="${comment.dateCreated}">Date Created
+                        (design!)</small>
                 </div>
             </a>
         </th:block>
@@ -80,7 +92,8 @@
 </div>
 
 <!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+     aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">

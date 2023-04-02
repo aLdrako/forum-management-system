@@ -41,6 +41,7 @@ public class TagMvcController extends BaseMvcController {
             return "AccessDeniedView";
         }
     }
+
     @GetMapping("/{id}/delete")
     public String deletePost(@PathVariable Long id, Model model, HttpSession session) {
         User user;

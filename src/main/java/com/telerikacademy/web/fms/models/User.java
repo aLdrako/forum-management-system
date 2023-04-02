@@ -6,7 +6,9 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import static com.telerikacademy.web.fms.helpers.DateTimeFormatHelper.formatToString;
 
@@ -50,7 +52,8 @@ public class User {
     @OneToMany(mappedBy = "createdBy")
     private Set<Comment> comments = new HashSet<>();
 
-    public User() {}
+    public User() {
+    }
 
     public User(Long id) {
         this.id = id;

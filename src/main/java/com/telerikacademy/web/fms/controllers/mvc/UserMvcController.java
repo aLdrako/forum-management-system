@@ -66,28 +66,8 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
             model.addAttribute("currentPage", page);
             model.addAttribute("sizePage", size);
             model.addAttribute("totalPages", userPage.getTotalPages());
-//            model.addAttribute("users", userServices.getAll());
             return "UsersView";
         } catch (AuthorizationException e) {
-            return "redirect:/auth/login";
-        } catch (UnsupportedOperationException e) {
-            model.addAttribute("error", e.getMessage());
-            return "AccessDeniedView";
-        }
-    }
-
-    @GetMapping (value = "/search")
-    public String search(@RequestParam Map<String, String> parameter, Model model, HttpSession session) {
-        try {
-            authenticationHelper.tryGetCurrentAdmin(session);
-            model.addAttribute("search", parameter.get("q"));
-            List<User> users = userServices.search(String.valueOf(parameter.entrySet().iterator().next()));
-            model.addAttribute("users", users);
-            return "UsersView";
-        } catch (EntityNotFoundException e) {
-            model.addAttribute("users", List.of());
-            return "UsersView";
-        } catch (AuthorizationException e)  {
             return "redirect:/auth/login";
         } catch (UnauthorizedOperationException e) {
             model.addAttribute("error", e.getMessage());
@@ -95,8 +75,27 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
         }
     }
 
+    @GetMapping(value = "/search")
+    public String search(@RequestParam Map<String, String> parameter, Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetCurrentAdmin(session);
+            model.addAttribute("search", parameter.get("q"));
+            List<User> users = userServices.search(String.valueOf(parameter.entrySet().iterator().next()));
+            model.addAttribute("users", users);
+            return "UsersView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("users", List.of());
+            return "UsersView";
+        } catch (UnauthorizedOperationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "AccessDeniedView";
+        }
+    }
+
     @GetMapping("/{id}")
-    public String showUser(@PathVariable Long id, @RequestParam(required=false) Map<String, String> parameters, Model model, HttpSession session) {
+    public String showUser(@PathVariable Long id, @RequestParam(required = false) Map<String, String> parameters, Model model, HttpSession session) {
         try {
             authenticationHelper.tryGetCurrentUser(session);
             User user = userServices.getById(id);
@@ -107,7 +106,7 @@ public class UserMvcController extends BaseMvcController implements HandlerExcep
             model.addAttribute("posts", postsByUserId);
             model.addAttribute("user", user);
             return "UserView";
-        } catch (AuthorizationException e)  {
+        } catch (AuthorizationException e) {
             return "redirect:/auth/login";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());

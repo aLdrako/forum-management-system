@@ -9,11 +9,18 @@ import java.util.List;
 
 public interface UserServices {
     List<User> getAll();
+
     Page<User> findAll(Pageable pageable);
+
     User getById(Long id);
+
     List<User> search(String parameter);
+
     User create(User user);
+
     User update(User... users);
+
     User updatePermissions(Permission permission, User user);
+
     void delete(Long id, User user);
 }

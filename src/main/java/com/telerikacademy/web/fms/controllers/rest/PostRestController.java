@@ -5,12 +5,12 @@ import com.telerikacademy.web.fms.exceptions.EntityNotFoundException;
 import com.telerikacademy.web.fms.exceptions.UnauthorizedOperationException;
 import com.telerikacademy.web.fms.helpers.AuthenticationHelper;
 import com.telerikacademy.web.fms.models.Comment;
-import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
-import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.models.Post;
+import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.models.dto.CommentOutputDTO;
 import com.telerikacademy.web.fms.models.dto.PostDTO;
 import com.telerikacademy.web.fms.models.dto.PostOutputDTO;
-import com.telerikacademy.web.fms.models.User;
+import com.telerikacademy.web.fms.services.ModelMapper;
 import com.telerikacademy.web.fms.services.contracts.CommentServices;
 import com.telerikacademy.web.fms.services.contracts.PostServices;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 @Tag(name = "Post Rest Controller", description = "Post management API")
 @RestController
 @RequestMapping("/api/posts")
@@ -46,12 +47,13 @@ public class PostRestController {
         this.postMapper = postMapper;
         this.authenticationHelper = authenticationHelper;
     }
+
     @Operation(summary = "Get All Posts", description = "Get a list of all PostOutputDto objects based on" +
             " the parameters", tags = {"posts", "get all", "sort", "filter"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "List of PostOutputDto objects",
-            content = {@Content(mediaType = "application/json",
-                    schema = @Schema(implementation = PostOutputDTO.class, type = "array"))})
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PostOutputDTO.class, type = "array"))})
     })
     @Parameters({
             @Parameter(name = "sort", example = "likes", description = "Sort by title, likes, dateCreated, userId", schema = @Schema(type = "string")),
@@ -70,7 +72,7 @@ public class PostRestController {
     }
 
     @Operation(summary = "Get a specific post", description = "Get a specific PostOutputDTO object if it exists",
-    tags = {"get by id", "post"})
+            tags = {"get by id", "post"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Returns an object that Exists",
                     content = {@Content(mediaType = "application/json",
@@ -81,14 +83,15 @@ public class PostRestController {
     @GetMapping("/{id}")
     public PostOutputDTO getById(@PathVariable Long id) {
         try {
-           Post post = postServices.getById(id);
-           return postMapper.objectToDto(post);
+            Post post = postServices.getById(id);
+            return postMapper.objectToDto(post);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
     @Operation(summary = "Create a new post", description = "Create a new post with the fields written in the body",
-    tags = {"create post", "new"})
+            tags = {"create post", "new"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Returns the new Post",
                     content = {@Content(mediaType = "application/json",
@@ -107,7 +110,7 @@ public class PostRestController {
             post.setUserCreated(user);
             Post postCreated = postServices.create(post, user);
             return postMapper.objectToDto(postCreated);
-        }  catch (AuthorizationException | UnauthorizedOperationException e) {
+        } catch (AuthorizationException | UnauthorizedOperationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
@@ -128,7 +131,7 @@ public class PostRestController {
     })
     @PutMapping("/{id}")
     public PostOutputDTO update(@PathVariable Long id, @Valid @RequestBody PostDTO postDTO,
-                       @RequestHeader HttpHeaders headers) {
+                                @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Post post = postMapper.dtoToObject(id, postDTO);
@@ -137,11 +140,11 @@ public class PostRestController {
             return postMapper.objectToDto(post);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedOperationException |  AuthorizationException e) {
+        } catch (UnauthorizedOperationException | AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
-    
+
     @Operation(summary = "Adds/Removes a like from post", description = "If the user has liked the post, the like will be removed" +
             "and vice versa", tags = {"like post", "remove like from post"})
     @ApiResponses({
@@ -161,6 +164,7 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
+
     @Operation(summary = "Delete an existing post", description = "Delete an existing post",
             tags = {"delete post", "delete"})
     @ApiResponses({
@@ -185,7 +189,7 @@ public class PostRestController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "List of CommentOutputDTO objects",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CommentOutputDTO.class, type="array"))}),
+                            schema = @Schema(implementation = CommentOutputDTO.class, type = "array"))}),
             @ApiResponse(responseCode = "404", description = "Post Not Found", content = {@Content(schema = @Schema())}),
     })
     @Parameters({
@@ -200,6 +204,7 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
     @Operation(
             summary = "Get Comment of a certain post by ID",
             description = "Get a CommentOutputDTO object by its ID and post ID",
@@ -207,7 +212,7 @@ public class PostRestController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Comment found",
-                    content = { @Content(schema = @Schema(implementation = CommentOutputDTO.class), mediaType = "application/json") }),
+                    content = {@Content(schema = @Schema(implementation = CommentOutputDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Comment/Post not found", content = {@Content(schema = @Schema())})
     })
     @GetMapping("/{postId}/comments/{commentId}")
@@ -219,6 +224,7 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
     @Operation(summary = "Search All Posts", description = "Get a list of all PostOutputDto objects based on" +
             " a key word", tags = {"posts", "search all"})
     @ApiResponse(responseCode = "200", description = "List of PostOutputDto objects",
@@ -228,7 +234,7 @@ public class PostRestController {
             @Parameter(name = "q", example = "knowledge", description = "Keyword for searching", schema = @Schema(type = "string")),
     })
     @GetMapping("/search")
-    public List<PostOutputDTO> searchPosts(@RequestParam (required = false) Optional<String> q) {
+    public List<PostOutputDTO> searchPosts(@RequestParam(required = false) Optional<String> q) {
         return postMapper.objectToDto(postServices.search(q));
     }
 }
