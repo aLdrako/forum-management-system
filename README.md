@@ -102,12 +102,13 @@ Provide a link to a GitLab repository with the following information in the READ
 ## Hosted App
 ### [App on Heroku](https://forum-management-system-spring.herokuapp.com/)
 
-
 ## API Documentation
-<img src="https://static1.smartbear.co/swagger/media/assets/images/swagger_logo.svg" alt="logo" width="300px" style="margin-top: 20px;"/>
+<img src="https://static1.smartbear.co/swagger/media/assets/images/swagger_logo.svg" alt="logo" width="300px" style="margin-top: 10px;"/>
 
 ### [FMS OpenAPI](https://app.swaggerhub.com/apis/aLdrako/forum_management_system-open-api/v1.4) v1.4 OAS3
 
+## Database relations
+<img src="database/db_diagram.png" alt="logo" width="500px" style="margin-top: 10px;"/>
 
 ## Teamwork Guidelines
 Please see the Teamwork Guidelines [document](https://learn.telerikacademy.com/mod/page/view.php?id=39002 "document").
