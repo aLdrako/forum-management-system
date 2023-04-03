@@ -99,10 +99,14 @@ Provide a link to a GitLab repository with the following information in the READ
 - Host your application's backend in a public hosting provider of your choice (e.g., AWS, Azure, Heroku)
 - Use branches while working with Git
 
+## Hosted App
+### [App on Heroku](https://forum-management-system-spring.herokuapp.com/)
+
+
 ## API Documentation
 <img src="https://static1.smartbear.co/swagger/media/assets/images/swagger_logo.svg" alt="logo" width="300px" style="margin-top: 20px;"/>
 
-### [FMS OpenAPI](https://app.swaggerhub.com/apis/aLdrako/forum_management_system-open-api/v1.2) v1.2 OAS3
+### [FMS OpenAPI](https://app.swaggerhub.com/apis/aLdrako/forum_management_system-open-api/v1.4) v1.4 OAS3
 
 
 ## Teamwork Guidelines
