@@ -8,7 +8,7 @@
 <body class="user-view d-flex flex-column min-vh-100">
 <header th:replace="~{fragments/navbar :: header(context='post-create')}"></header>
 <div class="container mt-5">
-    <form th:replace="~{/fragments/post-form :: post-form(context='update')}"></form>
+    <form th:replace="~{fragments/post-form :: post-form(context='update')}"></form>
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 <script th:replace="~{fragments/scripts :: bootstrap}"></script>

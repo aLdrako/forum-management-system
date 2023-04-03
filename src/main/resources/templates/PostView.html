@@ -55,13 +55,13 @@
                 <h6 class="text-center" th:if="${post.getTags().isEmpty()}" th:text="#{post.tags.empty}">No Tags</h6>
             </div>
             <div class="collapse multi-collapse" id="collapseReply">
-                <form th:replace="~{/fragments/comment-form :: comment-form(context='comment-create')}"></form>
+                <form th:replace="~{fragments/comment-form :: comment-form(context='comment-create')}"></form>
             </div>
             <hr>
         </section>
     </article>
 
-    <form th:replace="~{/fragments/comment-form :: comment-form-sort}"></form>
+    <form th:replace="~{fragments/comment-form :: comment-form-sort}"></form>
     <div class="list-group w-auto mt-1">
         <th:block th:if="${comments.isEmpty()}">
             <div class="d-flex gap-2 w-100 justify-content-center">

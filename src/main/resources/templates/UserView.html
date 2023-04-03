@@ -79,7 +79,7 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="posts-tab-pane" role="tabpanel" aria-labelledby="posts-tab"
                      tabindex="0">
-                    <form th:replace="~{/fragments/post-form :: post-form-sort}"></form>
+                    <form th:replace="~{fragments/post-form :: post-form-sort}"></form>
                     <div class="list-group w-auto mt-1">
                         <th:block th:if="${posts.isEmpty()}">
                             <div class="d-flex gap-2 w-100 justify-content-center">
@@ -109,7 +109,7 @@
 
                 <div class="tab-pane fade" id="comments-tab-pane" role="tabpanel" aria-labelledby="comments-tab"
                      tabindex="0">
-                    <form th:replace="~{/fragments/comment-form :: comment-form-sort}"></form>
+                    <form th:replace="~{fragments/comment-form :: comment-form-sort}"></form>
                     <div class="list-group w-auto mt-1">
                         <th:block th:if="${comments.isEmpty()}">
                             <div class="d-flex gap-2 w-100 justify-content-center">
