@@ -5,14 +5,12 @@ import com.telerikacademy.web.fms.models.validations.CreateValidationGroup;
 import com.telerikacademy.web.fms.models.validations.LoginValidationGroup;
 import com.telerikacademy.web.fms.models.validations.OptionalWithSizeConstraint;
 import com.telerikacademy.web.fms.models.validations.UpdateValidationGroup;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 
 public class UserDTO {
-    @Schema(name = "CreateUserFirstName", description = "The first name of the user for creation.")
     @NotEmpty(message = "First name can't be empty", groups = CreateValidationGroup.class)
     @Size(min = 4, max = 32, message = "First name should be between 4 and 32 symbols",
             groups = {UpdateValidationGroup.class, CreateValidationGroup.class})

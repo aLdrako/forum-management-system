@@ -192,6 +192,12 @@ public class UserRestController {
             @ApiResponse(responseCode = "401", description = "Unauthorized operation"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
+//    @Parameter(
+//            name = "headers",
+//            description = "Headers of the request",
+//            in = ParameterIn.HEADER,
+//            schema = @Schema(type = "string", defaultValue = "tester, tester")
+//    )
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id, @RequestHeader HttpHeaders headers) {
         try {

@@ -38,7 +38,6 @@
                     <a class="btn btn-primary mt-2 mt-md-0" href="/posts/new" th:if="${session.isAuthenticated}"
                        th:href="@{/posts/new}" th:classappend="${ctxCreatePost ? 'btn-light text-dark' : ''}"
                        th:text="#{navbar.post.create}">Create Post</a>
-
                 </div>
 
                 <form th:if="${session.isAuthenticated}" action="/posts/search" data-action-posts="/posts/search"
